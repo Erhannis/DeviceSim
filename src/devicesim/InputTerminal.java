@@ -10,13 +10,6 @@ package devicesim;
  *
  * @author erhannis
  */
-public class DeviceSim {
-
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String[] args) {
-    
-  }
+public interface InputTerminal extends Terminal {
   
 }

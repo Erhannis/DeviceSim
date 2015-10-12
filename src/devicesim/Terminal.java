@@ -10,13 +10,9 @@ package devicesim;
  *
  * @author erhannis
  */
-public class DeviceSim {
-
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String[] args) {
-    
-  }
-  
+public interface Terminal {
+  public void setValue(double value);
+  public double getValue();
+  public Unit getUnit();
+  public Connection getConnection();
 }

@@ -6,17 +6,16 @@
 
 package devicesim;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author erhannis
  */
-public class DeviceSim {
-
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String[] args) {
+public class DeviceEngine {
+  public ArrayList<Unit> unitTypes = new ArrayList<Unit>();
+  
+  public void init() {
     
   }
-  
 }
