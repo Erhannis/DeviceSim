@@ -15,6 +15,8 @@ public class StateOutputTerminal implements OutputTerminal {
   private DirectedUnit unit;
   private DirectedConnection connection = null;
   
+  private boolean hasChanged = true;
+  
   public StateOutputTerminal(double value, DirectedUnit unit) {
     this.value = value;
     this.unit = unit;
@@ -22,7 +24,18 @@ public class StateOutputTerminal implements OutputTerminal {
 
   @Override
   public void setValue(double value) {
-    this.value = value;
+    if (this.value != value) {
+      hasChanged = true;
+      this.value = value;
+    }
+  }
+  
+  public boolean pullHasChanged() {
+    if (hasChanged) {
+      hasChanged = false;
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -31,10 +44,11 @@ public class StateOutputTerminal implements OutputTerminal {
   }
 
   @Override
-  public Unit getUnit() {
+  public DirectedUnit getUnit() {
     return unit;
   }
 
+  @Override
   public void setConnection(DirectedConnection connection) {
     this.connection = connection;
   }

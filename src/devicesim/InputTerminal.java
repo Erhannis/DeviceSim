@@ -11,5 +11,9 @@ package devicesim;
  * @author erhannis
  */
 public interface InputTerminal extends Terminal {
-  
+  @Override
+  public DirectedConnection getConnection();
+  public void setConnection(DirectedConnection connection);
+  @Override
+  public DirectedUnit getUnit();
 }

@@ -31,10 +31,11 @@ public class StateInputTerminal implements InputTerminal {
   }
 
   @Override
-  public Unit getUnit() {
+  public DirectedUnit getUnit() {
     return unit;
   }
 
+  @Override
   public void setConnection(DirectedConnection connection) {
     this.connection = connection;
   }

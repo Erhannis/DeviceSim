@@ -6,13 +6,9 @@
 
 package devicesim.units.defaults;
 
-import devicesim.DirectedUnit;
-import devicesim.InputTerminal;
 import devicesim.OutputTerminal;
 import devicesim.StateOutputTerminal;
-import devicesim.Terminal;
-import devicesim.Unit;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -30,6 +26,7 @@ public class SourceLow extends BlankDirectedUnit {
   }
 
   @Override
-  public void resolve() {
+  public HashSet<OutputTerminal> tick() {
+    return collectChanged();
   }
 }

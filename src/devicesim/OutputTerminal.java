@@ -13,4 +13,8 @@ package devicesim;
 public interface OutputTerminal extends Terminal {
   @Override
   public DirectedConnection getConnection();
+  public void setConnection(DirectedConnection connection);
+  @Override
+  public DirectedUnit getUnit();
+  public boolean pullHasChanged();
 }

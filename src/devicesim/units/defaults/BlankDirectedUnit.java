@@ -36,4 +36,15 @@ public abstract class BlankDirectedUnit implements DirectedUnit {
   public ArrayList<OutputTerminal> getOutputs() {
     return outputs;
   }
+
+  // Most things won't usually need to implement this, so I'm providing a blank default.
+  @Override
+  public void doFinalState() {
+  }
+  
+  // Same here
+  @Override
+  public boolean isFinal() {
+    return false;
+  }
 }

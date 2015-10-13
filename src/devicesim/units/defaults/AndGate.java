@@ -6,8 +6,11 @@
 
 package devicesim.units.defaults;
 
+import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
+import java.util.HashSet;
+import mathnstuff.MeMath;
 
 /**
  *
@@ -29,8 +32,19 @@ public class AndGate extends BlankDirectedUnit {
     return false;
   }
 
+  private void doUpdate() {
+    if (MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(2).getValue())
+     && MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(3).getValue())) {
+      outputs.get(0).setValue(inputs.get(0).getValue());
+    } else {
+      outputs.get(0).setValue(inputs.get(1).getValue());
+    }
+  }
+  
   @Override
-  public void resolve() {
-    
+  public HashSet<OutputTerminal> tick() {
+    //TODO I'm not sure how to accomplish restarts.
+    doUpdate();
+    return collectChanged();
   }
 }

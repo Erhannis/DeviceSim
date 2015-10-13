@@ -7,6 +7,7 @@
 package devicesim;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -14,4 +15,5 @@ import java.util.ArrayList;
  */
 public interface Unit {
   public ArrayList<Terminal> getTerminals();
+  public HashSet<? extends Terminal> tick();
 }

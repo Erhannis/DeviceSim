@@ -16,7 +16,7 @@ public class DeviceSim {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    
+    DeviceEngine engine = new DeviceEngine();
+    engine.testRun();
   }
-  
 }
