@@ -12,6 +12,7 @@ import devicesim.InputTerminal;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -23,6 +24,8 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
   private HashSet<DirectedUnit> queued = new HashSet<DirectedUnit>();
   private HashSet<DirectedUnit> finals = new HashSet<DirectedUnit>();
 
+  private InternalMetaUnit internalMetaUnit;
+  
   public DirectedCompositeUnit(int inputCount, int outputCount) {
     for (int i = 0; i < inputCount; i++) {
       inputs.add(new StateInputTerminal(0.0, this));
@@ -32,6 +35,7 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     }
     terminals.addAll(inputs);
     terminals.addAll(outputs);
+    internalMetaUnit = addUnit(new InternalMetaUnit(inputs, outputs));
   }
 
   public DirectedCompositeUnit(int inputCount, int outputCount, OutputTerminal... inputs) {
@@ -52,6 +56,41 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
       GDC.addConnection(out(i), outputs[i]);
     }
     return this;
+  }
+  // End construction chains
+  
+  public InputTerminal iout(int i) {
+    return internalMetaUnit.in(i);
+  }
+
+  public OutputTerminal iin(int i) {
+    return internalMetaUnit.out(i);
+  }
+  
+  public void resizeTerminals(int inputCount, int outputCount) {
+    if (outputs.size() > outputCount) {
+      while (outputs.size() > outputCount) {
+        OutputTerminal ot = outputs.get(outputs.size() - 1);
+        ot.getConnection().severConnection();
+        outputs.remove(outputs.size() - 1);
+      }
+    } else if (outputs.size() < outputCount) {
+      while (outputs.size() < outputCount) {
+        outputs.add(new StateOutputTerminal(0.0, this));
+      }
+    }
+    if (inputs.size() > inputCount) {
+      while (inputs.size() > inputCount) {
+        InputTerminal it = inputs.get(inputs.size() - 1);
+        it.getConnection().removeOutput(it);
+        inputs.remove(inputs.size() - 1);
+      }
+    } else if (inputs.size() < inputCount) {
+      while (inputs.size() < inputCount) {
+        inputs.add(new StateInputTerminal(0.0, this));
+      }
+    }
+    internalMetaUnit.resizeTerminals(inputs, outputs);
   }
   
   // Ooh, cool, that syntax worked.

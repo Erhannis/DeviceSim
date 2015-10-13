@@ -7,43 +7,46 @@
 package devicesim;
 
 /**
- *
+ * Is actually an OutputTerminal.  It's attached to the inside edge of an InputTerminal, though.
  * @author erhannis
  */
-public class StateOutputTerminal implements OutputTerminal {
-  private double value;
+public class InternalInputTerminal implements OutputTerminal {
+  private InputTerminal dual;
   private DirectedUnit unit;
   private DirectedConnection connection = null;
   
   private boolean hasChanged = true;
+  private double prevValue;
   
-  public StateOutputTerminal(double value, DirectedUnit unit) {
-    this.value = value;
+  public InternalInputTerminal(InputTerminal dual, DirectedUnit unit) {
+    this.dual = dual;
     this.unit = unit;
+    this.prevValue = dual.getValue();
   }
 
   @Override
   public void setValue(double value) {
-    if (this.value != value) {
+    if (dual.getValue() != value) {
       hasChanged = true;
-      this.value = value;
+      dual.setValue(value);
     }
-  }
-  
-  @Override
-  public boolean pullHasChanged() {
-    if (hasChanged) {
-      hasChanged = false;
-      return true;
-    }
-    return false;
   }
 
   @Override
   public double getValue() {
-    return value;
+    return dual.getValue();
   }
 
+  @Override
+  public boolean pullHasChanged() {
+    if (hasChanged || (prevValue != dual.getValue())) {
+      hasChanged = false;
+      prevValue = dual.getValue();
+      return true;
+    }
+    return false;
+  }
+  
   @Override
   public DirectedUnit getUnit() {
     return unit;

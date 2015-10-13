@@ -37,7 +37,6 @@ public interface DirectedUnit extends Unit {
   public HashSet<OutputTerminal> tick();
   public void doFinalState();
   default HashSet<OutputTerminal> collectChanged() {
-    //TODO I'm not sure how to accomplish restarts.
     HashSet<OutputTerminal> changed = new HashSet<OutputTerminal>();
     for (OutputTerminal o : getOutputs()) {
       if (o.pullHasChanged()) {

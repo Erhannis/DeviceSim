@@ -306,7 +306,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
   private void spinInputsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinInputsStateChanged
     if (!loading) {
-
+      
       changed = true;
     }
   }//GEN-LAST:event_spinInputsStateChanged

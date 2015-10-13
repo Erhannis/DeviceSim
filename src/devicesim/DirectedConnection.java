@@ -25,4 +25,24 @@ public interface DirectedConnection extends Connection {
    * @return 
    */
   public HashSet<InputTerminal> getOutputs();
+  
+  /**
+   * Probably a bad idea to try this while the circuit is running.  Might glitch "hasChanged"s, maybe.
+   */
+  public default void severConnection() {
+    getInput().setConnection(null);
+    for (InputTerminal t : getOutputs()) {
+      t.setConnection(null);
+    }
+  }
+  
+  /**
+   * This probably isn't GUARANTEED to work, if getOutputs or getTerminals returns a copy or something.
+   * @param output 
+   */
+  public default void removeOutput(InputTerminal output) {
+    getOutputs().remove(output);
+    getTerminals().remove(output);
+    output.setConnection(null);
+  }
 }

@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- *
+ * I think the only places these should be stored semipermanently are on the
+ * terminals themselves, so they can sever themselves properly if needed.
  * @author erhannis
  */
 public interface Connection extends Serializable {

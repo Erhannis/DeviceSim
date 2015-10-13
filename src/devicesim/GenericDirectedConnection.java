@@ -71,7 +71,7 @@ public class GenericDirectedConnection implements DirectedConnection {
   }
 
   /**
-   * Please don't modify the list.
+   * Please don't modify the list.  ...Even though I did, I guess.
    * @return 
    */
   @Override
@@ -80,7 +80,7 @@ public class GenericDirectedConnection implements DirectedConnection {
   }
 
   /**
-   * Please don't modify the list.
+   * Please don't modify the list.  ...Even though I did, I guess.
    * @return 
    */
   @Override

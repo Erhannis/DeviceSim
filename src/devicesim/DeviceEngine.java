@@ -153,6 +153,11 @@ public class DeviceEngine {
     }
   }
 
+  /**
+   * Testing a two-bit adder, and SinkSysoutBinary.
+   * @throws IOException
+   * @throws ClassNotFoundException 
+   */
   public void testRun3() throws IOException, ClassNotFoundException {
     DirectedCompositeUnit dcu = new DirectedCompositeUnit(0, 0);
 
@@ -181,6 +186,50 @@ public class DeviceEngine {
         System.out.println(a.getValue() + " " + b.getValue());
         dcu.tick();
         dcu.doFinalState();
+      }
+    }
+  }
+  
+  /**
+   * Testing the internalMetaUnit feature.
+   * @throws IOException
+   * @throws ClassNotFoundException 
+   */
+  public void testRun4() throws IOException, ClassNotFoundException {
+    DirectedCompositeUnit add = new DirectedCompositeUnit(4, 2);
+    add.setName("ADD2");
+
+    AndGate ag = add.addUnit(new AndGate(add.iin(0), add.iin(1), add.iin(2), add.iin(3)));
+    XorGate xg = add.addUnit(new XorGate(add.iin(0), add.iin(1), add.iin(2), add.iin(3)));
+    GDC.addConnection(ag.out(0), add.iout(0));
+    GDC.addConnection(xg.out(0), add.iout(1));
+    
+    unitTypes.add(add.copy());
+    
+    DirectedCompositeUnit shell = new DirectedCompositeUnit(0, 0);
+
+    SourceHigh high = shell.addUnit(new SourceHigh());
+    OutputTerminal highT = high.out(0);
+    SourceLow low = shell.addUnit(new SourceLow());
+    OutputTerminal lowT = low.out(0);
+
+    StateSource a = shell.addUnit(new StateSource(1.0));
+    OutputTerminal aT = a.out(0);
+    StateSource b = shell.addUnit(new StateSource(1.0));
+    OutputTerminal bT = b.out(0);
+    
+    shell.addUnit(add);
+    add.setInputs(highT, lowT, aT, bT);
+    shell.addUnit(new SinkSysoutBinary(highT, lowT, add.out(0), add.out(1)).setName("a+b"));
+    
+    for (double av = 0.0; av <= 1.0; av++) {
+      for (double bv = 0.0; bv <= 1.0; bv++) {
+        a.setValue(av);
+        b.setValue(bv);
+        
+        System.out.println(a.getValue() + " " + b.getValue());
+        shell.tick();
+        shell.doFinalState();
       }
     }
   }
