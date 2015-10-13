@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="groupTools">
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="0"/>
   </Properties>
@@ -85,7 +89,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
@@ -93,10 +97,15 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="textUnitName" max="32767" attributes="0"/>
                               </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="btnSaveUnit" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="btnRun" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="btnSaveUnit" min="-2" max="-2" attributes="0"/>
-                                      <Group type="102" alignment="0" attributes="0">
+                                      <Component id="btnRedraw" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
                                           <Group type="103" groupAlignment="0" attributes="0">
                                               <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -108,7 +117,7 @@
                                           </Group>
                                       </Group>
                                   </Group>
-                                  <EmptySpace min="0" pref="23" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="46" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -133,8 +142,13 @@
                               <Component id="spinOutputs" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="276" max="32767" attributes="0"/>
-                          <Component id="btnSaveUnit" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="237" max="32767" attributes="0"/>
+                          <Component id="btnRedraw" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="btnSaveUnit" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnRun" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -192,6 +206,22 @@
                     <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spinOutputsStateChanged"/>
                   </Events>
                 </Component>
+                <Component class="javax.swing.JButton" name="btnRun">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Run"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRunActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnRedraw">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Redraw"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRedrawActionPerformed"/>
+                  </Events>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel4">
@@ -206,7 +236,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="227" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="250" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">

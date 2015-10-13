@@ -28,6 +28,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private boolean changed = false;
   private boolean loading = false;
   
+  private PanelDisplay pd;
+  
   /**
    * Creates new form FrameEditUnit
    */
@@ -40,6 +42,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     loading = false;
     
     load();
+    
+    pd = new PanelDisplay();
+    jSplitPane1.setLeftComponent(pd);
     
     textUnitName.getDocument().addDocumentListener(new DocumentListener() {
       @Override
@@ -90,6 +95,11 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     });
   }
 
+  private void doRepaint() {
+    if (!pd.skipRender) {
+      pd.repaint();
+    }
+  }
   private void load() {
     loading = true;
     textUnitName.setText(unit.getName());
@@ -117,6 +127,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
 
+    groupTools = new javax.swing.ButtonGroup();
     jSplitPane1 = new javax.swing.JSplitPane();
     jPanel1 = new javax.swing.JPanel();
     jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -128,6 +139,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     jLabel2 = new javax.swing.JLabel();
     jLabel3 = new javax.swing.JLabel();
     spinOutputs = new javax.swing.JSpinner();
+    btnRun = new javax.swing.JButton();
+    btnRedraw = new javax.swing.JButton();
     jPanel4 = new javax.swing.JPanel();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -203,6 +216,20 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    btnRun.setText("Run");
+    btnRun.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRunActionPerformed(evt);
+      }
+    });
+
+    btnRedraw.setText("Redraw");
+    btnRedraw.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRedrawActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
     jPanel3.setLayout(jPanel3Layout);
     jPanel3Layout.setHorizontalGroup(
@@ -215,8 +242,12 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(textUnitName))
           .addGroup(jPanel3Layout.createSequentialGroup()
+            .addComponent(btnSaveUnit)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnRun))
+          .addGroup(jPanel3Layout.createSequentialGroup()
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(btnSaveUnit)
+              .addComponent(btnRedraw)
               .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                   .addComponent(jLabel2)
@@ -225,7 +256,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                   .addComponent(spinOutputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                   .addComponent(spinInputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))
-            .addGap(0, 23, Short.MAX_VALUE)))
+            .addGap(0, 46, Short.MAX_VALUE)))
         .addContainerGap())
     );
     jPanel3Layout.setVerticalGroup(
@@ -243,8 +274,12 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(spinOutputs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel3))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 276, Short.MAX_VALUE)
-        .addComponent(btnSaveUnit)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)
+        .addComponent(btnRedraw)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(btnSaveUnit)
+          .addComponent(btnRun))
         .addContainerGap())
     );
 
@@ -254,7 +289,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 227, Short.MAX_VALUE)
+      .addGap(0, 250, Short.MAX_VALUE)
     );
     jPanel4Layout.setVerticalGroup(
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,6 +354,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     }
   }//GEN-LAST:event_spinOutputsStateChanged
 
+  private void btnRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunActionPerformed
+    //TODO Do
+  }//GEN-LAST:event_btnRunActionPerformed
+
+  private void btnRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedrawActionPerformed
+    doRepaint();
+  }//GEN-LAST:event_btnRedrawActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -355,7 +398,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton btnRedraw;
+  private javax.swing.JButton btnRun;
   private javax.swing.JButton btnSaveUnit;
+  private javax.swing.ButtonGroup groupTools;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
