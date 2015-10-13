@@ -6,40 +6,34 @@
 
 package devicesim.units.defaults;
 
+import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import java.util.HashSet;
+import mathnstuff.MeMath;
 
 /**
  *
  * @author erhannis
  */
-public class SinkSysout extends BlankDirectedUnit {
-  public SinkSysout() {
-    inputs.add(new StateInputTerminal(0.0, this));
+public class SinkNop extends BlankDirectedUnit {
+  public SinkNop() {
+    inputs.add(new StateInputTerminal(0, this));
     terminals.addAll(inputs);
-    setName("Sysout");
+    terminals.addAll(outputs);
+    setName("NOP");
   }
 
+  public SinkNop(OutputTerminal a) {
+    this();
+    GDC.addConnection(a, in(0));
+  }
+  
   @Override
   public boolean isOrigin() {
     return false;
   }
 
-  @Override
-  public boolean isFinal() {
-    return true;
-  }
-
-  @Override
-  public void doFinalState() {
-    if (getName() != null) {
-      System.out.println(getName() + " " + inputs.get(0).getValue());
-    } else {
-      System.out.println(inputs.get(0).getValue());
-    }
-  }
-  
   @Override
   public HashSet<OutputTerminal> tick() {
     return collectChanged();

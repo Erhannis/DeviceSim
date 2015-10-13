@@ -18,6 +18,7 @@ public class SourceLow extends BlankDirectedUnit {
   public SourceLow() {
     outputs.add(new StateOutputTerminal(0.0, this));
     terminals.addAll(outputs);
+    setName("LOW");
   }
 
   @Override

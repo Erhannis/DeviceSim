@@ -6,17 +6,29 @@
 
 package devicesim;
 
+import devicesim.units.defaults.DirectedCompositeUnit;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author erhannis
  */
 public class FrameMain extends javax.swing.JFrame {
-
+  public DefaultListModel<Unit> unitTypeList;
+  
   /**
    * Creates new form FrameMain
    */
   public FrameMain() {
     initComponents();
+    unitTypeList = new DefaultListModel<Unit>();
+    for (Unit u : DeviceEngine.UNIT_ARCHETYPES) {
+      unitTypeList.addElement(u);
+    }
+    listUnitTypes.setModel(unitTypeList);
   }
 
   /**
@@ -36,6 +48,8 @@ public class FrameMain extends javax.swing.JFrame {
     btnEditUnitType = new javax.swing.JButton();
     btnCloneUnitType = new javax.swing.JButton();
     btnDeleteUnitType = new javax.swing.JButton();
+    btnMoveUnitDown = new javax.swing.JButton();
+    btnMoveUnitUp = new javax.swing.JButton();
     jPanel2 = new javax.swing.JPanel();
     jScrollPane2 = new javax.swing.JScrollPane();
     areaUnitTypeProperties = new javax.swing.JTextArea();
@@ -47,15 +61,54 @@ public class FrameMain extends javax.swing.JFrame {
 
     jSplitPane1.setDividerLocation(200);
 
+    listUnitTypes.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        listUnitTypesMouseClicked(evt);
+      }
+    });
     jScrollPane1.setViewportView(listUnitTypes);
 
-    btnNewUnitType.setText("New");
+    btnNewUnitType.setText("New Composite");
+    btnNewUnitType.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnNewUnitTypeActionPerformed(evt);
+      }
+    });
 
     btnEditUnitType.setText("Edit");
+    btnEditUnitType.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnEditUnitTypeActionPerformed(evt);
+      }
+    });
 
     btnCloneUnitType.setText("Clone");
+    btnCloneUnitType.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnCloneUnitTypeActionPerformed(evt);
+      }
+    });
 
     btnDeleteUnitType.setText("Delete");
+    btnDeleteUnitType.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnDeleteUnitTypeActionPerformed(evt);
+      }
+    });
+
+    btnMoveUnitDown.setText("v");
+    btnMoveUnitDown.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnMoveUnitDownActionPerformed(evt);
+      }
+    });
+
+    btnMoveUnitUp.setText("^");
+    btnMoveUnitUp.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnMoveUnitUpActionPerformed(evt);
+      }
+    });
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -65,16 +118,29 @@ public class FrameMain extends javax.swing.JFrame {
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(btnNewUnitType)
-          .addComponent(btnEditUnitType)
-          .addComponent(btnCloneUnitType)
-          .addComponent(btnDeleteUnitType))
-        .addContainerGap(135, Short.MAX_VALUE))
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(btnCloneUnitType)
+              .addComponent(btnEditUnitType)
+              .addComponent(btnDeleteUnitType))
+            .addContainerGap(135, Short.MAX_VALUE))
+          .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(btnNewUnitType)
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(btnMoveUnitUp)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnMoveUnitDown)))
+            .addGap(0, 0, Short.MAX_VALUE))))
     );
     jPanel1Layout.setVerticalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(btnMoveUnitDown)
+          .addComponent(btnMoveUnitUp))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(btnNewUnitType)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -83,7 +149,7 @@ public class FrameMain extends javax.swing.JFrame {
         .addComponent(btnCloneUnitType)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(btnDeleteUnitType)
-        .addGap(0, 44, Short.MAX_VALUE))
+        .addContainerGap(90, Short.MAX_VALUE))
     );
 
     jSplitPane1.setLeftComponent(jPanel1);
@@ -105,7 +171,7 @@ public class FrameMain extends javax.swing.JFrame {
       jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel2Layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -132,6 +198,74 @@ public class FrameMain extends javax.swing.JFrame {
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
+
+  private void btnNewUnitTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewUnitTypeActionPerformed
+    new FrameEditDirectedCompositeUnit(unitTypeList, new DirectedCompositeUnit(0, 0), null).setVisible(true);
+  }//GEN-LAST:event_btnNewUnitTypeActionPerformed
+
+  private void btnEditUnitTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditUnitTypeActionPerformed
+    for (Object o : listUnitTypes.getSelectedValuesList()) {
+      if (o instanceof DirectedCompositeUnit) {
+        try {
+          new FrameEditDirectedCompositeUnit(unitTypeList, (DirectedCompositeUnit)((DirectedCompositeUnit)o).copy(), ((DirectedCompositeUnit)o)).setVisible(true);
+        } catch (IOException ex) {
+          Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+          Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }
+    }
+  }//GEN-LAST:event_btnEditUnitTypeActionPerformed
+
+  private void listUnitTypesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listUnitTypesMouseClicked
+    if (evt.getClickCount() == 2) {
+      btnEditUnitTypeActionPerformed(null);
+    }
+  }//GEN-LAST:event_listUnitTypesMouseClicked
+
+  private void btnMoveUnitUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUnitUpActionPerformed
+    //TODO Could support groups, if I felt like being CRAZY
+    int idx = listUnitTypes.getSelectedIndex();
+    if (idx > 0) {
+      Unit u = unitTypeList.get(idx);
+      unitTypeList.removeElementAt(idx);
+      unitTypeList.add(idx - 1, u);
+      listUnitTypes.setSelectedIndex(idx - 1);
+    }
+  }//GEN-LAST:event_btnMoveUnitUpActionPerformed
+
+  private void btnMoveUnitDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoveUnitDownActionPerformed
+    //TODO Could support groups, if I felt like being CRAZY
+    int idx = listUnitTypes.getSelectedIndex();
+    if (idx >= 0 && idx < unitTypeList.size() - 1) {
+      Unit u = unitTypeList.get(idx);
+      unitTypeList.removeElementAt(idx);
+      unitTypeList.add(idx + 1, u);
+      listUnitTypes.setSelectedIndex(idx + 1);
+    }
+  }//GEN-LAST:event_btnMoveUnitDownActionPerformed
+
+  private void btnCloneUnitTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloneUnitTypeActionPerformed
+    for (Object o : listUnitTypes.getSelectedValuesList()) {
+      if (o instanceof Unit) {
+        try {
+          int idx = unitTypeList.indexOf(o);
+          Unit copy = ((Unit)o).copy();
+          unitTypeList.add(idx + 1, copy);
+        } catch (IOException ex) {
+          Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+          Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }
+    }
+  }//GEN-LAST:event_btnCloneUnitTypeActionPerformed
+
+  private void btnDeleteUnitTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteUnitTypeActionPerformed
+    for (Object o : listUnitTypes.getSelectedValuesList()) {
+      unitTypeList.removeElement(o);
+    }
+  }//GEN-LAST:event_btnDeleteUnitTypeActionPerformed
 
   /**
    * @param args the command line arguments
@@ -173,6 +307,8 @@ public class FrameMain extends javax.swing.JFrame {
   private javax.swing.JButton btnCloneUnitType;
   private javax.swing.JButton btnDeleteUnitType;
   private javax.swing.JButton btnEditUnitType;
+  private javax.swing.JButton btnMoveUnitDown;
+  private javax.swing.JButton btnMoveUnitUp;
   private javax.swing.JButton btnNewUnitType;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;

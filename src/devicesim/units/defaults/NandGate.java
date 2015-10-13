@@ -26,6 +26,7 @@ public class NandGate extends BlankDirectedUnit {
     outputs.add(new StateOutputTerminal(0, this));
     terminals.addAll(inputs);
     terminals.addAll(outputs);
+    setName("NAND");
   }
 
   public NandGate(OutputTerminal high, OutputTerminal low, OutputTerminal a, OutputTerminal b) {
@@ -53,7 +54,6 @@ public class NandGate extends BlankDirectedUnit {
   
   @Override
   public HashSet<OutputTerminal> tick() {
-    //TODO I'm not sure how to accomplish restarts.
     doUpdate();
     return collectChanged();
   }

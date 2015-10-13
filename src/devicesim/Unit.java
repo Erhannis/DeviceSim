@@ -23,6 +23,9 @@ public interface Unit extends Serializable {
   public ArrayList<Terminal> getTerminals();
   public HashSet<? extends Terminal> tick();
   
+  public String getName();
+  public Unit setName(String name);
+  
   /**
    * Be careful!  Don't call this after you've hooked it up to anything external.
    * It serializes itself and reads a clone from the serialization, and will

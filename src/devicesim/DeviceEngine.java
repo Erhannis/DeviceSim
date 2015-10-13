@@ -12,6 +12,7 @@ import devicesim.units.defaults.DirectedCompositeUnit;
 import devicesim.units.defaults.NandGate;
 import devicesim.units.defaults.NotGate;
 import devicesim.units.defaults.OrGate;
+import devicesim.units.defaults.SinkNop;
 import devicesim.units.defaults.SinkSysout;
 import devicesim.units.defaults.SinkSysoutBinary;
 import devicesim.units.defaults.SourceHigh;
@@ -44,11 +45,23 @@ public class DeviceEngine {
     init();
   }
   
+  public static final Unit[] UNIT_ARCHETYPES = {
+    new SourceHigh(),
+    new SourceLow(),
+    new AndGate(),
+    new OrGate(),
+    new XorGate(),
+    new NandGate(),
+    new NotGate(),
+    new SinkNop(),
+    new SinkSysout(),
+    new SinkSysoutBinary(8)
+  };
+  
   public void init() {
-    unitTypes.add(new SourceHigh());
-    unitTypes.add(new SourceLow());
-    unitTypes.add(new AndGate());
-    unitTypes.add(new SinkSysout());
+    for (Unit archetype : UNIT_ARCHETYPES) {
+      unitTypes.add(archetype);
+    }
   }
   
   /**

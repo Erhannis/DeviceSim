@@ -27,6 +27,7 @@ public class SinkSysoutBinary extends BlankDirectedUnit {
     }
     terminals.addAll(inputs);
     terminals.addAll(outputs);
+    setName("SysoutBin" + inputCount);
   }
 
   public SinkSysoutBinary(OutputTerminal high, OutputTerminal low, OutputTerminal... inputs) {

@@ -25,6 +25,7 @@ public class NotGate extends BlankDirectedUnit {
     outputs.add(new StateOutputTerminal(0, this));
     terminals.addAll(inputs);
     terminals.addAll(outputs);
+    setName("NOT");
   }
 
   public NotGate(OutputTerminal high, OutputTerminal low, OutputTerminal a) {
@@ -49,7 +50,6 @@ public class NotGate extends BlankDirectedUnit {
   
   @Override
   public HashSet<OutputTerminal> tick() {
-    //TODO I'm not sure how to accomplish restarts.
     doUpdate();
     return collectChanged();
   }

@@ -39,11 +39,13 @@ public abstract class BlankDirectedUnit implements DirectedUnit {
     return outputs;
   }
 
+  @Override
   public String getName() {
     return name;
   }
   
   // Dunno why I'm all about getters and setters at the moment.  Must be all these interfaces.
+  @Override
   public BlankDirectedUnit setName(String name) {
     this.name = name;
     return this; // For construction chains
@@ -58,5 +60,15 @@ public abstract class BlankDirectedUnit implements DirectedUnit {
   @Override
   public boolean isFinal() {
     return false;
+  }
+
+  @Override
+  public String toString() {
+    String name = getName();
+    if (name != null) {
+      return name;
+    } else {
+      return super.toString();
+    }
   }
 }

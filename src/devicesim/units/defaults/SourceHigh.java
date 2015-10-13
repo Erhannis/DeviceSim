@@ -18,6 +18,7 @@ public class SourceHigh extends BlankDirectedUnit {
   public SourceHigh() {
     outputs.add(new StateOutputTerminal(1.0, this));
     terminals.addAll(outputs);
+    setName("HIGH");
   }
 
   @Override

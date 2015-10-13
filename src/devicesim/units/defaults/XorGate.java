@@ -26,6 +26,7 @@ public class XorGate extends BlankDirectedUnit {
     outputs.add(new StateOutputTerminal(0, this));
     terminals.addAll(inputs);
     terminals.addAll(outputs);
+    setName("XOR");
   }
 
   public XorGate(OutputTerminal high, OutputTerminal low, OutputTerminal a, OutputTerminal b) {
@@ -52,7 +53,6 @@ public class XorGate extends BlankDirectedUnit {
   
   @Override
   public HashSet<OutputTerminal> tick() {
-    //TODO I'm not sure how to accomplish restarts.
     doUpdate();
     return collectChanged();
   }
