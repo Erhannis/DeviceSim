@@ -101,7 +101,9 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
       for (DirectedUnit u : queued) {
         HashSet<OutputTerminal> changed = u.tick();
         for (OutputTerminal ot : changed) {
+          double value = ot.getValue();
           for (InputTerminal it : ot.getConnection().getOutputs()) {
+            it.setValue(value);
             nextQueued.add(it.getUnit());
           }
         }

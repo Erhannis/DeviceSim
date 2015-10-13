@@ -6,13 +6,8 @@
 
 package devicesim.units.defaults;
 
-import devicesim.DirectedUnit;
-import devicesim.InputTerminal;
 import devicesim.OutputTerminal;
-import devicesim.StateOutputTerminal;
-import devicesim.Terminal;
-import devicesim.Unit;
-import java.util.ArrayList;
+import devicesim.StateInputTerminal;
 import java.util.HashSet;
 
 /**
@@ -21,8 +16,8 @@ import java.util.HashSet;
  */
 public class SinkSysout extends BlankDirectedUnit {
   public SinkSysout() {
-    outputs.add(new StateOutputTerminal(0.0, this));
-    terminals.addAll(outputs);
+    inputs.add(new StateInputTerminal(0.0, this));
+    terminals.addAll(inputs);
   }
 
   @Override
@@ -37,7 +32,7 @@ public class SinkSysout extends BlankDirectedUnit {
 
   @Override
   public void doFinalState() {
-    System.out.println(outputs.get(0).getValue());
+    System.out.println(inputs.get(0).getValue());
   }
   
   @Override
