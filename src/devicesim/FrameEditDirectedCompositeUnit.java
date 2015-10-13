@@ -7,8 +7,12 @@
 package devicesim;
 
 import devicesim.units.defaults.DirectedCompositeUnit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +48,59 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     load();
     
     pd = new PanelDisplay();
+    pd.units = unit.collectDownstreamUnits();
     jSplitPane1.setLeftComponent(pd);
+    
+    pd.addMouseListener(new MouseListener() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+      }
+
+      public boolean hadFocus = false;
+      
+      @Override
+      public void mousePressed(MouseEvent e) {
+        Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
+        double closestDist2 = Double.POSITIVE_INFINITY;
+        Unit closest = null;
+        for (Unit u : pd.units) {
+          double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
+          if (dist2 < closestDist2) {
+            closest = u;
+            closestDist2 = dist2;
+          }
+        }
+        pd.selectedUnit = closest;
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        pd.selectedUnit = null;
+      }
+
+      @Override
+      public void mouseEntered(MouseEvent e) {
+      }
+
+      @Override
+      public void mouseExited(MouseEvent e) {
+      }
+    });
+    pd.addMouseMotionListener(new MouseMotionListener() {
+      @Override
+      public void mouseDragged(MouseEvent e) {
+        if (pd.selectedUnit != null) {
+          Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
+          pd.selectedUnit.setViewLeft(m.getX());
+          pd.selectedUnit.setViewTop(m.getY());
+          doRepaint();
+        }
+      }
+
+      @Override
+      public void mouseMoved(MouseEvent e) {
+      }
+    });
     
     textUnitName.getDocument().addDocumentListener(new DocumentListener() {
       @Override
@@ -142,6 +198,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     btnRun = new javax.swing.JButton();
     btnRedraw = new javax.swing.JButton();
     jPanel4 = new javax.swing.JPanel();
+    radioMove = new javax.swing.JRadioButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -285,15 +342,25 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
     jTabbedPane1.addTab("Props", jPanel3);
 
+    groupTools.add(radioMove);
+    radioMove.setSelected(true);
+    radioMove.setText("(M)ove");
+
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 250, Short.MAX_VALUE)
+      .addGroup(jPanel4Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(radioMove)
+        .addContainerGap(168, Short.MAX_VALUE))
     );
     jPanel4Layout.setVerticalGroup(
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGap(0, 446, Short.MAX_VALUE)
+      .addGroup(jPanel4Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(radioMove)
+        .addContainerGap(409, Short.MAX_VALUE))
     );
 
     jTabbedPane1.addTab("Tools", jPanel4);
@@ -315,7 +382,6 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-    // TODO add your handling code here:
   }//GEN-LAST:event_formWindowClosing
 
   private void textUnitNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textUnitNameActionPerformed
@@ -410,6 +476,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JPanel jPanel4;
   private javax.swing.JSplitPane jSplitPane1;
   private javax.swing.JTabbedPane jTabbedPane1;
+  private javax.swing.JRadioButton radioMove;
   private javax.swing.JSpinner spinInputs;
   private javax.swing.JSpinner spinOutputs;
   private javax.swing.JTextField textUnitName;

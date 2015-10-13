@@ -12,7 +12,7 @@ import devicesim.InputTerminal;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
-import java.util.ArrayList;
+import devicesim.Unit;
 import java.util.HashSet;
 
 /**
@@ -21,7 +21,6 @@ import java.util.HashSet;
  */
 public class DirectedCompositeUnit extends BlankDirectedUnit {
   private HashSet<DirectedUnit> origins = new HashSet<DirectedUnit>();
-  private HashSet<DirectedUnit> queued = new HashSet<DirectedUnit>();
   private HashSet<DirectedUnit> finals = new HashSet<DirectedUnit>();
 
   private InternalMetaUnit internalMetaUnit;
@@ -142,7 +141,7 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
 
   @Override
   public HashSet<OutputTerminal> tick() {
-    queued.clear();
+    HashSet<DirectedUnit> queued = new HashSet<DirectedUnit>();
     queued.addAll(origins);
     
     while (!queued.isEmpty()) {
@@ -165,5 +164,32 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     }
     
     return collectChanged();
+  }
+  
+  public HashSet<Unit> collectDownstreamUnits() {
+    //TODO Technically misses the ones that aren't origins and aren't downstream of origins.
+    HashSet<Unit> results = new HashSet<Unit>();
+    HashSet<DirectedUnit> queued = new HashSet<DirectedUnit>();
+    queued.addAll(origins);
+    
+    while (!queued.isEmpty()) {
+      HashSet<DirectedUnit> nextQueued = new HashSet<DirectedUnit>();
+      for (DirectedUnit du : queued) {
+        for (OutputTerminal ot : du.getOutputs()) {
+          if (ot.getConnection() == null) continue;
+          for (InputTerminal it : ot.getConnection().getOutputs()) {
+            if (!results.contains(it.getUnit())) {
+              nextQueued.add(it.getUnit());
+              results.add(it.getUnit());
+            }
+          }
+        }
+      }
+      HashSet<DirectedUnit> bucket = queued;
+      queued = nextQueued;
+      nextQueued = bucket;
+    }
+    
+    return results;
   }
 }

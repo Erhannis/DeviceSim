@@ -6,6 +6,7 @@
 
 package devicesim;
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,6 +28,49 @@ public interface Unit extends Serializable {
   
   public String getName();
   public Unit setName(String name);
+  
+  //<editor-fold desc="Optional view stuff">
+  public default double getViewTop() {
+    return 0;
+  }
+
+  public default double getViewLeft() {
+    return 0;
+  }
+
+  public default double getViewWidth() {
+    return 30;
+  }
+
+  public default double getViewHeight() {
+    return 20;
+  }
+  
+  public default float getViewFontSize() {
+    return 10;
+  }
+
+  public default void setViewTop(double top) {
+  }
+
+  public default void setViewLeft(double left) {
+  }
+
+  public default void setViewTopLeft(double top, double left) {
+  }
+  
+  public default void setViewWidth(double width) {
+  }
+
+  public default void setViewHeight(double height) {
+  }
+
+  public default void setViewDims(double width, double height) {
+  }
+  
+  public default void setViewFontSize(float fontSize) {
+  }
+  //</editor-fold>
   
   /**
    * Be careful!  Don't call this after you've hooked it up to anything external.

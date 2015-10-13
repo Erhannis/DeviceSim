@@ -12,26 +12,27 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author erhannis
  */
 public class PanelDisplay extends javax.swing.JPanel {
-    public AffineTransform at = new AffineTransform();
-    {
-      at.translate(40, 40);
-      at.preConcatenate(AffineTransform.getScaleInstance(4, 4));
-    }
-    
-    public ArrayList<Point2D> points = new ArrayList<Point2D>();
+    public HashSet<Unit> units = new HashSet<Unit>();
+  
+    public Unit selectedUnit = null;
     
     public boolean skipRender = false;
-    
+    public AffineTransform at = new AffineTransform();
+    public AffineTransform ati = new AffineTransform();
     public final Font FONT = new Font("Monospaced", 0, 14);
     
     @Override
@@ -46,9 +47,35 @@ public class PanelDisplay extends javax.swing.JPanel {
       AffineTransform saveAT = g.getTransform();
       g.transform(at);
       
-      //TODO Render
-      g.draw(new Rectangle.Double(-20, -10, 40, 20));
-      g.draw(new Rectangle.Double(-0.02, -0.01, 0.04, 0.02));
+      //TODO Render better
+      for (Unit u : units) {
+        //TODO Make more efficient; cache stuff, etc.
+        g.draw(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight()));
+        g.setFont(FONT.deriveFont(u.getViewFontSize()));
+        g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+        if (u instanceof DirectedUnit) {
+          //TODO Yes, I know this is cheating.
+          ArrayList<OutputTerminal> outputs = ((DirectedUnit)u).getOutputs();
+          for (int i = 0; i < outputs.size(); i++) {
+            double ax = u.getViewLeft() + u.getViewWidth();
+            double ay = u.getViewTop() + (((i + 0.5) / outputs.size()) * u.getViewHeight());
+            double socketRadius = 0.5 * 0.4 * (u.getViewHeight() / outputs.size());
+            g.draw(new Ellipse2D.Double(ax - socketRadius, ay - socketRadius, 2 * socketRadius, 2 * socketRadius));
+            OutputTerminal ot = outputs.get(i);
+            if (ot.getConnection() != null) {
+              for (InputTerminal it : ot.getConnection().getOutputs()) {
+                DirectedUnit bu = it.getUnit();
+                ArrayList<InputTerminal> bInputs = bu.getInputs();
+                double bx = bu.getViewLeft();
+                double by = bu.getViewTop() + (((bInputs.indexOf(it) + 0.5) / bInputs.size()) * bu.getViewHeight());
+                double bSocketRadius = 0.5 * 0.4 * (bu.getViewHeight() / bInputs.size());
+                g.draw(new Ellipse2D.Double(bx - bSocketRadius, by - bSocketRadius, 2 * bSocketRadius, 2 * bSocketRadius));
+                g.draw(new Line2D.Double(ax, ay, bx, by));
+              }
+            }
+          }
+        }
+      }
       
       g.setTransform(saveAT);
     }
@@ -93,6 +120,11 @@ public class PanelDisplay extends javax.swing.JPanel {
     at.preConcatenate(AffineTransform.getTranslateInstance(-evt.getX(), -evt.getY()));
     at.preConcatenate(AffineTransform.getScaleInstance(scale, scale));
     at.preConcatenate(AffineTransform.getTranslateInstance(evt.getX(), evt.getY()));
+      try {
+        ati = at.createInverse();
+      } catch (NoninvertibleTransformException ex) {
+        Logger.getLogger(PanelDisplay.class.getName()).log(Level.SEVERE, null, ex);
+      }
     repaint();
   }//GEN-LAST:event_formMouseWheelMoved
 
