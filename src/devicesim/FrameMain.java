@@ -31,7 +31,7 @@ public class FrameMain extends javax.swing.JFrame {
     jSplitPane1 = new javax.swing.JSplitPane();
     jPanel1 = new javax.swing.JPanel();
     jScrollPane1 = new javax.swing.JScrollPane();
-    jList1 = new javax.swing.JList();
+    listUnitTypes = new javax.swing.JList();
     btnNewUnitType = new javax.swing.JButton();
     btnEditUnitType = new javax.swing.JButton();
     btnCloneUnitType = new javax.swing.JButton();
@@ -47,7 +47,7 @@ public class FrameMain extends javax.swing.JFrame {
 
     jSplitPane1.setDividerLocation(200);
 
-    jScrollPane1.setViewportView(jList1);
+    jScrollPane1.setViewportView(listUnitTypes);
 
     btnNewUnitType.setText("New");
 
@@ -127,7 +127,7 @@ public class FrameMain extends javax.swing.JFrame {
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+      .addComponent(jSplitPane1)
     );
 
     pack();
@@ -174,7 +174,6 @@ public class FrameMain extends javax.swing.JFrame {
   private javax.swing.JButton btnDeleteUnitType;
   private javax.swing.JButton btnEditUnitType;
   private javax.swing.JButton btnNewUnitType;
-  private javax.swing.JList jList1;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
   private javax.swing.JMenuBar jMenuBar1;
@@ -183,5 +182,6 @@ public class FrameMain extends javax.swing.JFrame {
   private javax.swing.JScrollPane jScrollPane1;
   private javax.swing.JScrollPane jScrollPane2;
   private javax.swing.JSplitPane jSplitPane1;
+  private javax.swing.JList listUnitTypes;
   // End of variables declaration//GEN-END:variables
 }

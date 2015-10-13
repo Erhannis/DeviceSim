@@ -6,6 +6,8 @@
 
 package devicesim;
 
+import java.io.IOException;
+
 /**
  *
  * @author erhannis
@@ -15,8 +17,8 @@ public class DeviceSim {
   /**
    * @param args the command line arguments
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws ClassNotFoundException, IOException {
     DeviceEngine engine = new DeviceEngine();
-    engine.testRun();
+    engine.testRun2ElectricBoogaloo();
   }
 }

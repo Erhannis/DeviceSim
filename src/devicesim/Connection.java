@@ -8,11 +8,12 @@ package devicesim;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
  * @author erhannis
  */
 public interface Connection extends Serializable {
-  public ArrayList<Terminal> getTerminals();
+  public HashSet<Terminal> getTerminals();
 }

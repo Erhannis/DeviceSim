@@ -8,6 +8,7 @@ package devicesim;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  *
@@ -24,13 +25,13 @@ public class GenericDirectedConnection implements DirectedConnection {
   }
   
   private OutputTerminal input;
-  private ArrayList<InputTerminal> outputs;
-  private ArrayList<Terminal> terminals;
+  private HashSet<InputTerminal> outputs;
+  private HashSet<Terminal> terminals;
   
   private GenericDirectedConnection(OutputTerminal input, InputTerminal... outputs) {
     this.input = input;
-    this.outputs = new ArrayList<InputTerminal>(Arrays.asList(outputs));
-    terminals = new ArrayList<Terminal>();
+    this.outputs = new HashSet<InputTerminal>(Arrays.asList(outputs));
+    terminals = new HashSet<Terminal>();
     terminals.add(this.input);
     terminals.addAll(this.outputs);
     this.input.setConnection(this);
@@ -43,6 +44,27 @@ public class GenericDirectedConnection implements DirectedConnection {
     return new GenericDirectedConnection(input, outputs);
   }
   
+  /**
+   * //TODO Quite frankly, I'm not convinced this won't break stuff.
+   * But I don't see anything obvious, so like, just don't use it after starting
+   * to run your circuit, and it should be fine.  Maybe even otherwise.
+   * @param input
+   * @param outputs
+   * @return 
+   */
+  public static GenericDirectedConnection addConnection(OutputTerminal input, InputTerminal... outputs) {
+    DirectedConnection existing = input.getConnection();
+    if (existing == null) {
+      return new GenericDirectedConnection(input, outputs);
+    } else if (!(existing instanceof GenericDirectedConnection)) {
+      //TODO I think this should work, but I probably won't be testing it anytime soon.
+      existing = new GenericDirectedConnection(input, existing.getOutputs().toArray(new InputTerminal[]{}));
+    }
+    HashSet<InputTerminal> its = existing.getOutputs();
+    its.addAll(Arrays.asList(outputs));
+    return (GenericDirectedConnection)existing;
+  }
+  
   @Override
   public OutputTerminal getInput() {
     return input;
@@ -53,7 +75,7 @@ public class GenericDirectedConnection implements DirectedConnection {
    * @return 
    */
   @Override
-  public ArrayList<InputTerminal> getOutputs() {
+  public HashSet<InputTerminal> getOutputs() {
     return outputs;
   }
 
@@ -62,7 +84,7 @@ public class GenericDirectedConnection implements DirectedConnection {
    * @return 
    */
   @Override
-  public ArrayList<Terminal> getTerminals() {
+  public HashSet<Terminal> getTerminals() {
     return terminals;
   }
 }

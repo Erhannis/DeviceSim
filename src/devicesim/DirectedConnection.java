@@ -7,6 +7,7 @@
 package devicesim;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -23,5 +24,5 @@ public interface DirectedConnection extends Connection {
    * Note that these are the outputs FROM THE CONNECTION, so they are, themselves, outputs.
    * @return 
    */
-  public ArrayList<InputTerminal> getOutputs();
+  public HashSet<InputTerminal> getOutputs();
 }
