@@ -18,8 +18,7 @@ public class DeviceSim {
    * @param args the command line arguments
    */
   public static void main(String[] args) throws ClassNotFoundException, IOException {
-    new DeviceEngine().testRun4();
-//    FrameMain main = new FrameMain();
-//    main.setVisible(true);
+    FrameMain main = new FrameMain();
+    main.setVisible(true);
   }
 }

@@ -21,6 +21,8 @@ import devicesim.units.defaults.StateSource;
 import devicesim.units.defaults.XorGate;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Running list of conventions to follow.  See my collection of test methods for examples.
@@ -44,6 +46,25 @@ public class DeviceEngine {
   public DeviceEngine() {
     init();
   }
+
+  public static Unit createAdd2() {
+    DirectedCompositeUnit add = new DirectedCompositeUnit(4, 2);
+    add.setName("ADD2");
+
+    AndGate ag = add.addUnit(new AndGate(add.iin(0), add.iin(1), add.iin(2), add.iin(3)));
+    XorGate xg = add.addUnit(new XorGate(add.iin(0), add.iin(1), add.iin(2), add.iin(3)));
+    GDC.addConnection(ag.out(0), add.iout(0));
+    GDC.addConnection(xg.out(0), add.iout(1));
+    
+    try {
+      return add.copy();
+    } catch (IOException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return null;
+  }
   
   public static final Unit[] UNIT_ARCHETYPES = {
     new SourceHigh(),
@@ -54,6 +75,7 @@ public class DeviceEngine {
     new NandGate(),
     new NotGate(),
     new SinkNop(),
+    createAdd2(),
     new SinkSysout(),
     new SinkSysoutBinary(8)
   };

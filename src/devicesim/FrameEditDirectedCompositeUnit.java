@@ -93,7 +93,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private void load() {
     loading = true;
     textUnitName.setText(unit.getName());
-    //TODO Do, uh, more?
+    spinInputs.setValue(unit.getInputs().size());
+    spinOutputs.setValue(unit.getOutputs().size());
     loading = false;
   }
   
@@ -306,14 +307,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
   private void spinInputsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinInputsStateChanged
     if (!loading) {
-      
+      unit.resizeTerminals((Integer)spinInputs.getValue(), (Integer)spinOutputs.getValue());
       changed = true;
     }
   }//GEN-LAST:event_spinInputsStateChanged
 
   private void spinOutputsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinOutputsStateChanged
     if (!loading) {
-
+      unit.resizeTerminals((Integer)spinInputs.getValue(), (Integer)spinOutputs.getValue());
       changed = true;
     }
   }//GEN-LAST:event_spinOutputsStateChanged

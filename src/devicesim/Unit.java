@@ -12,6 +12,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mathnstuff.utils.QueueStream.QueueInputStream;
 import mathnstuff.utils.QueueStream.QueueOutputStream;
 
@@ -45,5 +47,21 @@ public interface Unit extends Serializable {
     ois.close();
     
     return result;
+  }
+  
+  /**
+   * Same warnings apply here as for copy().  For convenience, upon errors, this one
+   * logs them and then returns null.
+   * @return 
+   */
+  public default Unit copyLog() {
+    try {
+      return copy();
+    } catch (IOException ex) {
+      Logger.getLogger(Unit.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+      Logger.getLogger(Unit.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return null;
   }
 }
