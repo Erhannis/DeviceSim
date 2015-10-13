@@ -57,7 +57,7 @@ public class DeviceEngine {
    * @throws IOException 
    */
   public void testRun() throws ClassNotFoundException, IOException {
-    DirectedCompositeUnit dcu = new DirectedCompositeUnit();
+    DirectedCompositeUnit dcu = new DirectedCompositeUnit(0, 0);
 
     AndGate ag = dcu.addUnit(new AndGate());
     GDC.connect(dcu.addUnit(new SourceHigh()).out(0), ag.in(0));
@@ -88,7 +88,7 @@ public class DeviceEngine {
    * @throws ClassNotFoundException 
    */
   public void testRun2ElectricBoogaloo() throws IOException, ClassNotFoundException {
-    DirectedCompositeUnit dcu = new DirectedCompositeUnit();
+    DirectedCompositeUnit dcu = new DirectedCompositeUnit(0, 0);
 
     SourceHigh high = dcu.addUnit(new SourceHigh());
     SourceLow low = dcu.addUnit(new SourceLow());
@@ -113,18 +113,18 @@ public class DeviceEngine {
     StateSource b = dcu.addUnit(new StateSource(1.0));
     GDC.addConnection(a.out(0), ag.in(2));
     GDC.addConnection(b.out(0), ag.in(3));
-    GDC.addConnection(ag.out(0), dcu.addUnit(new SinkSysout("AND ")).in(0));
+    GDC.addConnection(ag.out(0), dcu.addUnit(new SinkSysout().setName("AND ")).in(0));
     GDC.addConnection(a.out(0), og.in(2));
     GDC.addConnection(b.out(0), og.in(3));
-    GDC.addConnection(og.out(0), dcu.addUnit(new SinkSysout("OR  ")).in(0));
+    GDC.addConnection(og.out(0), dcu.addUnit(new SinkSysout().setName("OR  ")).in(0));
     GDC.addConnection(a.out(0), xg.in(2));
     GDC.addConnection(b.out(0), xg.in(3));
-    GDC.addConnection(xg.out(0), dcu.addUnit(new SinkSysout("XOR ")).in(0));
+    GDC.addConnection(xg.out(0), dcu.addUnit(new SinkSysout().setName("XOR ")).in(0));
     GDC.addConnection(a.out(0), nandg.in(2));
     GDC.addConnection(b.out(0), nandg.in(3));
-    GDC.addConnection(nandg.out(0), dcu.addUnit(new SinkSysout("NAND")).in(0));
+    GDC.addConnection(nandg.out(0), dcu.addUnit(new SinkSysout().setName("NAND")).in(0));
     GDC.addConnection(a.out(0), ng.in(2));
-    GDC.addConnection(ng.out(0), dcu.addUnit(new SinkSysout("NOT ")).in(0));
+    GDC.addConnection(ng.out(0), dcu.addUnit(new SinkSysout().setName("NOT ")).in(0));
     
     Unit dcuCopy = dcu.copy();
     unitTypes.add(dcuCopy);
@@ -141,7 +141,7 @@ public class DeviceEngine {
   }
 
   public void testRun3() throws IOException, ClassNotFoundException {
-    DirectedCompositeUnit dcu = new DirectedCompositeUnit();
+    DirectedCompositeUnit dcu = new DirectedCompositeUnit(0, 0);
 
     SourceHigh high = dcu.addUnit(new SourceHigh());
     OutputTerminal highT = high.out(0);
@@ -156,7 +156,7 @@ public class DeviceEngine {
     AndGate ag = dcu.addUnit(new AndGate(highT, lowT, aT, bT));
     XorGate xg = dcu.addUnit(new XorGate(highT, lowT, aT, bT));
 
-    dcu.addUnit(new SinkSysoutBinary("a+b", highT, lowT, ag.out(0), xg.out(0)));
+    dcu.addUnit(new SinkSysoutBinary(highT, lowT, ag.out(0), xg.out(0)).setName("a+b"));
     
     Unit dcuCopy = dcu.copy();
     unitTypes.add(dcuCopy);

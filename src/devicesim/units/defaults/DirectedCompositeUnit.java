@@ -10,6 +10,7 @@ import devicesim.DirectedUnit;
 import devicesim.GenericDirectedConnection.GDC;
 import devicesim.InputTerminal;
 import devicesim.OutputTerminal;
+import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
 import java.util.HashSet;
 
@@ -22,12 +23,37 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
   private HashSet<DirectedUnit> queued = new HashSet<DirectedUnit>();
   private HashSet<DirectedUnit> finals = new HashSet<DirectedUnit>();
 
-  public DirectedCompositeUnit() {
-    outputs.add(new StateOutputTerminal(1.0, this));
+  public DirectedCompositeUnit(int inputCount, int outputCount) {
+    for (int i = 0; i < inputCount; i++) {
+      inputs.add(new StateInputTerminal(0.0, this));
+    }
+    for (int i = 0; i < outputCount; i++) {
+      outputs.add(new StateOutputTerminal(0.0, this));
+    }
     terminals.addAll(inputs);
     terminals.addAll(outputs);
   }
 
+  public DirectedCompositeUnit(int inputCount, int outputCount, OutputTerminal... inputs) {
+    this(inputCount, outputCount);
+    setInputs(inputs);
+  }
+  
+  // Construction chains
+  public DirectedCompositeUnit setInputs(OutputTerminal... inputs) {
+    for (int i = 0; i < inputs.length; i++) {
+      GDC.addConnection(inputs[i], in(i));
+    }
+    return this;
+  }
+
+  public DirectedCompositeUnit setOutputs(InputTerminal... outputs) {
+    for (int i = 0; i < outputs.length; i++) {
+      GDC.addConnection(out(i), outputs[i]);
+    }
+    return this;
+  }
+  
   // Ooh, cool, that syntax worked.
   private <T extends DirectedUnit> T checkOriginFinal(T unit) {
     if (unit.isOrigin()) {

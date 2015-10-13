@@ -17,6 +17,8 @@ import java.util.ArrayList;
  * @author erhannis
  */
 public abstract class BlankDirectedUnit implements DirectedUnit {
+  private String name;
+
   protected ArrayList<Terminal> terminals = new ArrayList<Terminal>();
   protected ArrayList<InputTerminal> inputs = new ArrayList<InputTerminal>();
   protected ArrayList<OutputTerminal> outputs = new ArrayList<OutputTerminal>();
@@ -37,6 +39,16 @@ public abstract class BlankDirectedUnit implements DirectedUnit {
     return outputs;
   }
 
+  public String getName() {
+    return name;
+  }
+  
+  // Dunno why I'm all about getters and setters at the moment.  Must be all these interfaces.
+  public BlankDirectedUnit setName(String name) {
+    this.name = name;
+    return this; // For construction chains
+  }
+  
   // Most things won't usually need to implement this, so I'm providing a blank default.
   @Override
   public void doFinalState() {
