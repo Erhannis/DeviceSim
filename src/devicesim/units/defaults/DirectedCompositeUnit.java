@@ -53,12 +53,17 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     return checkOriginFinal(unit);
   }
   
+  private StateSource ssA;
+  private StateSource ssB;
+  
   public void initTest() {
     AndGate ag = checkOriginFinal(new AndGate());
     GDC.connect(checkOriginFinal(new SourceHigh()).out(0), ag.in(0));
     GDC.connect(checkOriginFinal(new SourceLow()).out(0), ag.in(1));
     StateSource a = checkOriginFinal(new StateSource(1.0));
     StateSource b = checkOriginFinal(new StateSource(1.0));
+    ssA = a;
+    ssB = b;
     GDC.connect(a.out(0), ag.in(2));
     GDC.connect(b.out(0), ag.in(3));
     GDC.connect(ag.out(0), checkOriginFinal(new SinkSysout()).in(0));
@@ -67,6 +72,10 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
   public void testRun() {
     tick();
     doFinalState();
+  }
+  
+  public void changeTest() {
+    ssA.setValue(0.0);
   }
   
   @Override

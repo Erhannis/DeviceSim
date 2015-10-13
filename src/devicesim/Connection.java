@@ -6,12 +6,13 @@
 
 package devicesim;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author erhannis
  */
-public interface Connection {
+public interface Connection extends Serializable {
   public ArrayList<Terminal> getTerminals();
 }

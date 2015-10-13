@@ -12,6 +12,7 @@ import devicesim.units.defaults.SourceLow;
 import java.util.ArrayList;
 import devicesim.units.defaults.DirectedCompositeUnit;
 import devicesim.units.defaults.SinkSysout;
+import java.io.IOException;
 
 /**
  * Running list of conventions to follow.
@@ -43,9 +44,15 @@ public class DeviceEngine {
     unitTypes.add(new SinkSysout());
   }
   
-  public void testRun() {
+  public void testRun() throws ClassNotFoundException, IOException {
     DirectedCompositeUnit dcu = new DirectedCompositeUnit();
     dcu.initTest();
+    Unit dcuCopy = dcu.copy();
+    unitTypes.add(dcuCopy);
+    dcu.testRun();
+    dcu.changeTest();
+    dcu.testRun();
+    dcu = (DirectedCompositeUnit)dcuCopy.copy();
     dcu.testRun();
   }
 }

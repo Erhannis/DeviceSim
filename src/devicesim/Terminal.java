@@ -6,11 +6,13 @@
 
 package devicesim;
 
+import java.io.Serializable;
+
 /**
  *
  * @author erhannis
  */
-public interface Terminal {
+public interface Terminal extends Serializable {
   public void setValue(double value);
   public double getValue();
   public Unit getUnit();
