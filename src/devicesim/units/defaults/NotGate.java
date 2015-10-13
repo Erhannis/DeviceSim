@@ -6,6 +6,7 @@
 
 package devicesim.units.defaults;
 
+import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
@@ -26,6 +27,13 @@ public class NotGate extends BlankDirectedUnit {
     terminals.addAll(outputs);
   }
 
+  public NotGate(OutputTerminal high, OutputTerminal low, OutputTerminal a) {
+    this();
+    GDC.addConnection(high, in(0));
+    GDC.addConnection(low, in(1));
+    GDC.addConnection(a, in(2));
+  }
+  
   @Override
   public boolean isOrigin() {
     return false;

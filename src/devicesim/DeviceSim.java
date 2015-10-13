@@ -19,6 +19,6 @@ public class DeviceSim {
    */
   public static void main(String[] args) throws ClassNotFoundException, IOException {
     DeviceEngine engine = new DeviceEngine();
-    engine.testRun2ElectricBoogaloo();
+    engine.testRun3();
   }
 }

@@ -13,6 +13,7 @@ import devicesim.units.defaults.NandGate;
 import devicesim.units.defaults.NotGate;
 import devicesim.units.defaults.OrGate;
 import devicesim.units.defaults.SinkSysout;
+import devicesim.units.defaults.SinkSysoutBinary;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
 import devicesim.units.defaults.StateSource;
@@ -124,6 +125,38 @@ public class DeviceEngine {
     GDC.addConnection(nandg.out(0), dcu.addUnit(new SinkSysout("NAND")).in(0));
     GDC.addConnection(a.out(0), ng.in(2));
     GDC.addConnection(ng.out(0), dcu.addUnit(new SinkSysout("NOT ")).in(0));
+    
+    Unit dcuCopy = dcu.copy();
+    unitTypes.add(dcuCopy);
+    for (double av = 0.0; av <= 1.0; av++) {
+      for (double bv = 0.0; bv <= 1.0; bv++) {
+        a.setValue(av);
+        b.setValue(bv);
+        
+        System.out.println(a.getValue() + " " + b.getValue());
+        dcu.tick();
+        dcu.doFinalState();
+      }
+    }
+  }
+
+  public void testRun3() throws IOException, ClassNotFoundException {
+    DirectedCompositeUnit dcu = new DirectedCompositeUnit();
+
+    SourceHigh high = dcu.addUnit(new SourceHigh());
+    OutputTerminal highT = high.out(0);
+    SourceLow low = dcu.addUnit(new SourceLow());
+    OutputTerminal lowT = low.out(0);
+
+    StateSource a = dcu.addUnit(new StateSource(1.0));
+    OutputTerminal aT = a.out(0);
+    StateSource b = dcu.addUnit(new StateSource(1.0));
+    OutputTerminal bT = b.out(0);
+    
+    AndGate ag = dcu.addUnit(new AndGate(highT, lowT, aT, bT));
+    XorGate xg = dcu.addUnit(new XorGate(highT, lowT, aT, bT));
+
+    dcu.addUnit(new SinkSysoutBinary("a+b", highT, lowT, ag.out(0), xg.out(0)));
     
     Unit dcuCopy = dcu.copy();
     unitTypes.add(dcuCopy);
