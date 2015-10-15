@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -34,6 +35,32 @@ public class PanelDisplay extends javax.swing.JPanel {
     public AffineTransform at = new AffineTransform();
     public AffineTransform ati = new AffineTransform();
     public final Font FONT = new Font("Monospaced", 0, 14);
+    
+    public static final int CLMODE_DIRECT = 0;
+    public static final int CLMODE_SQUARE = 1;
+
+    public int connectionLineMode = CLMODE_DIRECT;
+    
+    public ArrayList<Line2D.Double> getConnectionLines(double ax, double ay, double bx, double by) {
+      ArrayList<Line2D.Double> lines = new ArrayList<Line2D.Double>();
+      switch (connectionLineMode) {
+        case CLMODE_SQUARE:
+          if (ax == bx || ay == by) {
+            lines.add(new Line2D.Double(ax, ay, bx, by));
+            return lines;
+          }
+          double slopeFactor = Math.atan(Math.abs(by - ay) / Math.abs(bx - ax)) / (Math.PI / 2);
+          double midpoint = ax + ((bx - ax) * slopeFactor);
+          lines.add(new Line2D.Double(ax, ay, midpoint, ay));
+          lines.add(new Line2D.Double(midpoint, ay, midpoint, by));
+          lines.add(new Line2D.Double(midpoint, by, bx, by));
+          return lines;
+        case CLMODE_DIRECT:
+        default:
+          lines.add(new Line2D.Double(ax, ay, bx, by));
+          return lines;
+      }
+    }
     
     @Override
     protected void paintComponent(Graphics g0) {
@@ -70,7 +97,10 @@ public class PanelDisplay extends javax.swing.JPanel {
                 double by = bu.getViewTop() + (((bInputs.indexOf(it) + 0.5) / bInputs.size()) * bu.getViewHeight());
                 double bSocketRadius = 0.5 * 0.4 * (bu.getViewHeight() / bInputs.size());
                 g.draw(new Ellipse2D.Double(bx - bSocketRadius, by - bSocketRadius, 2 * bSocketRadius, 2 * bSocketRadius));
-                g.draw(new Line2D.Double(ax, ay, bx, by));
+                //g.draw(new Line2D.Double(ax, ay, bx, by));
+                for (Line2D.Double line : getConnectionLines(ax, ay, bx, by)) {
+                  g.draw(line);
+                }
               }
             }
           }
