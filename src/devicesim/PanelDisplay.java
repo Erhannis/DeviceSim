@@ -42,6 +42,10 @@ public class PanelDisplay extends javax.swing.JPanel {
 
     public int connectionLineMode = CLMODE_DIRECT;
     
+    private static final Color COLOR_BACKGROUND = Color.LIGHT_GRAY;
+    private static final Color COLOR_NORMAL = Color.BLACK;
+    private static final Color COLOR_HIGHLIGHT = Color.CYAN;
+    
     public Path2D getConnectionPath(double ax, double ay, double bx, double by) {
       Path2D path = new Path2D.Double();
       switch (connectionLineMode) {
@@ -81,9 +85,15 @@ public class PanelDisplay extends javax.swing.JPanel {
       //TODO Render better
       for (Unit u : units) {
         //TODO Make more efficient; cache stuff, etc.
+        if (u == selectedUnit) {
+          g.setColor(COLOR_HIGHLIGHT);
+        }
         g.draw(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight()));
         g.setFont(FONT.deriveFont(u.getViewFontSize()));
         g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+        if (u == selectedUnit) {
+          g.setColor(COLOR_NORMAL);
+        }
         if (u instanceof DirectedUnit) {
           //TODO Yes, I know this is cheating.
           ArrayList<OutputTerminal> outputs = ((DirectedUnit)u).getOutputs();
@@ -92,7 +102,13 @@ public class PanelDisplay extends javax.swing.JPanel {
             double oax = ot.getViewX();
             double oay = ot.getViewY();
             double oSocketRadius = ot.getViewSocketRadius();
-            g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
+            if (ot == selectedTerminal) {
+              g.setColor(COLOR_HIGHLIGHT);
+              g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
+              g.setColor(COLOR_NORMAL);
+            } else {
+              g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
+            }
             if (ot.getConnection() != null) {
               for (InputTerminal it : ot.getConnection().getOutputs()) {
                 double ibx = it.getViewX();
@@ -108,7 +124,13 @@ public class PanelDisplay extends javax.swing.JPanel {
             double iax = it.getViewX();
             double iay = it.getViewY();
             double iSocketRadius = it.getViewSocketRadius();
-            g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
+            if (it == selectedTerminal) {
+              g.setColor(COLOR_HIGHLIGHT);
+              g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
+              g.setColor(COLOR_NORMAL);
+            } else {
+              g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
+            }
           }          
         }
       }
@@ -121,7 +143,7 @@ public class PanelDisplay extends javax.swing.JPanel {
    */
   public PanelDisplay() {
     initComponents();
-    this.setBackground(Color.WHITE);
+    this.setBackground(COLOR_BACKGROUND);
   }
 
   /**
