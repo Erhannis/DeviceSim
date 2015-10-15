@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * @author erhannis
  */
 public class PanelDisplay extends javax.swing.JPanel {
-    public HashSet<Unit> units = new HashSet<Unit>();
+    public HashSet<? extends Unit> units = new HashSet<Unit>();
   
     public Unit selectedUnit = null;
     public Terminal selectedTerminal = null;

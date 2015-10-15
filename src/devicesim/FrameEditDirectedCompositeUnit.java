@@ -24,6 +24,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mathnstuff.MeMath;
 
 /**
  *
@@ -51,12 +52,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     
     load();
 
+    listUnitTypes.setModel(unitTypes);
+    
     radioMove.setMnemonic(KeyEvent.VK_M);
     radioConnect.setMnemonic(KeyEvent.VK_C);
     radioDisconnect.setMnemonic(KeyEvent.VK_D);
     
     pd = new PanelDisplay();
-    pd.units = unit.collectDownstreamUnits();
+    pd.units = unit.allUnits;
     jSplitPane1.setLeftComponent(pd);
     
     pd.addMouseListener(new MouseListener() {
@@ -80,7 +83,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                     GDC.addConnection(((OutputTerminal)pd.selectedTerminal), ((InputTerminal)t));
                   } else {
                   }
-                  pd.selectedTerminal = null;
+                  if (!e.isShiftDown()) {
+                    pd.selectedTerminal = null;
+                  }
                 }
               }
             }
@@ -95,9 +100,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               if (dist < t.getViewSocketRadius()) {
                 //TODO Yeah, the following is slightly cheating.
                 if (t instanceof InputTerminal) {
-                  ((InputTerminal)t).getConnection().removeOutput(((InputTerminal)t));
+                  if (((InputTerminal)t).getConnection() != null) {
+                    ((InputTerminal)t).getConnection().removeOutput(((InputTerminal)t));
+                  }
                 } else if (t instanceof OutputTerminal) {
-                  ((OutputTerminal)t).getConnection().severConnection();
+                  if (((OutputTerminal)t).getConnection() != null) {
+                    ((OutputTerminal)t).getConnection().severConnection();
+                  }
                 } else {
                   //TODO Dunno.
                 }
@@ -106,6 +115,27 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           }
           changed = true;
           doRepaint();
+        } else if (radioRemove.isSelected()) {
+          double closestDist2 = Double.POSITIVE_INFINITY;
+          Unit closest = null;
+          for (Unit u : pd.units) {
+            double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
+            if (dist2 < closestDist2 && dist2 <= MeMath.sqr((u.getViewHeight() + u.getViewHeight()) / 2.0) && u != unit.internalMetaUnit) {
+              // We want to be at least PRETTY close, and not delete the internalMetaUnit.
+              closest = u;
+              closestDist2 = dist2;
+            }
+          }
+          if (closest != null) {
+            if (closest instanceof DirectedUnit) {
+              //TODO Again, cheating
+              unit.removeUnit((DirectedUnit)closest);
+            }
+          }
+          pd.selectedTerminal = null;
+          pd.selectedUnit = null;
+          doRepaint();
+        } else if (radioPlace.isSelected()) {
         }
       }
 
@@ -128,6 +158,31 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           doRepaint();
         } else if (radioConnect.isSelected()) {
         } else if (radioDisconnect.isSelected()) {
+        } else if (radioPlace.isSelected()) {
+          Unit newUnitArchetype = (Unit)listUnitTypes.getSelectedValue();
+          if (newUnitArchetype == null) {
+            return;
+          } else if (newUnitArchetype == unitToReplace) {
+            JOptionPane.showMessageDialog(FrameEditDirectedCompositeUnit.this, "This is...a bad idea.  And not yet implemented.  I may do so later, if I'm feeling dangerous.");
+            return;
+          } else if (!(newUnitArchetype instanceof DirectedUnit)) {
+            JOptionPane.showMessageDialog(FrameEditDirectedCompositeUnit.this, "Sorry, not a DirectedUnit.");
+          }
+          DirectedUnit newUnit = null;
+          try {
+            newUnit = (DirectedUnit)newUnitArchetype.copy();
+          } catch (IOException ex) {
+            Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+          } catch (ClassNotFoundException ex) {
+            Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+          }
+          unit.addUnit(newUnit);
+          newUnit.setViewLeft(m.getX());
+          newUnit.setViewTop(m.getY());
+          newUnit.recalcView();
+          doRepaint();
         }
       }
 
@@ -148,13 +203,19 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     pd.addMouseMotionListener(new MouseMotionListener() {
       @Override
       public void mouseDragged(MouseEvent e) {
-        if (pd.selectedUnit != null) {
-          Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
-          pd.selectedUnit.setViewLeft(m.getX());
-          pd.selectedUnit.setViewTop(m.getY());
-          pd.selectedUnit.recalcView();
-          changed = true;
-          doRepaint();
+        if (radioMove.isSelected()) {
+          if (pd.selectedUnit != null) {
+            Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
+            pd.selectedUnit.setViewLeft(m.getX());
+            pd.selectedUnit.setViewTop(m.getY());
+            pd.selectedUnit.recalcView();
+            changed = true;
+            doRepaint();
+          }
+        } else if (radioConnect.isSelected()) {
+        } else if (radioDisconnect.isSelected()) {
+        } else if (radioPlace.isSelected()) {
+          //TODO Resize
         }
       }
 
@@ -165,14 +226,19 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     pd.addMouseWheelListener(new MouseWheelListener() {
       @Override
       public void mouseWheelMoved(MouseWheelEvent e) {
-        if (pd.selectedUnit != null) {
-          double scale = Math.pow(1.1, e.getPreciseWheelRotation());
-          pd.selectedUnit.setViewWidth(pd.selectedUnit.getViewWidth() * scale);
-          pd.selectedUnit.setViewHeight(pd.selectedUnit.getViewHeight() * scale);
-          pd.selectedUnit.setViewFontSize((float)(pd.selectedUnit.getViewFontSize() * scale));
-          pd.selectedUnit.recalcView();
-          changed = true;
-          doRepaint();
+        if (radioMove.isSelected()) {
+          if (pd.selectedUnit != null) {
+            double scale = Math.pow(1.1, e.getPreciseWheelRotation());
+            pd.selectedUnit.setViewWidth(pd.selectedUnit.getViewWidth() * scale);
+            pd.selectedUnit.setViewHeight(pd.selectedUnit.getViewHeight() * scale);
+            pd.selectedUnit.setViewFontSize((float)(pd.selectedUnit.getViewFontSize() * scale));
+            pd.selectedUnit.recalcView();
+            changed = true;
+            doRepaint();
+          }
+        } else if (radioConnect.isSelected()) {
+        } else if (radioDisconnect.isSelected()) {
+        } else if (radioPlace.isSelected()) {
         }
       }
     });
@@ -245,6 +311,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       DirectedCompositeUnit copy = (DirectedCompositeUnit)unit.copy();
       unitTypes.set(idx, copy);
       unitToReplace = copy;
+    } else {
+      DirectedCompositeUnit copy = (DirectedCompositeUnit)unit.copy();
+      unitTypes.addElement(copy);
+      unitToReplace = copy;
     }
     changed = false;
   }
@@ -276,6 +346,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioMove = new javax.swing.JRadioButton();
     radioConnect = new javax.swing.JRadioButton();
     radioDisconnect = new javax.swing.JRadioButton();
+    radioPlace = new javax.swing.JRadioButton();
+    jScrollPane1 = new javax.swing.JScrollPane();
+    listUnitTypes = new javax.swing.JList();
+    radioRemove = new javax.swing.JRadioButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -429,6 +503,15 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     groupTools.add(radioDisconnect);
     radioDisconnect.setText("(D)isconnect");
 
+    groupTools.add(radioPlace);
+    radioPlace.setText("(P)lace");
+
+    listUnitTypes.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    jScrollPane1.setViewportView(listUnitTypes);
+
+    groupTools.add(radioRemove);
+    radioRemove.setText("(R)emove");
+
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
@@ -436,10 +519,16 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       .addGroup(jPanel4Layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(radioMove)
-          .addComponent(radioConnect)
-          .addComponent(radioDisconnect))
-        .addContainerGap(132, Short.MAX_VALUE))
+          .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+          .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(radioMove)
+              .addComponent(radioConnect)
+              .addComponent(radioDisconnect)
+              .addComponent(radioPlace)
+              .addComponent(radioRemove))
+            .addGap(0, 120, Short.MAX_VALUE)))
+        .addContainerGap())
     );
     jPanel4Layout.setVerticalGroup(
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -450,7 +539,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addComponent(radioConnect)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioDisconnect)
-        .addContainerGap(354, Short.MAX_VALUE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(radioRemove)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(radioPlace)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+        .addContainerGap())
     );
 
     jTabbedPane1.addTab("Tools", jPanel4);
@@ -499,6 +594,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private void spinInputsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinInputsStateChanged
     if (!loading) {
       unit.resizeTerminals((Integer)spinInputs.getValue(), (Integer)spinOutputs.getValue());
+      unit.recalcView();
       changed = true;
       doRepaint();
     }
@@ -507,6 +603,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private void spinOutputsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinOutputsStateChanged
     if (!loading) {
       unit.resizeTerminals((Integer)spinInputs.getValue(), (Integer)spinOutputs.getValue());
+      unit.recalcView();
       changed = true;
       doRepaint();
     }
@@ -566,11 +663,15 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JPanel jPanel1;
   private javax.swing.JPanel jPanel3;
   private javax.swing.JPanel jPanel4;
+  private javax.swing.JScrollPane jScrollPane1;
   private javax.swing.JSplitPane jSplitPane1;
   private javax.swing.JTabbedPane jTabbedPane1;
+  private javax.swing.JList listUnitTypes;
   private javax.swing.JRadioButton radioConnect;
   private javax.swing.JRadioButton radioDisconnect;
   private javax.swing.JRadioButton radioMove;
+  private javax.swing.JRadioButton radioPlace;
+  private javax.swing.JRadioButton radioRemove;
   private javax.swing.JSpinner spinInputs;
   private javax.swing.JSpinner spinOutputs;
   private javax.swing.JTextField textUnitName;

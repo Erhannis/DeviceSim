@@ -19,6 +19,13 @@ public abstract class InputTerminal implements Terminal {
   public abstract DirectedConnection getConnection();
   public abstract void setConnection(DirectedConnection connection);
 
+  public void breakConnection() {
+    DirectedConnection c = getConnection();
+    if (c != null) {
+      c.removeOutput(this);
+    }
+  }
+  
   @Override
   public DirectedUnit getUnit() {
     return unit;

@@ -36,6 +36,9 @@ public class GenericDirectedConnection implements DirectedConnection {
     terminals.addAll(this.outputs);
     this.input.setConnection(this);
     for (InputTerminal it : this.outputs) {
+      if (it.getConnection() != null) {
+        it.getConnection().removeOutput(it);
+      }
       it.setConnection(this);
     }
   }
@@ -60,8 +63,16 @@ public class GenericDirectedConnection implements DirectedConnection {
       //TODO I think this should work, but I probably won't be testing it anytime soon.
       existing = new GenericDirectedConnection(input, existing.getOutputs().toArray(new InputTerminal[]{}));
     }
+    for (InputTerminal it : outputs) {
+      if (it.getConnection() != null) {
+        it.getConnection().removeOutput(it);
+      }
+      it.setConnection(existing);
+    }
     HashSet<InputTerminal> its = existing.getOutputs();
     its.addAll(Arrays.asList(outputs));
+    HashSet<Terminal> ts = existing.getTerminals();
+    ts.addAll(Arrays.asList(outputs));
     return (GenericDirectedConnection)existing;
   }
   

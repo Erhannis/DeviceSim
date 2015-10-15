@@ -23,8 +23,9 @@ import java.util.HashSet;
 public class DirectedCompositeUnit extends BlankDirectedUnit {
   private HashSet<DirectedUnit> origins = new HashSet<DirectedUnit>();
   private HashSet<DirectedUnit> finals = new HashSet<DirectedUnit>();
+  public HashSet<DirectedUnit> allUnits = new HashSet<DirectedUnit>();
 
-  private InternalMetaUnit internalMetaUnit;
+  public InternalMetaUnit internalMetaUnit;
   
   public DirectedCompositeUnit(int inputCount, int outputCount) {
     for (int i = 0; i < inputCount; i++) {
@@ -104,6 +105,12 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     }
     internalMetaUnit.resizeTerminals(inputs, outputs);
   }
+
+  @Override
+  public void recalcView() {
+    super.recalcView(); //To change body of generated methods, choose Tools | Templates.
+    internalMetaUnit.recalcView();
+  }
   
   // Ooh, cool, that syntax worked.
   private <T extends DirectedUnit> T checkOriginFinal(T unit) {
@@ -127,7 +134,23 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
    * @return 
    */
   public <T extends DirectedUnit> T addUnit(T unit) {
+    allUnits.add(unit);
     return checkOriginFinal(unit);
+  }
+  
+  public void removeUnit(DirectedUnit unit) {
+    if (unit == internalMetaUnit) {
+      return;
+    }
+    for (InputTerminal it : unit.getInputs()) {
+      it.breakConnection();
+    }
+    for (OutputTerminal ot : unit.getOutputs()) {
+      ot.breakConnection();
+    }
+    allUnits.remove(unit);
+    finals.remove(unit);
+    origins.remove(unit);
   }
   
   @Override

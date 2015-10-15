@@ -20,6 +20,13 @@ public abstract class OutputTerminal implements Terminal {
   public abstract void setConnection(DirectedConnection connection);
   public abstract boolean pullHasChanged();
 
+  public void breakConnection() {
+    DirectedConnection c = getConnection();
+    if (c != null) {
+      c.severConnection();
+    }
+  }
+  
   @Override
   public DirectedUnit getUnit() {
     return unit;
