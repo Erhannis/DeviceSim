@@ -83,27 +83,33 @@ public class PanelDisplay extends javax.swing.JPanel {
         if (u instanceof DirectedUnit) {
           //TODO Yes, I know this is cheating.
           ArrayList<OutputTerminal> outputs = ((DirectedUnit)u).getOutputs();
+          double oax = u.getViewLeft() + u.getViewWidth();
+          double oSocketRadius = 0.5 * 0.4 * (u.getViewHeight() / outputs.size());
           for (int i = 0; i < outputs.size(); i++) {
-            double ax = u.getViewLeft() + u.getViewWidth();
-            double ay = u.getViewTop() + (((i + 0.5) / outputs.size()) * u.getViewHeight());
-            double socketRadius = 0.5 * 0.4 * (u.getViewHeight() / outputs.size());
-            g.draw(new Ellipse2D.Double(ax - socketRadius, ay - socketRadius, 2 * socketRadius, 2 * socketRadius));
+            double oay = u.getViewTop() + (((i + 0.5) / outputs.size()) * u.getViewHeight());
+            g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             OutputTerminal ot = outputs.get(i);
             if (ot.getConnection() != null) {
               for (InputTerminal it : ot.getConnection().getOutputs()) {
                 DirectedUnit bu = it.getUnit();
                 ArrayList<InputTerminal> bInputs = bu.getInputs();
-                double bx = bu.getViewLeft();
-                double by = bu.getViewTop() + (((bInputs.indexOf(it) + 0.5) / bInputs.size()) * bu.getViewHeight());
-                double bSocketRadius = 0.5 * 0.4 * (bu.getViewHeight() / bInputs.size());
-                g.draw(new Ellipse2D.Double(bx - bSocketRadius, by - bSocketRadius, 2 * bSocketRadius, 2 * bSocketRadius));
+                double ibx = bu.getViewLeft();
+                double iby = bu.getViewTop() + (((bInputs.indexOf(it) + 0.5) / bInputs.size()) * bu.getViewHeight());
                 //g.draw(new Line2D.Double(ax, ay, bx, by));
-                for (Line2D.Double line : getConnectionLines(ax, ay, bx, by)) {
+                for (Line2D.Double line : getConnectionLines(oax, oay, ibx, iby)) {
                   g.draw(line);
                 }
               }
             }
           }
+          
+          ArrayList<InputTerminal> inputs = ((DirectedUnit)u).getInputs();
+          double iax = u.getViewLeft();
+          double iSocketRadius = 0.5 * 0.4 * (u.getViewHeight() / inputs.size());
+          for (int i = 0; i < inputs.size(); i++) {
+            double iay = u.getViewTop() + (((i + 0.5) / inputs.size()) * u.getViewHeight());
+            g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
+          }          
         }
       }
       
