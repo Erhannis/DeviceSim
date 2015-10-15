@@ -171,7 +171,7 @@
                 <Component class="javax.swing.JButton" name="btnSaveUnit">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Save"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Ctrl to save as file"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Save to the main schema (not to file)."/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveUnitActionPerformed"/>

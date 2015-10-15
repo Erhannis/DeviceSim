@@ -401,7 +401,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     });
 
     btnSaveUnit.setText("Save");
-    btnSaveUnit.setToolTipText("Ctrl to save as file");
+    btnSaveUnit.setToolTipText("Save to the main schema (not to file).");
     btnSaveUnit.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnSaveUnitActionPerformed(evt);
