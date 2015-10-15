@@ -199,6 +199,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     btnRedraw = new javax.swing.JButton();
     jPanel4 = new javax.swing.JPanel();
     radioMove = new javax.swing.JRadioButton();
+    radioConnect = new javax.swing.JRadioButton();
+    radioDisconnect = new javax.swing.JRadioButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -343,8 +345,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     jTabbedPane1.addTab("Props", jPanel3);
 
     groupTools.add(radioMove);
-    radioMove.setSelected(true);
     radioMove.setText("(M)ove");
+
+    groupTools.add(radioConnect);
+    radioConnect.setText("(C)onnect");
+
+    groupTools.add(radioDisconnect);
+    radioDisconnect.setSelected(true);
+    radioDisconnect.setText("(D)isconnect");
 
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
@@ -352,15 +360,22 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel4Layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(radioMove)
-        .addContainerGap(168, Short.MAX_VALUE))
+        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(radioMove)
+          .addComponent(radioConnect)
+          .addComponent(radioDisconnect))
+        .addContainerGap(132, Short.MAX_VALUE))
     );
     jPanel4Layout.setVerticalGroup(
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel4Layout.createSequentialGroup()
         .addContainerGap()
         .addComponent(radioMove)
-        .addContainerGap(409, Short.MAX_VALUE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(radioConnect)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(radioDisconnect)
+        .addContainerGap(354, Short.MAX_VALUE))
     );
 
     jTabbedPane1.addTab("Tools", jPanel4);
@@ -478,6 +493,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JPanel jPanel4;
   private javax.swing.JSplitPane jSplitPane1;
   private javax.swing.JTabbedPane jTabbedPane1;
+  private javax.swing.JRadioButton radioConnect;
+  private javax.swing.JRadioButton radioDisconnect;
   private javax.swing.JRadioButton radioMove;
   private javax.swing.JSpinner spinInputs;
   private javax.swing.JSpinner spinOutputs;
