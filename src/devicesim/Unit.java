@@ -70,6 +70,12 @@ public interface Unit extends Serializable {
   
   public default void setViewFontSize(float fontSize) {
   }
+  
+  public default void recalcView() {
+    for (Terminal t : getTerminals()) {
+      t.recalcView();
+    }
+  }
   //</editor-fold>
   
   /**

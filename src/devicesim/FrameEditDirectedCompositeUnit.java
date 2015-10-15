@@ -6,6 +6,7 @@
 
 package devicesim;
 
+import com.sun.glass.events.KeyEvent;
 import devicesim.units.defaults.DirectedCompositeUnit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -46,6 +47,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     loading = false;
     
     load();
+
+    radioMove.setMnemonic(KeyEvent.VK_M);
+    radioConnect.setMnemonic(KeyEvent.VK_C);
+    radioDisconnect.setMnemonic(KeyEvent.VK_D);
     
     pd = new PanelDisplay();
     pd.units = unit.collectDownstreamUnits();
@@ -61,16 +66,24 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       @Override
       public void mousePressed(MouseEvent e) {
         Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
-        double closestDist2 = Double.POSITIVE_INFINITY;
-        Unit closest = null;
-        for (Unit u : pd.units) {
-          double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
-          if (dist2 < closestDist2) {
-            closest = u;
-            closestDist2 = dist2;
+        if (radioMove.isSelected()) {
+          double closestDist2 = Double.POSITIVE_INFINITY;
+          Unit closest = null;
+          for (Unit u : pd.units) {
+            double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
+            if (dist2 < closestDist2) {
+              closest = u;
+              closestDist2 = dist2;
+            }
           }
+          pd.selectedUnit = closest;
+        } else if (radioConnect.isSelected()) {
+          for (Unit u : pd.units) {
+            double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
+          }
+        } else if (radioDisconnect.isSelected()) {
+          
         }
-        pd.selectedUnit = closest;
       }
 
       @Override
@@ -93,6 +106,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
           pd.selectedUnit.setViewLeft(m.getX());
           pd.selectedUnit.setViewTop(m.getY());
+          pd.selectedUnit.recalcView();
           doRepaint();
         }
       }
@@ -345,13 +359,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     jTabbedPane1.addTab("Props", jPanel3);
 
     groupTools.add(radioMove);
+    radioMove.setSelected(true);
     radioMove.setText("(M)ove");
 
     groupTools.add(radioConnect);
     radioConnect.setText("(C)onnect");
 
     groupTools.add(radioDisconnect);
-    radioDisconnect.setSelected(true);
     radioDisconnect.setText("(D)isconnect");
 
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);

@@ -10,9 +10,8 @@ package devicesim;
  * Is actually an OutputTerminal.  It's attached to the inside edge of an InputTerminal, though.
  * @author erhannis
  */
-public class InternalInputTerminal implements OutputTerminal {
+public class InternalInputTerminal extends OutputTerminal {
   private InputTerminal dual;
-  private DirectedUnit unit;
   private DirectedConnection connection = null;
   
   private boolean hasChanged = true;
@@ -47,11 +46,6 @@ public class InternalInputTerminal implements OutputTerminal {
     return false;
   }
   
-  @Override
-  public DirectedUnit getUnit() {
-    return unit;
-  }
-
   @Override
   public void setConnection(DirectedConnection connection) {
     this.connection = connection;

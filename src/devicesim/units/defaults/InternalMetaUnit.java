@@ -29,8 +29,8 @@ public class InternalMetaUnit extends BlankDirectedUnit {
     for (int i = 0; i < outputs.size(); i++) {
       this.inputs.add(new InternalOutputTerminal(outputs.get(i), this));
     }
-    terminals.addAll(inputs);
-    terminals.addAll(outputs);
+    terminals.addAll(this.inputs);
+    terminals.addAll(this.outputs);
     setName("InternalMetaUnit");
     setViewWidth(-300);
     setViewHeight(200);

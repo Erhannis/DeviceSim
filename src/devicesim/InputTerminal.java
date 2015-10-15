@@ -6,14 +6,74 @@
 
 package devicesim;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author erhannis
  */
-public interface InputTerminal extends Terminal {
+public abstract class InputTerminal implements Terminal {
+  DirectedUnit unit;
+  
   @Override
-  public DirectedConnection getConnection();
-  public void setConnection(DirectedConnection connection);
+  public abstract DirectedConnection getConnection();
+  public abstract void setConnection(DirectedConnection connection);
+
   @Override
-  public DirectedUnit getUnit();
+  public DirectedUnit getUnit() {
+    return unit;
+  }
+
+  //<editor-fold desc="Optional view stuff">
+  // Calculating these repeatedly could get slow.
+  //     Good thing I just figured out a nice caching mechanism!
+  public double viewX = Double.NaN;
+  public double viewY = Double.NaN;
+  public double viewSocketRadius = Double.NaN;
+  
+  @Override
+  public double getViewX() {
+    if (Double.isNaN(viewX)) {
+      return calcViewX();
+    }
+    return viewX;
+  }
+
+  @Override
+  public double getViewY() {
+    if (Double.isNaN(viewY)) {
+      return calcViewY();
+    }
+    return viewY;
+  }
+
+  @Override
+  public double getViewSocketRadius() {
+    if (Double.isNaN(viewSocketRadius)) {
+      return calcViewSocketRadius();
+    }
+    return viewSocketRadius;
+  }
+  
+  @Override
+  public double calcViewX() {
+    viewX = getUnit().getViewLeft();
+    return viewX;
+  }
+
+  @Override
+  public double calcViewY() {
+    DirectedUnit u = getUnit();
+    ArrayList<InputTerminal> inputs = u.getInputs();
+    viewY = u.getViewTop() + (((inputs.indexOf(this) + 0.5) / inputs.size()) * u.getViewHeight());
+    return viewY;
+  }
+  
+  @Override
+  public double calcViewSocketRadius() {
+    DirectedUnit u = getUnit();
+    viewSocketRadius = 0.5 * 0.4 * (u.getViewHeight() / u.getInputs().size());
+    return viewSocketRadius;
+  }
+  //</editor-fold>
 }

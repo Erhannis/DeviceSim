@@ -10,9 +10,8 @@ package devicesim;
  *
  * @author erhannis
  */
-public class StateOutputTerminal implements OutputTerminal {
+public class StateOutputTerminal extends OutputTerminal {
   private double value;
-  private DirectedUnit unit;
   private DirectedConnection connection = null;
   
   private boolean hasChanged = true;
@@ -42,11 +41,6 @@ public class StateOutputTerminal implements OutputTerminal {
   @Override
   public double getValue() {
     return value;
-  }
-
-  @Override
-  public DirectedUnit getUnit() {
-    return unit;
   }
 
   @Override

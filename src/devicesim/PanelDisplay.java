@@ -12,11 +12,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -41,24 +41,27 @@ public class PanelDisplay extends javax.swing.JPanel {
 
     public int connectionLineMode = CLMODE_DIRECT;
     
-    public ArrayList<Line2D.Double> getConnectionLines(double ax, double ay, double bx, double by) {
-      ArrayList<Line2D.Double> lines = new ArrayList<Line2D.Double>();
+    public Path2D getConnectionPath(double ax, double ay, double bx, double by) {
+      Path2D path = new Path2D.Double();
       switch (connectionLineMode) {
         case CLMODE_SQUARE:
           if (ax == bx || ay == by) {
-            lines.add(new Line2D.Double(ax, ay, bx, by));
-            return lines;
+            path.moveTo(ax, ay);
+            path.lineTo(bx, by);
+            return path;
           }
           double slopeFactor = Math.atan(Math.abs(by - ay) / Math.abs(bx - ax)) / (Math.PI / 2);
           double midpoint = ax + ((bx - ax) * slopeFactor);
-          lines.add(new Line2D.Double(ax, ay, midpoint, ay));
-          lines.add(new Line2D.Double(midpoint, ay, midpoint, by));
-          lines.add(new Line2D.Double(midpoint, by, bx, by));
-          return lines;
+          path.moveTo(ax, ay);
+          path.lineTo(midpoint, ay);
+          path.lineTo(midpoint, by);
+          path.lineTo(bx, by);
+          return path;
         case CLMODE_DIRECT:
         default:
-          lines.add(new Line2D.Double(ax, ay, bx, by));
-          return lines;
+          path.moveTo(ax, ay);
+          path.lineTo(bx, by);
+          return path;
       }
     }
     
@@ -83,31 +86,30 @@ public class PanelDisplay extends javax.swing.JPanel {
         if (u instanceof DirectedUnit) {
           //TODO Yes, I know this is cheating.
           ArrayList<OutputTerminal> outputs = ((DirectedUnit)u).getOutputs();
-          double oax = u.getViewLeft() + u.getViewWidth();
-          double oSocketRadius = 0.5 * 0.4 * (u.getViewHeight() / outputs.size());
           for (int i = 0; i < outputs.size(); i++) {
-            double oay = u.getViewTop() + (((i + 0.5) / outputs.size()) * u.getViewHeight());
-            g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             OutputTerminal ot = outputs.get(i);
+            double oax = ot.getViewX();
+            double oay = ot.getViewY();
+            double oSocketRadius = ot.getViewSocketRadius();
+            g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             if (ot.getConnection() != null) {
               for (InputTerminal it : ot.getConnection().getOutputs()) {
-                DirectedUnit bu = it.getUnit();
-                ArrayList<InputTerminal> bInputs = bu.getInputs();
-                double ibx = bu.getViewLeft();
-                double iby = bu.getViewTop() + (((bInputs.indexOf(it) + 0.5) / bInputs.size()) * bu.getViewHeight());
-                //g.draw(new Line2D.Double(ax, ay, bx, by));
-                for (Line2D.Double line : getConnectionLines(oax, oay, ibx, iby)) {
-                  g.draw(line);
-                }
+                double ibx = it.getViewX();
+                double iby = it.getViewY();
+                g.draw(getConnectionPath(oax, oay, ibx, iby));
               }
             }
           }
           
           ArrayList<InputTerminal> inputs = ((DirectedUnit)u).getInputs();
-          double iax = u.getViewLeft();
-          double iSocketRadius = 0.5 * 0.4 * (u.getViewHeight() / inputs.size());
           for (int i = 0; i < inputs.size(); i++) {
-            double iay = u.getViewTop() + (((i + 0.5) / inputs.size()) * u.getViewHeight());
+//            double iax = u.getViewLeft();
+//            double iay = u.getViewTop() + (((i + 0.5) / inputs.size()) * u.getViewHeight());
+//            double iSocketRadius = 0.5 * 0.4 * (u.getViewHeight() / inputs.size());
+            InputTerminal it = inputs.get(i);
+            double iax = it.getViewX();
+            double iay = it.getViewY();
+            double iSocketRadius = it.getViewSocketRadius();
             g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
           }          
         }

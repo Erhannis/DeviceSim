@@ -10,9 +10,8 @@ package devicesim;
  * Hmm, identical to StateOutputTerminal.  Do they need to be separate?
  * @author erhannis
  */
-public class StateInputTerminal implements InputTerminal {
+public class StateInputTerminal extends InputTerminal {
   private double value;
-  private DirectedUnit unit;
   private DirectedConnection connection = null;
   
   public StateInputTerminal(double value, DirectedUnit unit) {
@@ -28,11 +27,6 @@ public class StateInputTerminal implements InputTerminal {
   @Override
   public double getValue() {
     return value;
-  }
-
-  @Override
-  public DirectedUnit getUnit() {
-    return unit;
   }
 
   @Override
