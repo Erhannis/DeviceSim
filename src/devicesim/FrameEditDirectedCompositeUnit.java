@@ -410,6 +410,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     if (!loading) {
       unit.resizeTerminals((Integer)spinInputs.getValue(), (Integer)spinOutputs.getValue());
       changed = true;
+      doRepaint();
     }
   }//GEN-LAST:event_spinInputsStateChanged
 
@@ -417,6 +418,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     if (!loading) {
       unit.resizeTerminals((Integer)spinInputs.getValue(), (Integer)spinOutputs.getValue());
       changed = true;
+      doRepaint();
     }
   }//GEN-LAST:event_spinOutputsStateChanged
 

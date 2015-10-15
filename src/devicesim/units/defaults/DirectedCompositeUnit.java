@@ -70,7 +70,9 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     if (outputs.size() > outputCount) {
       while (outputs.size() > outputCount) {
         OutputTerminal ot = outputs.get(outputs.size() - 1);
-        ot.getConnection().severConnection();
+        if (ot.getConnection() != null) {
+          ot.getConnection().severConnection();
+        }
         outputs.remove(outputs.size() - 1);
       }
     } else if (outputs.size() < outputCount) {
@@ -81,7 +83,9 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     if (inputs.size() > inputCount) {
       while (inputs.size() > inputCount) {
         InputTerminal it = inputs.get(inputs.size() - 1);
-        it.getConnection().removeOutput(it);
+        if (it.getConnection() != null) {
+          it.getConnection().removeOutput(it);
+        }
         inputs.remove(inputs.size() - 1);
       }
     } else if (inputs.size() < inputCount) {

@@ -43,7 +43,9 @@ public class InternalMetaUnit extends BlankDirectedUnit {
     if (outputs.size() > newInputs.size()) {
       while (outputs.size() > newInputs.size()) {
         OutputTerminal ot = outputs.get(outputs.size() - 1);
-        ot.getConnection().severConnection();
+        if (ot.getConnection() != null) {
+          ot.getConnection().severConnection();
+        }
         outputs.remove(outputs.size() - 1);
       }
     } else if (outputs.size() < newInputs.size()) {
@@ -54,7 +56,9 @@ public class InternalMetaUnit extends BlankDirectedUnit {
     if (inputs.size() > newOutputs.size()) {
       while (inputs.size() > newOutputs.size()) {
         InputTerminal it = inputs.get(inputs.size() - 1);
-        it.getConnection().removeOutput(it);
+        if (it.getConnection() != null) {
+          it.getConnection().removeOutput(it);
+        }
         inputs.remove(inputs.size() - 1);
       }
     } else if (inputs.size() < newOutputs.size()) {
