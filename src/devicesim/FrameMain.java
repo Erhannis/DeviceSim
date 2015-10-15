@@ -7,10 +7,15 @@
 package devicesim;
 
 import devicesim.units.defaults.DirectedCompositeUnit;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -50,11 +55,16 @@ public class FrameMain extends javax.swing.JFrame {
     btnDeleteUnitType = new javax.swing.JButton();
     btnMoveUnitDown = new javax.swing.JButton();
     btnMoveUnitUp = new javax.swing.JButton();
+    btnSave = new javax.swing.JButton();
     jPanel2 = new javax.swing.JPanel();
     jScrollPane2 = new javax.swing.JScrollPane();
     areaUnitTypeProperties = new javax.swing.JTextArea();
     jMenuBar1 = new javax.swing.JMenuBar();
     jMenu1 = new javax.swing.JMenu();
+    miSaveAll = new javax.swing.JMenuItem();
+    miSaveAllAs = new javax.swing.JMenuItem();
+    miOpen = new javax.swing.JMenuItem();
+    miImport = new javax.swing.JMenuItem();
     jMenu2 = new javax.swing.JMenu();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -110,6 +120,13 @@ public class FrameMain extends javax.swing.JFrame {
       }
     });
 
+    btnSave.setText("Save");
+    btnSave.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnSaveActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
@@ -120,10 +137,13 @@ public class FrameMain extends javax.swing.JFrame {
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(jPanel1Layout.createSequentialGroup()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(btnCloneUnitType)
-              .addComponent(btnEditUnitType)
-              .addComponent(btnDeleteUnitType))
-            .addContainerGap(135, Short.MAX_VALUE))
+              .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(btnEditUnitType)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSave))
+              .addComponent(btnDeleteUnitType)
+              .addComponent(btnCloneUnitType))
+            .addContainerGap(103, Short.MAX_VALUE))
           .addGroup(jPanel1Layout.createSequentialGroup()
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(btnNewUnitType)
@@ -144,7 +164,9 @@ public class FrameMain extends javax.swing.JFrame {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(btnNewUnitType)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(btnEditUnitType)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(btnEditUnitType)
+          .addComponent(btnSave))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(btnCloneUnitType)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -178,6 +200,39 @@ public class FrameMain extends javax.swing.JFrame {
     jSplitPane1.setRightComponent(jPanel2);
 
     jMenu1.setText("File");
+
+    miSaveAll.setText("Save all");
+    miSaveAll.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        miSaveAllActionPerformed(evt);
+      }
+    });
+    jMenu1.add(miSaveAll);
+
+    miSaveAllAs.setText("Save all as...");
+    miSaveAllAs.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        miSaveAllAsActionPerformed(evt);
+      }
+    });
+    jMenu1.add(miSaveAllAs);
+
+    miOpen.setText("Open...");
+    miOpen.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        miOpenActionPerformed(evt);
+      }
+    });
+    jMenu1.add(miOpen);
+
+    miImport.setText("Import...");
+    miImport.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        miImportActionPerformed(evt);
+      }
+    });
+    jMenu1.add(miImport);
+
     jMenuBar1.add(jMenu1);
 
     jMenu2.setText("Edit");
@@ -267,6 +322,85 @@ public class FrameMain extends javax.swing.JFrame {
     }
   }//GEN-LAST:event_btnDeleteUnitTypeActionPerformed
 
+  public JFileChooser fileChooser = new JFileChooser();
+  
+  private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+    ArrayList al = new ArrayList(listUnitTypes.getSelectedValuesList());
+    if (al.size() == 0) {
+    } else if (al.size() == 1) {
+      if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        DeviceEngine.saveObjectToFile(al.get(0), fileChooser.getSelectedFile());
+      }
+    } else {
+      if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        DeviceEngine.saveObjectToFile(al, fileChooser.getSelectedFile());
+      }
+    }
+  }//GEN-LAST:event_btnSaveActionPerformed
+
+  private void saveAllToFile(File f) {
+    ArrayList al = new ArrayList(Arrays.asList(unitTypeList.toArray()));
+    DeviceEngine.saveObjectToFile(al, f);
+  }
+  
+  private void miSaveAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miSaveAllActionPerformed
+    if (fileChooser.getSelectedFile() == null) {
+      miSaveAllAsActionPerformed(evt);
+    } else {
+      saveAllToFile(fileChooser.getSelectedFile());
+    }
+  }//GEN-LAST:event_miSaveAllActionPerformed
+
+  private void miSaveAllAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miSaveAllAsActionPerformed
+    if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+      saveAllToFile(fileChooser.getSelectedFile());
+    }
+  }//GEN-LAST:event_miSaveAllAsActionPerformed
+  
+  private void miOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miOpenActionPerformed
+    if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+      File f = fileChooser.getSelectedFile();
+      Object result = DeviceEngine.readFile(f);
+      if (result == null) {
+        JOptionPane.showMessageDialog(this, "Error!  Check console output.");
+        return;
+      }
+      if (result instanceof Unit) {
+        unitTypeList.clear();
+        unitTypeList.addElement((Unit)result);
+      } else if (result instanceof ArrayList) {
+        unitTypeList.clear();
+        for (Object o : ((ArrayList)result)) {
+          unitTypeList.addElement((Unit)o);
+        }
+      } else {
+        JOptionPane.showMessageDialog(this, "Error!  Check console output.");
+        System.err.println("Invalid object type: " + result.getClass());
+      }
+    }
+  }//GEN-LAST:event_miOpenActionPerformed
+
+  private void miImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportActionPerformed
+    if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+      File f = fileChooser.getSelectedFile();
+      Object result = DeviceEngine.readFile(f);
+      if (result == null) {
+        JOptionPane.showMessageDialog(this, "Error!  Check console output.");
+        return;
+      }
+      if (result instanceof Unit) {
+        unitTypeList.addElement((Unit)result);
+      } else if (result instanceof ArrayList) {
+        for (Object o : ((ArrayList)result)) {
+          unitTypeList.addElement((Unit)o);
+        }
+      } else {
+        JOptionPane.showMessageDialog(this, "Error!  Check console output.");
+        System.err.println("Invalid object type: " + result.getClass());
+      }
+    }
+  }//GEN-LAST:event_miImportActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -310,6 +444,7 @@ public class FrameMain extends javax.swing.JFrame {
   private javax.swing.JButton btnMoveUnitDown;
   private javax.swing.JButton btnMoveUnitUp;
   private javax.swing.JButton btnNewUnitType;
+  private javax.swing.JButton btnSave;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenu jMenu2;
   private javax.swing.JMenuBar jMenuBar1;
@@ -319,5 +454,9 @@ public class FrameMain extends javax.swing.JFrame {
   private javax.swing.JScrollPane jScrollPane2;
   private javax.swing.JSplitPane jSplitPane1;
   private javax.swing.JList listUnitTypes;
+  private javax.swing.JMenuItem miImport;
+  private javax.swing.JMenuItem miOpen;
+  private javax.swing.JMenuItem miSaveAll;
+  private javax.swing.JMenuItem miSaveAllAs;
   // End of variables declaration//GEN-END:variables
 }

@@ -171,6 +171,7 @@
                 <Component class="javax.swing.JButton" name="btnSaveUnit">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Save"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Ctrl to save as file"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveUnitActionPerformed"/>
@@ -283,6 +284,7 @@
                     </Property>
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="(M)ove"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Scroll while dragging to resize."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioConnect">
@@ -291,6 +293,7 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="(C)onnect"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Hold shift to keep connecting."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioDisconnect">
@@ -332,6 +335,7 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="(R)emove"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Aim for the top left corner of a unit."/>
                   </Properties>
                 </Component>
               </SubComponents>

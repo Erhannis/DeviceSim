@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -400,6 +401,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     });
 
     btnSaveUnit.setText("Save");
+    btnSaveUnit.setToolTipText("Ctrl to save as file");
     btnSaveUnit.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnSaveUnitActionPerformed(evt);
@@ -496,9 +498,11 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     groupTools.add(radioMove);
     radioMove.setSelected(true);
     radioMove.setText("(M)ove");
+    radioMove.setToolTipText("Scroll while dragging to resize.");
 
     groupTools.add(radioConnect);
     radioConnect.setText("(C)onnect");
+    radioConnect.setToolTipText("Hold shift to keep connecting.");
 
     groupTools.add(radioDisconnect);
     radioDisconnect.setText("(D)isconnect");
@@ -511,6 +515,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
     groupTools.add(radioRemove);
     radioRemove.setText("(R)emove");
+    radioRemove.setToolTipText("Aim for the top left corner of a unit.");
 
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);

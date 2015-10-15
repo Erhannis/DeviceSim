@@ -19,10 +19,17 @@ import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
 import devicesim.units.defaults.StateSource;
 import devicesim.units.defaults.XorGate;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 
 /**
  * Running list of conventions to follow.  See my collection of test methods for examples.
@@ -84,6 +91,62 @@ public class DeviceEngine {
     for (Unit archetype : UNIT_ARCHETYPES) {
       unitTypes.add(archetype);
     }
+  }
+  
+  
+  public static final int FILE_VERSION = 1;
+
+  public static void saveObjectToFile(Object o, File f) {
+    ObjectOutputStream oos = null;
+    try {
+      oos = new ObjectOutputStream(new FileOutputStream(f));
+      switch (FILE_VERSION) {
+        case 1:
+          oos.writeInt(FILE_VERSION);
+          oos.writeObject(o);
+          break;
+      }
+      oos.flush();
+    } catch (IOException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+      try {
+        oos.close();
+      } catch (IOException ex) {
+        Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
+  }
+  
+  public static Object readFile(File f) {
+    Object result = null;
+    ObjectInputStream ois = null;
+    try {
+      ois = new ObjectInputStream(new FileInputStream(f));
+      int fileVersion = ois.readInt();
+      // I don't actually know how to deal with opening old versions with class differences.
+      switch (fileVersion) {
+        case 1:
+          result = ois.readObject();
+          break;
+        default:
+          System.err.println("Invalid version: " + fileVersion);
+          break;
+      }
+    } catch (FileNotFoundException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (IOException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+      try {
+        ois.close();
+      } catch (IOException ex) {
+        Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
+    return result;
   }
   
   /**
