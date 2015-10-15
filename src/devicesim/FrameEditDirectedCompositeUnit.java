@@ -7,10 +7,13 @@
 package devicesim;
 
 import com.sun.glass.events.KeyEvent;
+import devicesim.GenericDirectedConnection.GDC;
 import devicesim.units.defaults.DirectedCompositeUnit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
@@ -59,6 +62,51 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     pd.addMouseListener(new MouseListener() {
       @Override
       public void mouseClicked(MouseEvent e) {
+        Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
+        if (radioMove.isSelected()) {
+        } else if (radioConnect.isSelected()) {
+          outer:
+          for (Unit u : pd.units) {
+            for (Terminal t : u.getTerminals()) {
+              double dist = m.distance(t.getViewX(), t.getViewY());
+              if (dist < t.getViewSocketRadius()) {
+                if (pd.selectedTerminal == null) {
+                  pd.selectedTerminal = t;
+                  break outer;
+                } else {
+                  if (pd.selectedTerminal instanceof InputTerminal && t instanceof OutputTerminal) {
+                    GDC.addConnection(((OutputTerminal)t), ((InputTerminal)pd.selectedTerminal));
+                  } else if (pd.selectedTerminal instanceof OutputTerminal && t instanceof InputTerminal) {
+                    GDC.addConnection(((OutputTerminal)pd.selectedTerminal), ((InputTerminal)t));
+                  } else {
+                  }
+                  pd.selectedTerminal = null;
+                }
+              }
+            }
+          }
+          changed = true;
+          doRepaint();
+        } else if (radioDisconnect.isSelected()) {
+          outer:
+          for (Unit u : pd.units) {
+            for (Terminal t : u.getTerminals()) {
+              double dist = m.distance(t.getViewX(), t.getViewY());
+              if (dist < t.getViewSocketRadius()) {
+                //TODO Yeah, the following is slightly cheating.
+                if (t instanceof InputTerminal) {
+                  ((InputTerminal)t).getConnection().removeOutput(((InputTerminal)t));
+                } else if (t instanceof OutputTerminal) {
+                  ((OutputTerminal)t).getConnection().severConnection();
+                } else {
+                  //TODO Dunno.
+                }
+              }
+            }
+          }
+          changed = true;
+          doRepaint();
+        }
       }
 
       public boolean hadFocus = false;
@@ -77,18 +125,16 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             }
           }
           pd.selectedUnit = closest;
+          doRepaint();
         } else if (radioConnect.isSelected()) {
-          for (Unit u : pd.units) {
-            double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
-          }
         } else if (radioDisconnect.isSelected()) {
-          
         }
       }
 
       @Override
       public void mouseReleased(MouseEvent e) {
         pd.selectedUnit = null;
+        doRepaint();
       }
 
       @Override
@@ -107,12 +153,27 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           pd.selectedUnit.setViewLeft(m.getX());
           pd.selectedUnit.setViewTop(m.getY());
           pd.selectedUnit.recalcView();
+          changed = true;
           doRepaint();
         }
       }
 
       @Override
       public void mouseMoved(MouseEvent e) {
+      }
+    });
+    pd.addMouseWheelListener(new MouseWheelListener() {
+      @Override
+      public void mouseWheelMoved(MouseWheelEvent e) {
+        if (pd.selectedUnit != null) {
+          double scale = Math.pow(1.1, e.getPreciseWheelRotation());
+          pd.selectedUnit.setViewWidth(pd.selectedUnit.getViewWidth() * scale);
+          pd.selectedUnit.setViewHeight(pd.selectedUnit.getViewHeight() * scale);
+          pd.selectedUnit.setViewFontSize((float)(pd.selectedUnit.getViewFontSize() * scale));
+          pd.selectedUnit.recalcView();
+          changed = true;
+          doRepaint();
+        }
       }
     });
     

@@ -11,6 +11,7 @@ import devicesim.InputTerminal;
 import devicesim.InternalInputTerminal;
 import devicesim.InternalOutputTerminal;
 import devicesim.OutputTerminal;
+import devicesim.Terminal;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -46,11 +47,15 @@ public class InternalMetaUnit extends BlankDirectedUnit {
         if (ot.getConnection() != null) {
           ot.getConnection().severConnection();
         }
-        outputs.remove(outputs.size() - 1);
+        Terminal t = outputs.get(outputs.size() - 1);
+        outputs.remove(t);
+        terminals.remove(t);
       }
     } else if (outputs.size() < newInputs.size()) {
       while (outputs.size() < newInputs.size()) {
-        outputs.add(new InternalInputTerminal(newInputs.get(outputs.size()), this));
+        OutputTerminal t = new InternalInputTerminal(newInputs.get(outputs.size()), this);
+        outputs.add(t);
+        terminals.add(t);
       }
     }
     if (inputs.size() > newOutputs.size()) {
@@ -59,11 +64,15 @@ public class InternalMetaUnit extends BlankDirectedUnit {
         if (it.getConnection() != null) {
           it.getConnection().removeOutput(it);
         }
-        inputs.remove(inputs.size() - 1);
+        Terminal t = inputs.get(inputs.size() - 1);
+        inputs.remove(t);
+        terminals.remove(t);
       }
     } else if (inputs.size() < newOutputs.size()) {
       while (inputs.size() < newOutputs.size()) {
-        inputs.add(new InternalOutputTerminal(newOutputs.get(inputs.size()), this));
+        InputTerminal t = new InternalOutputTerminal(newOutputs.get(inputs.size()), this);
+        inputs.add(t);
+        terminals.add(t);
       }
     }
   }

@@ -12,6 +12,7 @@ import devicesim.InputTerminal;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
+import devicesim.Terminal;
 import devicesim.Unit;
 import java.util.HashSet;
 
@@ -73,11 +74,15 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
         if (ot.getConnection() != null) {
           ot.getConnection().severConnection();
         }
-        outputs.remove(outputs.size() - 1);
+        Terminal t = outputs.get(outputs.size() - 1);
+        outputs.remove(t);
+        terminals.remove(t);
       }
     } else if (outputs.size() < outputCount) {
       while (outputs.size() < outputCount) {
-        outputs.add(new StateOutputTerminal(0.0, this));
+        OutputTerminal t = new StateOutputTerminal(0.0, this);
+        outputs.add(t);
+        terminals.add(t);
       }
     }
     if (inputs.size() > inputCount) {
@@ -86,11 +91,15 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
         if (it.getConnection() != null) {
           it.getConnection().removeOutput(it);
         }
-        inputs.remove(inputs.size() - 1);
+        Terminal t = inputs.get(inputs.size() - 1);
+        inputs.remove(t);
+        terminals.remove(t);
       }
     } else if (inputs.size() < inputCount) {
       while (inputs.size() < inputCount) {
-        inputs.add(new StateInputTerminal(0.0, this));
+        InputTerminal t = new StateInputTerminal(0.0, this);
+        inputs.add(t);
+        terminals.add(t);
       }
     }
     internalMetaUnit.resizeTerminals(inputs, outputs);

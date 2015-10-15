@@ -30,6 +30,7 @@ public class PanelDisplay extends javax.swing.JPanel {
     public HashSet<Unit> units = new HashSet<Unit>();
   
     public Unit selectedUnit = null;
+    public Terminal selectedTerminal = null;
     
     public boolean skipRender = false;
     public AffineTransform at = new AffineTransform();
@@ -103,9 +104,6 @@ public class PanelDisplay extends javax.swing.JPanel {
           
           ArrayList<InputTerminal> inputs = ((DirectedUnit)u).getInputs();
           for (int i = 0; i < inputs.size(); i++) {
-//            double iax = u.getViewLeft();
-//            double iay = u.getViewTop() + (((i + 0.5) / inputs.size()) * u.getViewHeight());
-//            double iSocketRadius = 0.5 * 0.4 * (u.getViewHeight() / inputs.size());
             InputTerminal it = inputs.get(i);
             double iax = it.getViewX();
             double iay = it.getViewY();
@@ -154,16 +152,18 @@ public class PanelDisplay extends javax.swing.JPanel {
   }// </editor-fold>//GEN-END:initComponents
 
   private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
-    double scale = Math.pow(1.1, -evt.getPreciseWheelRotation());
-    at.preConcatenate(AffineTransform.getTranslateInstance(-evt.getX(), -evt.getY()));
-    at.preConcatenate(AffineTransform.getScaleInstance(scale, scale));
-    at.preConcatenate(AffineTransform.getTranslateInstance(evt.getX(), evt.getY()));
-      try {
-        ati = at.createInverse();
-      } catch (NoninvertibleTransformException ex) {
-        Logger.getLogger(PanelDisplay.class.getName()).log(Level.SEVERE, null, ex);
-      }
-    repaint();
+    if (selectedUnit == null) { // Otherwise we're resizing an element
+      double scale = Math.pow(1.1, -evt.getPreciseWheelRotation());
+      at.preConcatenate(AffineTransform.getTranslateInstance(-evt.getX(), -evt.getY()));
+      at.preConcatenate(AffineTransform.getScaleInstance(scale, scale));
+      at.preConcatenate(AffineTransform.getTranslateInstance(evt.getX(), evt.getY()));
+        try {
+          ati = at.createInverse();
+        } catch (NoninvertibleTransformException ex) {
+          Logger.getLogger(PanelDisplay.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      repaint();
+    }
   }//GEN-LAST:event_formMouseWheelMoved
 
 
