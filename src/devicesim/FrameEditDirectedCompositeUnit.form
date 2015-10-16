@@ -302,7 +302,7 @@
                     </Property>
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="(M)ove"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Scroll while dragging to resize."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Scroll while dragging to resize.  Side note: scroll will usually zoom."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioConnect">

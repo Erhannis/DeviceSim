@@ -542,7 +542,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     groupTools.add(radioMove);
     radioMove.setSelected(true);
     radioMove.setText("(M)ove");
-    radioMove.setToolTipText("Scroll while dragging to resize.");
+    radioMove.setToolTipText("Scroll while dragging to resize.  Side note: scroll will usually zoom.");
 
     groupTools.add(radioConnect);
     radioConnect.setText("(C)onnect");
