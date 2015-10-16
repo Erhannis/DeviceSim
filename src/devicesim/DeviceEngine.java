@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 
 /**
  * Running list of conventions to follow.  See my collection of test methods for examples.
@@ -147,6 +147,84 @@ public class DeviceEngine {
       }
     }
     return result;
+  }
+  
+  public static void validateUnit(Unit unit) throws Exception {
+    //TODO Rechecking, say, the source connection repeatedly could be slow.  Cache that, too.
+    HashSet<Unit> toCheck = new HashSet<Unit>();
+    HashSet<Unit> checked = new HashSet<Unit>();
+    toCheck.add(unit);
+    while (!toCheck.isEmpty()) {
+      Unit u = toCheck.iterator().next();
+      for (Terminal t : u.getTerminals()) {
+        if (t.getConnection() != null) {
+          for (Terminal t2 : t.getConnection().getTerminals()) {
+            if (!checked.contains(t2.getUnit())) {
+              toCheck.add(t2.getUnit());
+            }
+          }
+        } else {
+          throw new Exception("disconnected terminal");
+        }
+      }
+      toCheck.remove(u);
+      checked.add(u);
+    }
+    if (unit.getTerminals().size() > 0) {
+      // You can't actually run a non-self-contained unit
+      throw new Exception("has external terminals");
+    }
+  }
+  
+  public static void validateUnit(DirectedCompositeUnit dcu) throws Exception {
+    for (DirectedUnit du : dcu.allUnits) {
+      for (Terminal t : du.getTerminals()) {
+        if (t.getConnection() == null) {
+          throw new Exception("disconnected terminal");
+        }
+      }
+    }
+    if (dcu.getTerminals().size() > 0) {
+      // You can't actually run a non-self-contained unit
+      throw new Exception("has external terminals");
+    }
+  }
+  
+  public static HashSet<Terminal> findDisconnectedTerminals(Unit unit) {
+    //TODO Rechecking, say, the source connection repeatedly could be slow.  Cache that, too.
+    HashSet<Unit> toCheck = new HashSet<Unit>();
+    HashSet<Unit> checked = new HashSet<Unit>();
+    HashSet<Terminal> disconnected = new HashSet<Terminal>();
+    toCheck.add(unit);
+    while (!toCheck.isEmpty()) {
+      Unit u = toCheck.iterator().next();
+      for (Terminal t : u.getTerminals()) {
+        if (t.getConnection() != null) {
+          for (Terminal t2 : t.getConnection().getTerminals()) {
+            if (!checked.contains(t2.getUnit())) {
+              toCheck.add(t2.getUnit());
+            }
+          }
+        } else {
+          disconnected.add(t);
+        }
+      }
+      toCheck.remove(u);
+      checked.add(u);
+    }
+    return disconnected;
+  }
+  
+  public static HashSet<Terminal> findDisconnectedTerminals(DirectedCompositeUnit dcu) {
+    HashSet<Terminal> disconnected = new HashSet<Terminal>();
+    for (DirectedUnit du : dcu.allUnits) {
+      for (Terminal t : du.getTerminals()) {
+        if (t.getConnection() == null) {
+          disconnected.add(t);
+        }
+      }
+    }
+    return disconnected;
   }
   
   /**

@@ -29,8 +29,8 @@ import java.util.logging.Logger;
 public class PanelDisplay extends javax.swing.JPanel {
     public HashSet<? extends Unit> units = new HashSet<Unit>();
   
-    public Unit selectedUnit = null;
-    public Terminal selectedTerminal = null;
+    public HashSet<Unit> selectedUnits = new HashSet<Unit>();
+    public HashSet<Terminal> selectedTerminals = new HashSet<Terminal>();
     
     public boolean skipRender = false;
     public AffineTransform at = new AffineTransform();
@@ -85,13 +85,13 @@ public class PanelDisplay extends javax.swing.JPanel {
       //TODO Render better
       for (Unit u : units) {
         //TODO Make more efficient; cache stuff, etc.
-        if (u == selectedUnit) {
+        if (selectedUnits.contains(u)) {
           g.setColor(COLOR_HIGHLIGHT);
         }
         g.draw(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight()));
         g.setFont(FONT.deriveFont(u.getViewFontSize()));
         g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
-        if (u == selectedUnit) {
+        if (selectedUnits.contains(u)) {
           g.setColor(COLOR_NORMAL);
         }
         if (u instanceof DirectedUnit) {
@@ -102,7 +102,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             double oax = ot.getViewX();
             double oay = ot.getViewY();
             double oSocketRadius = ot.getViewSocketRadius();
-            if (ot == selectedTerminal) {
+            if (selectedTerminals.contains(ot)) {
               g.setColor(COLOR_HIGHLIGHT);
               g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
               g.setColor(COLOR_NORMAL);
@@ -124,7 +124,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             double iax = it.getViewX();
             double iay = it.getViewY();
             double iSocketRadius = it.getViewSocketRadius();
-            if (it == selectedTerminal) {
+            if (selectedTerminals.contains(it)) {
               g.setColor(COLOR_HIGHLIGHT);
               g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
               g.setColor(COLOR_NORMAL);
@@ -174,7 +174,7 @@ public class PanelDisplay extends javax.swing.JPanel {
   }// </editor-fold>//GEN-END:initComponents
 
   private void formMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_formMouseWheelMoved
-    if (selectedUnit == null) { // Otherwise we're resizing an element
+    if (selectedUnits.isEmpty()) { // Otherwise we're resizing an element
       double scale = Math.pow(1.1, -evt.getPreciseWheelRotation());
       at.preConcatenate(AffineTransform.getTranslateInstance(-evt.getX(), -evt.getY()));
       at.preConcatenate(AffineTransform.getScaleInstance(scale, scale));

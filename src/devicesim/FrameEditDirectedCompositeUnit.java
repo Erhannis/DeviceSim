@@ -18,10 +18,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -74,18 +74,20 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             for (Terminal t : u.getTerminals()) {
               double dist = m.distance(t.getViewX(), t.getViewY());
               if (dist < t.getViewSocketRadius()) {
-                if (pd.selectedTerminal == null) {
-                  pd.selectedTerminal = t;
+                if (pd.selectedTerminals.isEmpty() || pd.selectedTerminals.size() > 1) {
+                  pd.selectedTerminals.clear();
+                  pd.selectedTerminals.add(t);
                   break outer;
                 } else {
-                  if (pd.selectedTerminal instanceof InputTerminal && t instanceof OutputTerminal) {
-                    GDC.addConnection(((OutputTerminal)t), ((InputTerminal)pd.selectedTerminal));
-                  } else if (pd.selectedTerminal instanceof OutputTerminal && t instanceof InputTerminal) {
-                    GDC.addConnection(((OutputTerminal)pd.selectedTerminal), ((InputTerminal)t));
+                  Terminal st = pd.selectedTerminals.iterator().next();
+                  if (st instanceof InputTerminal && t instanceof OutputTerminal) {
+                    GDC.addConnection(((OutputTerminal)t), ((InputTerminal)st));
+                  } else if (st instanceof OutputTerminal && t instanceof InputTerminal) {
+                    GDC.addConnection(((OutputTerminal)st), ((InputTerminal)t));
                   } else {
                   }
                   if (!e.isShiftDown()) {
-                    pd.selectedTerminal = null;
+                    pd.selectedTerminals.clear();
                   }
                 }
               }
@@ -133,8 +135,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               unit.removeUnit((DirectedUnit)closest);
             }
           }
-          pd.selectedTerminal = null;
-          pd.selectedUnit = null;
+          pd.selectedTerminals.clear();
+          pd.selectedUnits.clear();
           doRepaint();
         } else if (radioPlace.isSelected()) {
         }
@@ -155,7 +157,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               closestDist2 = dist2;
             }
           }
-          pd.selectedUnit = closest;
+          pd.selectedUnits.clear();
+          pd.selectedUnits.add(closest);
           doRepaint();
         } else if (radioConnect.isSelected()) {
         } else if (radioDisconnect.isSelected()) {
@@ -189,7 +192,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
       @Override
       public void mouseReleased(MouseEvent e) {
-        pd.selectedUnit = null;
+        pd.selectedUnits.clear();
         doRepaint();
       }
 
@@ -205,11 +208,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       @Override
       public void mouseDragged(MouseEvent e) {
         if (radioMove.isSelected()) {
-          if (pd.selectedUnit != null) {
+          if (!pd.selectedUnits.isEmpty()) {
             Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
-            pd.selectedUnit.setViewLeft(m.getX());
-            pd.selectedUnit.setViewTop(m.getY());
-            pd.selectedUnit.recalcView();
+            for (Unit u : pd.selectedUnits) {
+              u.setViewLeft(m.getX());
+              u.setViewTop(m.getY());
+              u.recalcView();
+            }
             changed = true;
             doRepaint();
           }
@@ -228,12 +233,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       @Override
       public void mouseWheelMoved(MouseWheelEvent e) {
         if (radioMove.isSelected()) {
-          if (pd.selectedUnit != null) {
+          if (!pd.selectedUnits.isEmpty()) {
             double scale = Math.pow(1.1, e.getPreciseWheelRotation());
-            pd.selectedUnit.setViewWidth(pd.selectedUnit.getViewWidth() * scale);
-            pd.selectedUnit.setViewHeight(pd.selectedUnit.getViewHeight() * scale);
-            pd.selectedUnit.setViewFontSize((float)(pd.selectedUnit.getViewFontSize() * scale));
-            pd.selectedUnit.recalcView();
+            for (Unit u : pd.selectedUnits) {
+              u.setViewWidth(u.getViewWidth() * scale);
+              u.setViewHeight(u.getViewHeight() * scale);
+              u.setViewFontSize((float)(u.getViewFontSize() * scale));
+              u.recalcView();
+            }
             changed = true;
             doRepaint();
           }
@@ -292,7 +299,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
   }
-
+  
   private void doRepaint() {
     if (!pd.skipRender) {
       pd.repaint();
@@ -343,6 +350,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     spinOutputs = new javax.swing.JSpinner();
     btnRun = new javax.swing.JButton();
     btnRedraw = new javax.swing.JButton();
+    btnValidate = new javax.swing.JButton();
     jPanel4 = new javax.swing.JPanel();
     radioMove = new javax.swing.JRadioButton();
     radioConnect = new javax.swing.JRadioButton();
@@ -440,6 +448,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    btnValidate.setText("Validate");
+    btnValidate.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnValidateActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
     jPanel3.setLayout(jPanel3Layout);
     jPanel3Layout.setHorizontalGroup(
@@ -457,16 +472,17 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             .addComponent(btnRun))
           .addGroup(jPanel3Layout.createSequentialGroup()
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-              .addComponent(btnRedraw)
-              .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                  .addComponent(jLabel2)
-                  .addComponent(jLabel3))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                  .addComponent(spinOutputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addComponent(spinInputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))
-            .addGap(0, 46, Short.MAX_VALUE)))
+              .addComponent(jLabel2)
+              .addComponent(jLabel3))
+            .addGap(18, 18, 18)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(spinOutputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(spinInputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(0, 47, Short.MAX_VALUE))
+          .addGroup(jPanel3Layout.createSequentialGroup()
+            .addComponent(btnRedraw)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnValidate)))
         .addContainerGap())
     );
     jPanel3Layout.setVerticalGroup(
@@ -484,8 +500,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(spinOutputs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel3))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)
-        .addComponent(btnRedraw)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 244, Short.MAX_VALUE)
+        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(btnRedraw)
+          .addComponent(btnValidate))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(btnSaveUnit)
@@ -622,6 +640,25 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     doRepaint();
   }//GEN-LAST:event_btnRedrawActionPerformed
 
+  private void btnValidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidateActionPerformed
+    try {
+      DeviceEngine.validateUnit(unit);
+    } catch (Exception ex) {
+      switch (ex.getMessage()) {
+        case "disconnected terminal":
+          HashSet<Terminal> disconnected = DeviceEngine.findDisconnectedTerminals(unit);
+          pd.selectedTerminals.clear();
+          pd.selectedTerminals.addAll(disconnected);
+          doRepaint();
+          JOptionPane.showMessageDialog(this, "Disconnected terminals present.  Highlighted.");
+          break;
+        case "has external terminals":
+          JOptionPane.showMessageDialog(this, "Unit has external terminals (which means you can't run it, by itself).");
+          break;
+      }
+    }
+  }//GEN-LAST:event_btnValidateActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -661,6 +698,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JButton btnRedraw;
   private javax.swing.JButton btnRun;
   private javax.swing.JButton btnSaveUnit;
+  private javax.swing.JButton btnValidate;
   private javax.swing.ButtonGroup groupTools;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel2;
