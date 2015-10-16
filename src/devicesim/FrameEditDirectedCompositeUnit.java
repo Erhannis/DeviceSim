@@ -9,6 +9,8 @@ package devicesim;
 import com.sun.glass.events.KeyEvent;
 import devicesim.GenericDirectedConnection.GDC;
 import devicesim.units.defaults.DirectedCompositeUnit;
+import devicesim.units.defaults.SourceHigh;
+import devicesim.units.defaults.SourceLow;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -141,6 +143,46 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           pd.selectedUnits.clear();
           doRepaint();
         } else if (radioPlace.isSelected()) {
+          Unit newUnitArchetype = (Unit)listUnitTypes.getSelectedValue();
+          if (newUnitArchetype == null) {
+            return;
+          } else if (newUnitArchetype == unitToReplace) {
+            JOptionPane.showMessageDialog(FrameEditDirectedCompositeUnit.this, "This is...a bad idea.  And not yet implemented.  I may do so later, if I'm feeling dangerous.");
+            return;
+          } else if (!(newUnitArchetype instanceof DirectedUnit)) {
+            JOptionPane.showMessageDialog(FrameEditDirectedCompositeUnit.this, "Sorry, not a DirectedUnit.");
+          }
+          DirectedUnit newUnit = null;
+          try {
+            newUnit = (DirectedUnit)newUnitArchetype.copy();
+          } catch (IOException ex) {
+            Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+          } catch (ClassNotFoundException ex) {
+            Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+          }
+          unit.addUnit(newUnit);
+          if (cbAutosource.isSelected() && newUnit.getInputs().size() >= 2) {
+            boolean foundHigh = false;
+            boolean foundLow = false;
+            for (DirectedUnit du : unit.allUnits) {
+              if (du instanceof SourceHigh) {
+                foundHigh = true;
+                GDC.addConnection(du.out(0), newUnit.in(0));
+              } else if (du instanceof SourceLow) {
+                foundLow = true;
+                GDC.addConnection(du.out(0), newUnit.in(1));
+              }
+              if (foundLow && foundHigh) {
+                break;
+              }
+            }
+          }
+          newUnit.setViewLeft(m.getX());
+          newUnit.setViewTop(m.getY());
+          newUnit.recalcView();
+          doRepaint();
         }
       }
 
@@ -165,30 +207,6 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         } else if (radioConnect.isSelected()) {
         } else if (radioDisconnect.isSelected()) {
         } else if (radioPlace.isSelected()) {
-          Unit newUnitArchetype = (Unit)listUnitTypes.getSelectedValue();
-          if (newUnitArchetype == null) {
-            return;
-          } else if (newUnitArchetype == unitToReplace) {
-            JOptionPane.showMessageDialog(FrameEditDirectedCompositeUnit.this, "This is...a bad idea.  And not yet implemented.  I may do so later, if I'm feeling dangerous.");
-            return;
-          } else if (!(newUnitArchetype instanceof DirectedUnit)) {
-            JOptionPane.showMessageDialog(FrameEditDirectedCompositeUnit.this, "Sorry, not a DirectedUnit.");
-          }
-          DirectedUnit newUnit = null;
-          try {
-            newUnit = (DirectedUnit)newUnitArchetype.copy();
-          } catch (IOException ex) {
-            Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
-            return;
-          } catch (ClassNotFoundException ex) {
-            Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
-            return;
-          }
-          unit.addUnit(newUnit);
-          newUnit.setViewLeft(m.getX());
-          newUnit.setViewTop(m.getY());
-          newUnit.recalcView();
-          doRepaint();
         }
       }
 
@@ -361,6 +379,12 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     jScrollPane1 = new javax.swing.JScrollPane();
     listUnitTypes = new javax.swing.JList();
     radioRemove = new javax.swing.JRadioButton();
+    cbAutosource = new javax.swing.JCheckBox();
+    jPanel2 = new javax.swing.JPanel();
+    spinConnectionTheme = new javax.swing.JSpinner();
+    jLabel4 = new javax.swing.JLabel();
+    btnRedraw2 = new javax.swing.JButton();
+    cbHideSourceCons = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -537,6 +561,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioRemove.setText("(R)emove");
     radioRemove.setToolTipText("Aim for the top left corner of a unit.");
 
+    cbAutosource.setSelected(true);
+    cbAutosource.setText("Autosource");
+
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
@@ -550,9 +577,12 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               .addComponent(radioMove)
               .addComponent(radioConnect)
               .addComponent(radioDisconnect)
-              .addComponent(radioPlace)
-              .addComponent(radioRemove))
-            .addGap(0, 120, Short.MAX_VALUE)))
+              .addComponent(radioRemove)
+              .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(radioPlace)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbAutosource)))
+            .addGap(0, 52, Short.MAX_VALUE)))
         .addContainerGap())
     );
     jPanel4Layout.setVerticalGroup(
@@ -567,13 +597,69 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioRemove)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(radioPlace)
+        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(radioPlace)
+          .addComponent(cbAutosource))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
         .addContainerGap())
     );
 
     jTabbedPane1.addTab("Tools", jPanel4);
+
+    spinConnectionTheme.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1, 1));
+    spinConnectionTheme.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinConnectionThemeStateChanged(evt);
+      }
+    });
+
+    jLabel4.setText("Connection theme");
+
+    btnRedraw2.setText("Redraw");
+    btnRedraw2.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRedraw2ActionPerformed(evt);
+      }
+    });
+
+    cbHideSourceCons.setText("Hide source cons");
+    cbHideSourceCons.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        cbHideSourceConsStateChanged(evt);
+      }
+    });
+
+    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+    jPanel2.setLayout(jPanel2Layout);
+    jPanel2Layout.setHorizontalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(jPanel2Layout.createSequentialGroup()
+            .addComponent(jLabel4)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(btnRedraw2)
+          .addComponent(cbHideSourceCons))
+        .addContainerGap(46, Short.MAX_VALUE))
+    );
+    jPanel2Layout.setVerticalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel4))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbHideSourceCons)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
+        .addComponent(btnRedraw2)
+        .addContainerGap())
+    );
+
+    jTabbedPane1.addTab("View", jPanel2);
 
     jSplitPane1.setRightComponent(jTabbedPane1);
 
@@ -676,6 +762,20 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     doValidate();
   }//GEN-LAST:event_btnValidateActionPerformed
 
+  private void spinConnectionThemeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinConnectionThemeStateChanged
+    pd.connectionLineMode = (Integer)spinConnectionTheme.getValue();
+    doRepaint();
+  }//GEN-LAST:event_spinConnectionThemeStateChanged
+
+  private void btnRedraw2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedraw2ActionPerformed
+    doRepaint();
+  }//GEN-LAST:event_btnRedraw2ActionPerformed
+
+  private void cbHideSourceConsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbHideSourceConsStateChanged
+    pd.hideSourceConnections = cbHideSourceCons.isSelected();
+    doRepaint();
+  }//GEN-LAST:event_cbHideSourceConsStateChanged
+
   /**
    * @param args the command line arguments
    */
@@ -713,14 +813,19 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton btnRedraw;
+  private javax.swing.JButton btnRedraw2;
   private javax.swing.JButton btnRun;
   private javax.swing.JButton btnSaveUnit;
   private javax.swing.JButton btnValidate;
+  private javax.swing.JCheckBox cbAutosource;
+  private javax.swing.JCheckBox cbHideSourceCons;
   private javax.swing.ButtonGroup groupTools;
   private javax.swing.JLabel jLabel1;
   private javax.swing.JLabel jLabel2;
   private javax.swing.JLabel jLabel3;
+  private javax.swing.JLabel jLabel4;
   private javax.swing.JPanel jPanel1;
+  private javax.swing.JPanel jPanel2;
   private javax.swing.JPanel jPanel3;
   private javax.swing.JPanel jPanel4;
   private javax.swing.JScrollPane jScrollPane1;
@@ -732,6 +837,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JRadioButton radioMove;
   private javax.swing.JRadioButton radioPlace;
   private javax.swing.JRadioButton radioRemove;
+  private javax.swing.JSpinner spinConnectionTheme;
   private javax.swing.JSpinner spinInputs;
   private javax.swing.JSpinner spinOutputs;
   private javax.swing.JTextField textUnitName;

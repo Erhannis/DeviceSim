@@ -150,6 +150,11 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     radioInteract = new javax.swing.JRadioButton();
     radioProbe = new javax.swing.JRadioButton();
     cbAutorun = new javax.swing.JCheckBox();
+    jPanel2 = new javax.swing.JPanel();
+    jLabel4 = new javax.swing.JLabel();
+    spinConnectionTheme = new javax.swing.JSpinner();
+    cbHideSourceCons = new javax.swing.JCheckBox();
+    btnRedraw2 = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -267,6 +272,60 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
 
     jTabbedPane1.addTab("Tools", jPanel4);
 
+    jLabel4.setText("Connection theme");
+
+    spinConnectionTheme.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1, 1));
+    spinConnectionTheme.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        spinConnectionThemeStateChanged(evt);
+      }
+    });
+
+    cbHideSourceCons.setText("Hide source cons");
+    cbHideSourceCons.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        cbHideSourceConsStateChanged(evt);
+      }
+    });
+
+    btnRedraw2.setText("Redraw");
+    btnRedraw2.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRedraw2ActionPerformed(evt);
+      }
+    });
+
+    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+    jPanel2.setLayout(jPanel2Layout);
+    jPanel2Layout.setHorizontalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(jPanel2Layout.createSequentialGroup()
+            .addComponent(jLabel4)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(btnRedraw2)
+          .addComponent(cbHideSourceCons))
+        .addContainerGap(46, Short.MAX_VALUE))
+    );
+    jPanel2Layout.setVerticalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(jLabel4))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbHideSourceCons)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
+        .addComponent(btnRedraw2)
+        .addContainerGap())
+    );
+
+    jTabbedPane1.addTab("View", jPanel2);
+
     jSplitPane1.setRightComponent(jTabbedPane1);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -308,6 +367,20 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     doRepaint();
   }//GEN-LAST:event_btnRedrawActionPerformed
 
+  private void spinConnectionThemeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinConnectionThemeStateChanged
+    pd.connectionLineMode = (Integer)spinConnectionTheme.getValue();
+    doRepaint();
+  }//GEN-LAST:event_spinConnectionThemeStateChanged
+
+  private void cbHideSourceConsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbHideSourceConsStateChanged
+    pd.hideSourceConnections = cbHideSourceCons.isSelected();
+    doRepaint();
+  }//GEN-LAST:event_cbHideSourceConsStateChanged
+
+  private void btnRedraw2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedraw2ActionPerformed
+    doRepaint();
+  }//GEN-LAST:event_btnRedraw2ActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -345,16 +418,21 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton btnRedraw;
+  private javax.swing.JButton btnRedraw2;
   private javax.swing.JButton btnRun;
   private javax.swing.JButton btnSaveUnitState;
   private javax.swing.JCheckBox cbAutorun;
+  private javax.swing.JCheckBox cbHideSourceCons;
   private javax.swing.ButtonGroup groupTools;
+  private javax.swing.JLabel jLabel4;
   private javax.swing.JPanel jPanel1;
+  private javax.swing.JPanel jPanel2;
   private javax.swing.JPanel jPanel3;
   private javax.swing.JPanel jPanel4;
   private javax.swing.JSplitPane jSplitPane1;
   private javax.swing.JTabbedPane jTabbedPane1;
   private javax.swing.JRadioButton radioInteract;
   private javax.swing.JRadioButton radioProbe;
+  private javax.swing.JSpinner spinConnectionTheme;
   // End of variables declaration//GEN-END:variables
 }

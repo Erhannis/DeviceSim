@@ -6,6 +6,8 @@
 
 package devicesim;
 
+import devicesim.units.defaults.SourceHigh;
+import devicesim.units.defaults.SourceLow;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -14,7 +16,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class PanelDisplay extends javax.swing.JPanel {
     public static final int CLMODE_SQUARE = 1;
 
     public int connectionLineMode = CLMODE_DIRECT;
+    public boolean hideSourceConnections = false;
     
     private static final Color COLOR_BACKGROUND = Color.LIGHT_GRAY;
     private static final Color COLOR_NORMAL = Color.BLACK;
@@ -100,6 +102,9 @@ public class PanelDisplay extends javax.swing.JPanel {
         }
         if (u instanceof DirectedUnit) {
           //TODO Yes, I know this is cheating.
+          if (hideSourceConnections && ((u instanceof SourceHigh) || (u instanceof SourceLow))) {
+            continue;
+          }
           ArrayList<OutputTerminal> outputs = ((DirectedUnit)u).getOutputs();
           for (int i = 0; i < outputs.size(); i++) {
             OutputTerminal ot = outputs.get(i);
