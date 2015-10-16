@@ -45,6 +45,10 @@ public class PanelDisplay extends javax.swing.JPanel {
     private static final Color COLOR_BACKGROUND = Color.LIGHT_GRAY;
     private static final Color COLOR_NORMAL = Color.BLACK;
     private static final Color COLOR_HIGHLIGHT = Color.CYAN;
+    private static final Color COLOR_HIGH = Color.GREEN;
+    private static final Color COLOR_LOW = Color.BLACK;
+    
+    private static final double STATE_SPLIT_POINT = 0.5;
     
     public Path2D getConnectionPath(double ax, double ay, double bx, double by) {
       Path2D path = new Path2D.Double();
@@ -109,6 +113,12 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             }
+            //TODO Not sure about this one.  Maybe a continuum of values?
+            if (ot.getValue() >= STATE_SPLIT_POINT) {
+              g.setColor(COLOR_HIGH);
+            } else {
+              g.setColor(COLOR_LOW);
+            }
             if (ot.getConnection() != null) {
               for (InputTerminal it : ot.getConnection().getOutputs()) {
                 double ibx = it.getViewX();
@@ -116,6 +126,7 @@ public class PanelDisplay extends javax.swing.JPanel {
                 g.draw(getConnectionPath(oax, oay, ibx, iby));
               }
             }
+            g.setColor(COLOR_NORMAL);
           }
           
           ArrayList<InputTerminal> inputs = ((DirectedUnit)u).getInputs();

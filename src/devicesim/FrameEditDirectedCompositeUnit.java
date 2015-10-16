@@ -58,6 +58,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioMove.setMnemonic(KeyEvent.VK_M);
     radioConnect.setMnemonic(KeyEvent.VK_C);
     radioDisconnect.setMnemonic(KeyEvent.VK_D);
+    radioRemove.setMnemonic(KeyEvent.VK_R);
+    radioPlace.setMnemonic(KeyEvent.VK_P);
     
     pd = new PanelDisplay();
     pd.units = unit.allUnits;
@@ -633,14 +635,23 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   }//GEN-LAST:event_spinOutputsStateChanged
 
   private void btnRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunActionPerformed
-    //TODO Do
+    try {
+      if (!doValidate()) {
+        return;
+      }
+      new FrameRunDirectedCompositeUnit(unitTypes, unit.copy(), unit).setVisible(true);
+    } catch (IOException ex) {
+      Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+      Logger.getLogger(FrameEditDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }//GEN-LAST:event_btnRunActionPerformed
 
   private void btnRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedrawActionPerformed
     doRepaint();
   }//GEN-LAST:event_btnRedrawActionPerformed
 
-  private void btnValidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidateActionPerformed
+  private boolean doValidate() {
     try {
       DeviceEngine.validateUnit(unit);
     } catch (Exception ex) {
@@ -650,13 +661,19 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           pd.selectedTerminals.clear();
           pd.selectedTerminals.addAll(disconnected);
           doRepaint();
+          //TODO Maybe shouldn't include the metaterminals?
           JOptionPane.showMessageDialog(this, "Disconnected terminals present.  Highlighted.");
-          break;
+          return false;
         case "has external terminals":
           JOptionPane.showMessageDialog(this, "Unit has external terminals (which means you can't run it, by itself).");
-          break;
+          return false;
       }
     }
+    return true;
+  }
+  
+  private void btnValidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValidateActionPerformed
+    doValidate();
   }//GEN-LAST:event_btnValidateActionPerformed
 
   /**

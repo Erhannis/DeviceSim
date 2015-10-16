@@ -14,6 +14,7 @@ import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
 import devicesim.Terminal;
 import devicesim.Unit;
+import java.io.IOException;
 import java.util.HashSet;
 
 /**
@@ -58,7 +59,12 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     }
     return this;
   }
+
   // End construction chains
+  @Override
+  public DirectedCompositeUnit copy() throws IOException, ClassNotFoundException {
+    return (DirectedCompositeUnit)super.copy(); //To change body of generated methods, choose Tools | Templates.
+  }
   
   public InputTerminal iout(int i) {
     return internalMetaUnit.in(i);
