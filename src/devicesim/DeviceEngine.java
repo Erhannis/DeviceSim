@@ -18,6 +18,7 @@ import devicesim.units.defaults.SinkSysoutBinary;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
 import devicesim.units.defaults.StateSource;
+import devicesim.units.defaults.SwitchMetaGate;
 import devicesim.units.defaults.XorGate;
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,7 +85,8 @@ public class DeviceEngine {
     new SinkNop(),
     createAdd2(),
     new SinkSysout(),
-    new SinkSysoutBinary(8)
+    new SinkSysoutBinary(8),
+    new SwitchMetaGate()
   };
   
   public void init() {

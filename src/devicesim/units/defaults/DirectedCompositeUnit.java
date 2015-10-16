@@ -23,6 +23,7 @@ import java.util.HashSet;
  */
 public class DirectedCompositeUnit extends BlankDirectedUnit {
   private HashSet<DirectedUnit> origins = new HashSet<DirectedUnit>();
+  private HashSet<DirectedUnit> manuals = new HashSet<DirectedUnit>();
   private HashSet<DirectedUnit> finals = new HashSet<DirectedUnit>();
   public HashSet<DirectedUnit> allUnits = new HashSet<DirectedUnit>();
 
@@ -181,10 +182,23 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     }
   }
 
+  /**
+   * Adds a unit to the list of units to be manually checked at the start of the next tick.
+   * Good for switches and other things which are not sources, per se, but may change state without
+   * prompting from inputs.
+   * ...Maybe I should just make them sources.
+   * @param du 
+   */
+  public void addManualCheck(DirectedUnit du) {
+    manuals.add(du);
+  }
+  
   @Override
   public HashSet<OutputTerminal> tick() {
     HashSet<DirectedUnit> queued = new HashSet<DirectedUnit>();
     queued.addAll(origins);
+    queued.addAll(manuals);
+    manuals.clear();
     
     while (!queued.isEmpty()) {
       HashSet<DirectedUnit> nextQueued = new HashSet<DirectedUnit>();

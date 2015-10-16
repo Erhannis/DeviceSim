@@ -198,7 +198,7 @@
                     </Property>
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="(I)nteract"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Scroll while dragging to resize."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Toggle switches, etc."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioProbe">
@@ -207,12 +207,14 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="(P)robe"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Hold shift to keep connecting."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Nothing, atm"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="cbAutorun">
                   <Properties>
+                    <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Autorun"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Hits &quot;run&quot; after you interact with anything"/>
                   </Properties>
                 </Component>
               </SubComponents>

@@ -7,25 +7,15 @@
 package devicesim;
 
 import com.sun.glass.events.KeyEvent;
-import devicesim.GenericDirectedConnection.GDC;
 import devicesim.units.defaults.DirectedCompositeUnit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import mathnstuff.MeMath;
 
 /**
@@ -36,8 +26,6 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
   private DirectedCompositeUnit unit;
   private DirectedCompositeUnit unitPseudoArchetype;
   private DefaultListModel<Unit> unitTypes;
-  private boolean changed = false;
-  private boolean loading = false;
   
   private PanelDisplay pd;
   
@@ -48,9 +36,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     this.unitTypes = unitTypes; // Maybe unneeded
     this.unit = unit;
     this.unitPseudoArchetype = unitPseudoArchetype;
-    loading = true;
     initComponents();
-    loading = false;
     
     this.setTitle(unit.getName() + " run");
     
@@ -67,6 +53,28 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
       public void mouseClicked(MouseEvent e) {
         Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
         if (radioInteract.isSelected()) {
+          double closestDist2 = Double.POSITIVE_INFINITY;
+          Unit closest = null;
+          for (Unit u : pd.units) {
+            double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
+            if (dist2 < closestDist2 && dist2 <= MeMath.sqr((u.getViewHeight() + u.getViewHeight()) / 2.0) && u != unit.internalMetaUnit) {
+              // We want to be at least PRETTY close, and not delete the internalMetaUnit.
+              closest = u;
+              closestDist2 = dist2;
+            }
+          }
+          if (closest != null) {
+            if (closest instanceof Runnable && closest instanceof DirectedUnit) {
+              ((Runnable)closest).run();
+              //TODO Again, cheating
+              unit.addManualCheck((DirectedUnit)closest);
+              if (cbAutorun.isSelected()) {
+                doRun();
+              } else {
+                doRepaint();
+              }
+            }
+          }
         } else if (radioProbe.isSelected()) {
         }
       }
@@ -221,13 +229,15 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     groupTools.add(radioInteract);
     radioInteract.setSelected(true);
     radioInteract.setText("(I)nteract");
-    radioInteract.setToolTipText("Scroll while dragging to resize.");
+    radioInteract.setToolTipText("Toggle switches, etc.");
 
     groupTools.add(radioProbe);
     radioProbe.setText("(P)robe");
-    radioProbe.setToolTipText("Hold shift to keep connecting.");
+    radioProbe.setToolTipText("Nothing, atm");
 
+    cbAutorun.setSelected(true);
     cbAutorun.setText("Autorun");
+    cbAutorun.setToolTipText("Hits \"run\" after you interact with anything");
 
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);

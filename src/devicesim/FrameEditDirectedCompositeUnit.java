@@ -79,7 +79,6 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 if (pd.selectedTerminals.isEmpty() || pd.selectedTerminals.size() > 1) {
                   pd.selectedTerminals.clear();
                   pd.selectedTerminals.add(t);
-                  break outer;
                 } else {
                   Terminal st = pd.selectedTerminals.iterator().next();
                   if (st instanceof InputTerminal && t instanceof OutputTerminal) {
@@ -92,6 +91,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                     pd.selectedTerminals.clear();
                   }
                 }
+                break outer;
               }
             }
           }
