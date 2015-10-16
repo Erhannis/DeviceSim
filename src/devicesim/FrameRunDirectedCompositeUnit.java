@@ -70,6 +70,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
               unit.addManualCheck((DirectedUnit)closest);
               if (cbAutorun.isSelected()) {
                 doRun();
+                doRepaint();
               } else {
                 doRepaint();
               }
@@ -188,6 +189,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     });
 
     btnRun.setText("Run");
+    btnRun.setToolTipText("Ctrl for 1000x, timed");
     btnRun.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnRunActionPerformed(evt);
@@ -356,11 +358,20 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
   private void doRun() {
     unit.tick();
     unit.doFinalState();
-    doRepaint();
   }
   
   private void btnRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunActionPerformed
-    doRun();
+    if ((evt.getModifiers() & KeyEvent.MODIFIER_CONTROL) != 0) {
+      long start = System.currentTimeMillis();
+      for (int i = 0; i < 1000; i++) {
+        doRun();
+      }
+      long finish = System.currentTimeMillis();
+      System.out.println("time " + ((finish - start) / 1000.0));
+    } else {
+      doRun();
+    }
+    doRepaint();
   }//GEN-LAST:event_btnRunActionPerformed
 
   private void btnRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedrawActionPerformed

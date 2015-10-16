@@ -8,6 +8,7 @@ package devicesim;
 
 import devicesim.GenericDirectedConnection.GDC;
 import devicesim.units.defaults.AndGate;
+import devicesim.units.defaults.ClockMetaGate;
 import devicesim.units.defaults.DirectedCompositeUnit;
 import devicesim.units.defaults.NandGate;
 import devicesim.units.defaults.NotGate;
@@ -86,7 +87,10 @@ public class DeviceEngine {
     createAdd2(),
     new SinkSysout(),
     new SinkSysoutBinary(8),
-    new SwitchMetaGate()
+    new SwitchMetaGate(),
+    new ClockMetaGate(1, 1),
+    new ClockMetaGate(2, 2),
+    new ClockMetaGate(4, 4)
   };
   
   public void init() {
