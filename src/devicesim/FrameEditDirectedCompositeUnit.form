@@ -386,6 +386,7 @@
                               </Group>
                               <Component id="btnRedraw2" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="cbHideSourceCons" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbDrawIMU" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="46" max="32767" attributes="0"/>
                       </Group>
@@ -401,7 +402,9 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="cbHideSourceCons" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="331" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbDrawIMU" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="300" max="32767" attributes="0"/>
                           <Component id="btnRedraw2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -438,6 +441,15 @@
                   </Properties>
                   <Events>
                     <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="cbHideSourceConsStateChanged"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbHideSourceConsActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cbDrawIMU">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Draw internal meta unit"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="cbDrawIMUStateChanged"/>
                   </Events>
                 </Component>
               </SubComponents>

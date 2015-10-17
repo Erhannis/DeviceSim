@@ -156,6 +156,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     spinConnectionTheme = new javax.swing.JSpinner();
     cbHideSourceCons = new javax.swing.JCheckBox();
     btnRedraw2 = new javax.swing.JButton();
+    cbDrawIMU = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -297,6 +298,13 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    cbDrawIMU.setText("Draw internal meta unit");
+    cbDrawIMU.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        cbDrawIMUStateChanged(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
     jPanel2Layout.setHorizontalGroup(
@@ -309,7 +317,8 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
           .addComponent(btnRedraw2)
-          .addComponent(cbHideSourceCons))
+          .addComponent(cbHideSourceCons)
+          .addComponent(cbDrawIMU))
         .addContainerGap(46, Short.MAX_VALUE))
     );
     jPanel2Layout.setVerticalGroup(
@@ -321,7 +330,9 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
           .addComponent(jLabel4))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(cbHideSourceCons)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbDrawIMU)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
         .addComponent(btnRedraw2)
         .addContainerGap())
     );
@@ -392,6 +403,11 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     doRepaint();
   }//GEN-LAST:event_btnRedraw2ActionPerformed
 
+  private void cbDrawIMUStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbDrawIMUStateChanged
+    pd.drawIMU = cbDrawIMU.isSelected();
+    doRepaint();
+  }//GEN-LAST:event_cbDrawIMUStateChanged
+
   /**
    * @param args the command line arguments
    */
@@ -433,6 +449,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JButton btnRun;
   private javax.swing.JButton btnSaveUnitState;
   private javax.swing.JCheckBox cbAutorun;
+  private javax.swing.JCheckBox cbDrawIMU;
   private javax.swing.JCheckBox cbHideSourceCons;
   private javax.swing.ButtonGroup groupTools;
   private javax.swing.JLabel jLabel4;

@@ -164,18 +164,23 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           }
           unit.addUnit(newUnit);
           if (cbAutosource.isSelected() && newUnit.getInputs().size() >= 2) {
-            boolean foundHigh = false;
-            boolean foundLow = false;
-            for (DirectedUnit du : unit.allUnits) {
-              if (du instanceof SourceHigh) {
-                foundHigh = true;
-                GDC.addConnection(du.out(0), newUnit.in(0));
-              } else if (du instanceof SourceLow) {
-                foundLow = true;
-                GDC.addConnection(du.out(0), newUnit.in(1));
-              }
-              if (foundLow && foundHigh) {
-                break;
+            if (unit.internalMetaUnit.getOutputs().size() >= 2) {
+              GDC.addConnection(unit.internalMetaUnit.out(0), newUnit.in(0));
+              GDC.addConnection(unit.internalMetaUnit.out(1), newUnit.in(1));
+            } else {
+              boolean foundHigh = false;
+              boolean foundLow = false;
+              for (DirectedUnit du : unit.allUnits) {
+                if (du instanceof SourceHigh) {
+                  foundHigh = true;
+                  GDC.addConnection(du.out(0), newUnit.in(0));
+                } else if (du instanceof SourceLow) {
+                  foundLow = true;
+                  GDC.addConnection(du.out(0), newUnit.in(1));
+                }
+                if (foundLow && foundHigh) {
+                  break;
+                }
               }
             }
           }
@@ -385,6 +390,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     jLabel4 = new javax.swing.JLabel();
     btnRedraw2 = new javax.swing.JButton();
     cbHideSourceCons = new javax.swing.JCheckBox();
+    cbDrawIMU = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -629,6 +635,18 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         cbHideSourceConsStateChanged(evt);
       }
     });
+    cbHideSourceCons.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cbHideSourceConsActionPerformed(evt);
+      }
+    });
+
+    cbDrawIMU.setText("Draw internal meta unit");
+    cbDrawIMU.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        cbDrawIMUStateChanged(evt);
+      }
+    });
 
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
@@ -642,7 +660,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
           .addComponent(btnRedraw2)
-          .addComponent(cbHideSourceCons))
+          .addComponent(cbHideSourceCons)
+          .addComponent(cbDrawIMU))
         .addContainerGap(46, Short.MAX_VALUE))
     );
     jPanel2Layout.setVerticalGroup(
@@ -654,7 +673,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           .addComponent(jLabel4))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(cbHideSourceCons)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbDrawIMU)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
         .addComponent(btnRedraw2)
         .addContainerGap())
     );
@@ -776,6 +797,15 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     doRepaint();
   }//GEN-LAST:event_cbHideSourceConsStateChanged
 
+  private void cbDrawIMUStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbDrawIMUStateChanged
+    pd.drawIMU = cbDrawIMU.isSelected();
+    doRepaint();
+  }//GEN-LAST:event_cbDrawIMUStateChanged
+
+  private void cbHideSourceConsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbHideSourceConsActionPerformed
+    // TODO add your handling code here:
+  }//GEN-LAST:event_cbHideSourceConsActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -818,6 +848,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JButton btnSaveUnit;
   private javax.swing.JButton btnValidate;
   private javax.swing.JCheckBox cbAutosource;
+  private javax.swing.JCheckBox cbDrawIMU;
   private javax.swing.JCheckBox cbHideSourceCons;
   private javax.swing.ButtonGroup groupTools;
   private javax.swing.JLabel jLabel1;

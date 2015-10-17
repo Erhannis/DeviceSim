@@ -6,6 +6,7 @@
 
 package devicesim;
 
+import devicesim.units.defaults.InternalMetaUnit;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
 import java.awt.BasicStroke;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mathnstuff.MeUtils;
 
 /**
  *
@@ -43,6 +45,7 @@ public class PanelDisplay extends javax.swing.JPanel {
 
     public int connectionLineMode = CLMODE_DIRECT;
     public boolean hideSourceConnections = false;
+    public boolean drawIMU = false;
     
     private static final Color COLOR_BACKGROUND = Color.LIGHT_GRAY;
     private static final Color COLOR_NORMAL = Color.BLACK;
@@ -94,9 +97,17 @@ public class PanelDisplay extends javax.swing.JPanel {
         if (selectedUnits.contains(u)) {
           g.setColor(COLOR_HIGHLIGHT);
         }
-        g.draw(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight()));
-        g.setFont(FONT.deriveFont(u.getViewFontSize()));
-        g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+        if (u instanceof InternalMetaUnit) {
+          if (drawIMU) {
+            g.draw(MeUtils.fixRect2DIP(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight())));
+            g.setFont(FONT.deriveFont(u.getViewFontSize()));
+            g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+          }
+        } else {
+          g.draw(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight()));
+          g.setFont(FONT.deriveFont(u.getViewFontSize()));
+          g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+        }
         if (selectedUnits.contains(u)) {
           g.setColor(COLOR_NORMAL);
         }
