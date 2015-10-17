@@ -13,6 +13,8 @@ import devicesim.units.defaults.DirectedCompositeUnit;
 import devicesim.units.defaults.NandGate;
 import devicesim.units.defaults.NotGate;
 import devicesim.units.defaults.OrGate;
+import devicesim.units.defaults.RandomPMetaGate;
+import devicesim.units.defaults.RandomSMetaGate;
 import devicesim.units.defaults.SinkNop;
 import devicesim.units.defaults.SinkSysout;
 import devicesim.units.defaults.SinkSysoutBinary;
@@ -90,7 +92,9 @@ public class DeviceEngine {
     new SwitchMetaGate(),
     new ClockMetaGate(1, 1),
     new ClockMetaGate(2, 2),
-    new ClockMetaGate(4, 4)
+    new ClockMetaGate(4, 4),
+    new RandomPMetaGate(),
+    new RandomSMetaGate()
   };
   
   public void init() {
@@ -194,6 +198,17 @@ public class DeviceEngine {
       // You can't actually run a non-self-contained unit
       throw new Exception("has external terminals");
     }
+    for (Unit ua : dcu.allUnits) {
+      for (Unit ub : dcu.allUnits) {
+        if (ua != ub
+         && ua.getViewTop() == ub.getViewTop()
+         && ua.getViewLeft() == ub.getViewLeft()
+         && ua.getViewWidth()== ub.getViewWidth()
+         && ua.getViewHeight()== ub.getViewHeight()) {
+          throw new Exception("colocating units");
+        }
+      }
+    }
   }
   
   public static HashSet<Terminal> findDisconnectedTerminals(Unit unit) {
@@ -231,6 +246,23 @@ public class DeviceEngine {
       }
     }
     return disconnected;
+  }
+  
+  public static HashSet<Unit> findColocatingUnits(DirectedCompositeUnit dcu) {
+    HashSet<Unit> colocating = new HashSet<Unit>();
+    for (Unit ua : dcu.allUnits) {
+      for (Unit ub : dcu.allUnits) {
+        if (ua != ub
+         && ua.getViewTop() == ub.getViewTop()
+         && ua.getViewLeft() == ub.getViewLeft()
+         && ua.getViewWidth()== ub.getViewWidth()
+         && ua.getViewHeight()== ub.getViewHeight()) {
+          colocating.add(ua);
+          colocating.add(ub);
+        }
+      }
+    }
+    return colocating;
   }
   
   /**

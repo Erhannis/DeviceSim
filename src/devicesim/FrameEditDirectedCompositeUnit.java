@@ -376,6 +376,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     btnRun = new javax.swing.JButton();
     btnRedraw = new javax.swing.JButton();
     btnValidate = new javax.swing.JButton();
+    btnCheckColocation = new javax.swing.JButton();
     jPanel4 = new javax.swing.JPanel();
     radioMove = new javax.swing.JRadioButton();
     radioConnect = new javax.swing.JRadioButton();
@@ -487,6 +488,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    btnCheckColocation.setText("Check colocation");
+    btnCheckColocation.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnCheckColocationActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
     jPanel3.setLayout(jPanel3Layout);
     jPanel3Layout.setHorizontalGroup(
@@ -509,12 +517,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             .addGap(18, 18, 18)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(spinOutputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-              .addComponent(spinInputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGap(0, 47, Short.MAX_VALUE))
+              .addComponent(spinInputs, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
           .addGroup(jPanel3Layout.createSequentialGroup()
             .addComponent(btnRedraw)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnValidate)))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+            .addComponent(btnValidate))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(btnCheckColocation)))
         .addContainerGap())
     );
     jPanel3Layout.setVerticalGroup(
@@ -532,7 +542,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(spinOutputs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel3))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 244, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 205, Short.MAX_VALUE)
+        .addComponent(btnCheckColocation)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(btnRedraw)
           .addComponent(btnValidate))
@@ -758,6 +770,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     doRepaint();
   }//GEN-LAST:event_btnRedrawActionPerformed
 
+  private void showColocationWarning() {
+    HashSet<Unit> colocating = DeviceEngine.findColocatingUnits(unit);
+    pd.selectedUnits.clear();
+    pd.selectedUnits.addAll(colocating);
+    doRepaint();
+    JOptionPane.showMessageDialog(this, "Warning: colocating units present.  Highlighted.");
+  }
+  
   private boolean doValidate() {
     try {
       DeviceEngine.validateUnit(unit);
@@ -774,6 +794,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         case "has external terminals":
           JOptionPane.showMessageDialog(this, "Unit has external terminals (which means you can't run it, by itself).");
           return false;
+        case "colocating units":
+          showColocationWarning();
+          return true;
       }
     }
     return true;
@@ -805,6 +828,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private void cbHideSourceConsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbHideSourceConsActionPerformed
     // TODO add your handling code here:
   }//GEN-LAST:event_cbHideSourceConsActionPerformed
+
+  private void btnCheckColocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckColocationActionPerformed
+    if (!DeviceEngine.findColocatingUnits(unit).isEmpty()) {
+      //TODO Yeah, inefficient.
+      showColocationWarning();
+    }
+  }//GEN-LAST:event_btnCheckColocationActionPerformed
 
   /**
    * @param args the command line arguments
@@ -842,6 +872,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton btnCheckColocation;
   private javax.swing.JButton btnRedraw;
   private javax.swing.JButton btnRedraw2;
   private javax.swing.JButton btnRun;
