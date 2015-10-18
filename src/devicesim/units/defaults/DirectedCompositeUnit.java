@@ -202,16 +202,17 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     
     while (!queued.isEmpty()) {
       HashSet<DirectedUnit> nextQueued = new HashSet<DirectedUnit>();
+      HashSet<OutputTerminal> changed = new HashSet<OutputTerminal>();
       for (DirectedUnit u : queued) {
-        HashSet<OutputTerminal> changed = u.tick();
-        for (OutputTerminal ot : changed) {
-          double value = ot.getValue();
-          for (InputTerminal it : ot.getConnection().getOutputs()) {
-            it.setValue(value);
-            //TODO Optimization: have passive flag, which makes their sets not trigger updates down the line.
-            //         Probably good for passive source.
-            nextQueued.add(it.getUnit());
-          }
+        changed.addAll(u.tick());
+      }
+      for (OutputTerminal ot : changed) {
+        double value = ot.getValue();
+        for (InputTerminal it : ot.getConnection().getOutputs()) {
+          it.setValue(value);
+          //TODO Optimization: have passive flag, which makes their sets not trigger updates down the line.
+          //         Probably good for passive source.
+          nextQueued.add(it.getUnit());
         }
       }
       HashSet<DirectedUnit> bucket = queued;

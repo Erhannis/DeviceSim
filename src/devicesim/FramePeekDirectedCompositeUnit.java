@@ -14,7 +14,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import mathnstuff.MeMath;
 
@@ -22,26 +21,20 @@ import mathnstuff.MeMath;
  *
  * @author erhannis
  */
-public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
+public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
   private DirectedCompositeUnit unit;
-  private DirectedCompositeUnit unitPseudoArchetype;
-  private DefaultListModel<Unit> unitTypes;
   
   private PanelDisplay pd;
   
   /**
    * Creates new form FrameEditUnit
    */
-  public FrameRunDirectedCompositeUnit(DefaultListModel<Unit> unitTypes, DirectedCompositeUnit unit, DirectedCompositeUnit unitPseudoArchetype) {
-    this.unitTypes = unitTypes; // Maybe unneeded
+  public FramePeekDirectedCompositeUnit(DirectedCompositeUnit unit) {
     this.unit = unit;
-    this.unitPseudoArchetype = unitPseudoArchetype;
     initComponents();
     
     this.setTitle(unit.getName() + " run");
     
-    
-    radioInteract.setMnemonic(KeyEvent.VK_I);
     radioPeek.setMnemonic(KeyEvent.VK_P);
     
     pd = new PanelDisplay();
@@ -52,7 +45,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
       @Override
       public void mouseClicked(MouseEvent e) {
         Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
-        if (radioInteract.isSelected()) {
+        if (radioPeek.isSelected()) {
           double closestDist2 = Double.POSITIVE_INFINITY;
           Unit closest = null;
           for (Unit u : pd.units) {
@@ -64,33 +57,9 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
             }
           }
           if (closest != null) {
-            if (closest instanceof Runnable && closest instanceof DirectedUnit) {
-              ((Runnable)closest).run();
+            if (closest instanceof DirectedUnit) {
               //TODO Again, cheating
-              unit.addManualCheck((DirectedUnit)closest);
-              if (cbAutorun.isSelected()) {
-                doRun();
-                doRepaint();
-              } else {
-                doRepaint();
-              }
-            }
-          }
-        } else if (radioPeek.isSelected()) {
-          double closestDist2 = Double.POSITIVE_INFINITY;
-          Unit closest = null;
-          for (Unit u : pd.units) {
-            double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
-            if (dist2 < closestDist2 && dist2 <= MeMath.sqr((u.getViewHeight() + u.getViewHeight()) / 2.0) && u != unit.internalMetaUnit) {
-              // We want to be at least PRETTY close, and not delete the internalMetaUnit.
-              closest = u;
-              closestDist2 = dist2;
-            }
-          }
-          if (closest != null) {
-            if (closest instanceof DirectedCompositeUnit) {
-              //TODO Again, cheating
-              new FramePeekDirectedCompositeUnit((DirectedCompositeUnit)closest).setVisible(true);
+              
             }
           }
         }
@@ -101,8 +70,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
       @Override
       public void mousePressed(MouseEvent e) {
         Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
-        if (radioInteract.isSelected()) {
-        } else if (radioPeek.isSelected()) {
+        if (radioPeek.isSelected()) {
         }
       }
 
@@ -121,8 +89,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     pd.addMouseMotionListener(new MouseMotionListener() {
       @Override
       public void mouseDragged(MouseEvent e) {
-        if (radioInteract.isSelected()) {
-        } else if (radioPeek.isSelected()) {
+        if (radioPeek.isSelected()) {
         }
       }
 
@@ -133,8 +100,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     pd.addMouseWheelListener(new MouseWheelListener() {
       @Override
       public void mouseWheelMoved(MouseWheelEvent e) {
-        if (radioInteract.isSelected()) {
-        } else if (radioPeek.isSelected()) {
+        if (radioPeek.isSelected()) {
         }
       }
     });
@@ -160,13 +126,9 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
     jPanel1 = new javax.swing.JPanel();
     jTabbedPane1 = new javax.swing.JTabbedPane();
     jPanel3 = new javax.swing.JPanel();
-    btnSaveUnitState = new javax.swing.JButton();
-    btnRun = new javax.swing.JButton();
     btnRedraw = new javax.swing.JButton();
     jPanel4 = new javax.swing.JPanel();
-    radioInteract = new javax.swing.JRadioButton();
     radioPeek = new javax.swing.JRadioButton();
-    cbAutorun = new javax.swing.JCheckBox();
     jPanel2 = new javax.swing.JPanel();
     jLabel4 = new javax.swing.JLabel();
     spinConnectionTheme = new javax.swing.JSpinner();
@@ -197,22 +159,6 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
 
     jSplitPane1.setLeftComponent(jPanel1);
 
-    btnSaveUnitState.setText("Save State");
-    btnSaveUnitState.setToolTipText("Technically speaking, saves a unit.  It'll be in the displayed state, though.  Yeah, yeah, yeah.");
-    btnSaveUnitState.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        btnSaveUnitStateActionPerformed(evt);
-      }
-    });
-
-    btnRun.setText("Run");
-    btnRun.setToolTipText("Ctrl for 1000x, timed");
-    btnRun.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        btnRunActionPerformed(evt);
-      }
-    });
-
     btnRedraw.setText("Redraw");
     btnRedraw.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -226,42 +172,23 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
       jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel3Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(jPanel3Layout.createSequentialGroup()
-            .addComponent(btnSaveUnitState)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
-            .addComponent(btnRun))
-          .addGroup(jPanel3Layout.createSequentialGroup()
-            .addComponent(btnRedraw)
-            .addGap(0, 0, Short.MAX_VALUE)))
-        .addContainerGap())
+        .addComponent(btnRedraw)
+        .addContainerGap(179, Short.MAX_VALUE))
     );
     jPanel3Layout.setVerticalGroup(
       jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-      .addGroup(jPanel3Layout.createSequentialGroup()
-        .addContainerGap(369, Short.MAX_VALUE)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        .addContainerGap(408, Short.MAX_VALUE)
         .addComponent(btnRedraw)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(btnSaveUnitState)
-          .addComponent(btnRun))
         .addContainerGap())
     );
 
     jTabbedPane1.addTab("Props", jPanel3);
 
-    groupTools.add(radioInteract);
-    radioInteract.setSelected(true);
-    radioInteract.setText("(I)nteract");
-    radioInteract.setToolTipText("Toggle switches, etc.");
-
     groupTools.add(radioPeek);
+    radioPeek.setSelected(true);
     radioPeek.setText("(P)eek");
     radioPeek.setToolTipText("Nothing, atm");
-
-    cbAutorun.setSelected(true);
-    cbAutorun.setText("Autorun");
-    cbAutorun.setToolTipText("Hits \"run\" after you interact with anything");
 
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
@@ -269,24 +196,15 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel4Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(jPanel4Layout.createSequentialGroup()
-            .addComponent(radioInteract)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(cbAutorun))
-          .addComponent(radioPeek))
-        .addContainerGap(69, Short.MAX_VALUE))
+        .addComponent(radioPeek)
+        .addContainerGap(173, Short.MAX_VALUE))
     );
     jPanel4Layout.setVerticalGroup(
       jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel4Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-          .addComponent(radioInteract)
-          .addComponent(cbAutorun))
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioPeek)
-        .addContainerGap(385, Short.MAX_VALUE))
+        .addContainerGap(416, Short.MAX_VALUE))
     );
 
     jTabbedPane1.addTab("Tools", jPanel4);
@@ -355,6 +273,8 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
 
     jTabbedPane1.addTab("View", jPanel2);
 
+    jTabbedPane1.setSelectedIndex(2);
+
     jSplitPane1.setRightComponent(jTabbedPane1);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -376,31 +296,6 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
 
   public JFileChooser fileChooser = new JFileChooser();
   
-  private void btnSaveUnitStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUnitStateActionPerformed
-    if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-      DeviceEngine.saveObjectToFile(unit, fileChooser.getSelectedFile());
-    }
-  }//GEN-LAST:event_btnSaveUnitStateActionPerformed
-
-  private void doRun() {
-    unit.tick();
-    unit.doFinalState();
-  }
-  
-  private void btnRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunActionPerformed
-    if ((evt.getModifiers() & KeyEvent.MODIFIER_CONTROL) != 0) {
-      long start = System.currentTimeMillis();
-      for (int i = 0; i < 1000; i++) {
-        doRun();
-      }
-      long finish = System.currentTimeMillis();
-      System.out.println("time " + ((finish - start) / 1000.0));
-    } else {
-      doRun();
-    }
-    doRepaint();
-  }//GEN-LAST:event_btnRunActionPerformed
-
   private void btnRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedrawActionPerformed
     doRepaint();
   }//GEN-LAST:event_btnRedrawActionPerformed
@@ -441,20 +336,20 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
         }
       }
     } catch (ClassNotFoundException ex) {
-      java.util.logging.Logger.getLogger(FrameRunDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(FramePeekDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (InstantiationException ex) {
-      java.util.logging.Logger.getLogger(FrameRunDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(FramePeekDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (IllegalAccessException ex) {
-      java.util.logging.Logger.getLogger(FrameRunDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(FramePeekDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-      java.util.logging.Logger.getLogger(FrameRunDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(FramePeekDirectedCompositeUnit.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
         //</editor-fold>
 
     /* Create and display the form */
     java.awt.EventQueue.invokeLater(new Runnable() {
       public void run() {
-        new FrameRunDirectedCompositeUnit(null, null, null).setVisible(true);
+        new FramePeekDirectedCompositeUnit(null).setVisible(true);
       }
     });
   }
@@ -462,9 +357,6 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton btnRedraw;
   private javax.swing.JButton btnRedraw2;
-  private javax.swing.JButton btnRun;
-  private javax.swing.JButton btnSaveUnitState;
-  private javax.swing.JCheckBox cbAutorun;
   private javax.swing.JCheckBox cbDrawIMU;
   private javax.swing.JCheckBox cbHideSourceCons;
   private javax.swing.ButtonGroup groupTools;
@@ -475,7 +367,6 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JPanel jPanel4;
   private javax.swing.JSplitPane jSplitPane1;
   private javax.swing.JTabbedPane jTabbedPane1;
-  private javax.swing.JRadioButton radioInteract;
   private javax.swing.JRadioButton radioPeek;
   private javax.swing.JSpinner spinConnectionTheme;
   // End of variables declaration//GEN-END:variables

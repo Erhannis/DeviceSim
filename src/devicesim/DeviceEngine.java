@@ -77,6 +77,22 @@ public class DeviceEngine {
     return null;
   }
   
+  public static Unit createDelay() {
+    DirectedCompositeUnit delay = new DirectedCompositeUnit(1, 1);
+    delay.setName("DELAY");
+
+    GDC.addConnection(delay.iin(0), delay.iout(0));
+    
+    try {
+      return delay.copy();
+    } catch (IOException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+      Logger.getLogger(DeviceEngine.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return null;
+  }
+  
   public static final Unit[] UNIT_ARCHETYPES = {
     new SourceHigh(),
     new SourceLow(),
@@ -86,6 +102,7 @@ public class DeviceEngine {
     new NandGate(),
     new NotGate(),
     new SinkNop(),
+    createDelay(),
     createAdd2(),
     new SinkSysout(),
     new SinkSysoutBinary(8),
