@@ -256,10 +256,12 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       }
 
       public boolean hadFocus = false;
+      private Point2D startPoint = null;
       
       @Override
       public void mousePressed(MouseEvent e) {
         Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
+        startPoint = m;
         if (radioMove.isSelected()) {
           double closestDist2 = Double.POSITIVE_INFINITY;
           Unit closest = null;
