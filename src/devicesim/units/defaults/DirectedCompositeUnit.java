@@ -162,7 +162,7 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
   
   @Override
   public boolean isOrigin() {
-    return false;
+    return !origins.isEmpty();
   }
 
   /**

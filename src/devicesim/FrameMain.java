@@ -322,7 +322,7 @@ public class FrameMain extends javax.swing.JFrame {
     }
   }//GEN-LAST:event_btnDeleteUnitTypeActionPerformed
 
-  public JFileChooser fileChooser = new JFileChooser();
+  public JFileChooser fileChooser = new JFileChooser(FrameMain.class.getProtectionDomain().getCodeSource().getLocation().getFile());
   
   private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
     ArrayList al = new ArrayList(listUnitTypes.getSelectedValuesList());

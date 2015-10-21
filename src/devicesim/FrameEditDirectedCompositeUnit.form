@@ -327,7 +327,7 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="(C)onnect"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Hold shift to keep connecting."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Hold shift to keep connecting.  Drag to select/connect a bunch.  (Sorted top down.)"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioDisconnect">
@@ -336,6 +336,7 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="(D)isconnect"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Drag to disconnect a bunch."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radioPlace">

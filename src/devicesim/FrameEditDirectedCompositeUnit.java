@@ -19,7 +19,10 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mathnstuff.MeMath;
+import mathnstuff.MeUtils;
 
 /**
  *
@@ -260,6 +264,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       
       @Override
       public void mousePressed(MouseEvent e) {
+        changed = true;
         Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
         startPoint = m;
         if (radioMove.isSelected()) {
@@ -285,7 +290,85 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
       @Override
       public void mouseReleased(MouseEvent e) {
+        Point2D m = pd.ati.transform(new Point2D.Double(e.getX(), e.getY()), null);
         pd.selectedUnits.clear();
+        IfChain:
+        if (radioMove.isSelected()) {
+        } else if (radioConnect.isSelected()) {
+          if (m.equals(startPoint)) {
+            break IfChain;
+          }
+          Rectangle2D r = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), m.getX() - startPoint.getX(), m.getY() - startPoint.getY());
+          MeUtils.fixRect2DIP(r);
+          if (pd.selectedTerminals.isEmpty()) {
+            // Whoaaaa, what is this crazy exoticism
+            unit.allUnits.stream().forEach((du) -> {
+              du.getTerminals().stream().filter((t) -> (r.contains(new Point2D.Double(t.getViewX(), t.getViewY())))).forEach((t) -> {
+                pd.selectedTerminals.add(t);
+              });
+            });
+          } else {
+            // It's weeeiiiirrrd
+            HashSet<Terminal> terms = new HashSet<Terminal>();
+            unit.allUnits.stream().forEach((du) -> {
+              du.getTerminals().stream().filter((t) -> (r.contains(new Point2D.Double(t.getViewX(), t.getViewY())))).forEach((t) -> {
+                terms.add(t);
+              });
+            });
+            ArrayList<Terminal> a = new ArrayList<Terminal>(pd.selectedTerminals);
+            ArrayList<Terminal> b = new ArrayList<Terminal>(terms);
+            a.sort(new Comparator<Terminal>() {
+              @Override
+              public int compare(Terminal o1, Terminal o2) {
+                return Double.compare(o1.getViewY(), o2.getViewY());
+              }
+            });
+            b.sort(new Comparator<Terminal>() {
+              @Override
+              public int compare(Terminal o1, Terminal o2) {
+                return Double.compare(o1.getViewY(), o2.getViewY());
+              }
+            });
+            for (int i = 0; i < a.size() && i < b.size(); i++) {
+              if (a.get(i) instanceof OutputTerminal) {
+                if (b.get(i) instanceof InputTerminal) {
+                  GDC.addConnection(((OutputTerminal)a.get(i)), ((InputTerminal)b.get(i)));
+                } else {
+                  // Dunno
+                }
+              } else if (a.get(i) instanceof InputTerminal) {
+                if (b.get(i) instanceof OutputTerminal) {
+                  GDC.addConnection(((OutputTerminal)b.get(i)), ((InputTerminal)a.get(i)));
+                } else {
+                  // Dunno
+                }
+              } else {
+                //TODO Dunno; could support plain terminals, eventually
+              }
+            }
+            pd.selectedTerminals.clear();
+          }
+        } else if (radioDisconnect.isSelected()) {
+          if (m.equals(startPoint)) {
+            break IfChain;
+          }
+          Rectangle2D r = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), m.getX() - startPoint.getX(), m.getY() - startPoint.getY());
+          MeUtils.fixRect2DIP(r);
+          // Whoaaaa, what is this crazy exoticism
+          unit.allUnits.stream().forEach((du) -> {
+            du.getTerminals().stream().filter((t) -> (r.contains(new Point2D.Double(t.getViewX(), t.getViewY())))).forEach((t) -> {
+              if (t instanceof InputTerminal) {
+                ((InputTerminal)t).breakConnection();
+              } else if (t instanceof OutputTerminal) {
+                ((OutputTerminal)t).breakConnection();
+              }
+            });
+          });
+        } else if (radioRemove.isSelected()) {
+        } else if (radioReplace.isSelected()) {
+        } else if (radioPlace.isSelected()) {
+        }
+        startPoint = null;
         doRepaint();
       }
 
@@ -637,10 +720,11 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
     groupTools.add(radioConnect);
     radioConnect.setText("(C)onnect");
-    radioConnect.setToolTipText("Hold shift to keep connecting.");
+    radioConnect.setToolTipText("Hold shift to keep connecting.  Drag to select/connect a bunch.  (Sorted top down.)");
 
     groupTools.add(radioDisconnect);
     radioDisconnect.setText("(D)isconnect");
+    radioDisconnect.setToolTipText("Drag to disconnect a bunch.");
 
     groupTools.add(radioPlace);
     radioPlace.setText("(P)lace");
