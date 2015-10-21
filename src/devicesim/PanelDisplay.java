@@ -129,6 +129,9 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             }
+            if (hideSourceConnections && (u instanceof InternalMetaUnit) && i < 2) {
+              continue;
+            }
             //TODO Not sure about this one.  Maybe a continuum of values?
             if (ot.getValue() >= STATE_SPLIT_POINT) {
               g.setColor(COLOR_HIGH);
