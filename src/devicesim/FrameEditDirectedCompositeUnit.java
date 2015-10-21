@@ -329,21 +329,34 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 return Double.compare(o1.getViewY(), o2.getViewY());
               }
             });
-            for (int i = 0; i < a.size() && i < b.size(); i++) {
-              if (a.get(i) instanceof OutputTerminal) {
+            if (b.size() == 1 && a.size() > 1) {
+              ArrayList<Terminal> bucket = a;
+              a = b;
+              b = bucket;
+            }
+            if (a.size() == 1 && b.size() > 1 && a.get(0) instanceof OutputTerminal) {
+              for (int i = 0; i < b.size(); i++) {
                 if (b.get(i) instanceof InputTerminal) {
-                  GDC.addConnection(((OutputTerminal)a.get(i)), ((InputTerminal)b.get(i)));
-                } else {
-                  // Dunno
+                  GDC.addConnection(((OutputTerminal)a.get(0)), ((InputTerminal)b.get(i)));
                 }
-              } else if (a.get(i) instanceof InputTerminal) {
-                if (b.get(i) instanceof OutputTerminal) {
-                  GDC.addConnection(((OutputTerminal)b.get(i)), ((InputTerminal)a.get(i)));
+              }
+            } else {
+              for (int i = 0; i < a.size() && i < b.size(); i++) {
+                if (a.get(i) instanceof OutputTerminal) {
+                  if (b.get(i) instanceof InputTerminal) {
+                    GDC.addConnection(((OutputTerminal)a.get(i)), ((InputTerminal)b.get(i)));
+                  } else {
+                    // Dunno
+                  }
+                } else if (a.get(i) instanceof InputTerminal) {
+                  if (b.get(i) instanceof OutputTerminal) {
+                    GDC.addConnection(((OutputTerminal)b.get(i)), ((InputTerminal)a.get(i)));
+                  } else {
+                    // Dunno
+                  }
                 } else {
-                  // Dunno
+                  //TODO Dunno; could support plain terminals, eventually
                 }
-              } else {
-                //TODO Dunno; could support plain terminals, eventually
               }
             }
             pd.selectedTerminals.clear();
@@ -720,7 +733,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
     groupTools.add(radioConnect);
     radioConnect.setText("(C)onnect");
-    radioConnect.setToolTipText("Hold shift to keep connecting.  Drag to select/connect a bunch.  (Sorted top down.)");
+    radioConnect.setToolTipText("Hold shift to keep connecting.  Drag to select/connect a bunch.  (Sorted top down.)  Select one output, then a bunch of inputs, to connect them.");
 
     groupTools.add(radioDisconnect);
     radioDisconnect.setText("(D)isconnect");

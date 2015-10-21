@@ -33,12 +33,13 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
     this.unit = unit;
     initComponents();
     
-    this.setTitle(unit.getName() + " run");
+    this.setTitle(unit.getName() + " peek");
     
     radioPeek.setMnemonic(KeyEvent.VK_P);
     
     pd = new PanelDisplay();
     pd.units = unit.allUnits;
+    pd.hideSourceConnections = cbHideSourceCons.isSelected();
     jSplitPane1.setLeftComponent(pd);
     
     pd.addMouseListener(new MouseListener() {
@@ -59,7 +60,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
           if (closest != null) {
             if (closest instanceof DirectedUnit) {
               //TODO Again, cheating
-              
+              new FramePeekDirectedCompositeUnit((DirectedCompositeUnit)closest).setVisible(true);
             }
           }
         }
@@ -218,6 +219,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    cbHideSourceCons.setSelected(true);
     cbHideSourceCons.setText("Hide source cons");
     cbHideSourceCons.addChangeListener(new javax.swing.event.ChangeListener() {
       public void stateChanged(javax.swing.event.ChangeEvent evt) {

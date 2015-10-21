@@ -87,6 +87,7 @@ public class PanelDisplay extends javax.swing.JPanel {
       super.paintComponent(g0); //To change body of generated methods, choose Tools | Templates.
       Graphics2D g = (Graphics2D)g0;
       g.setFont(FONT);
+      g.setColor(COLOR_NORMAL);
       g.setStroke(new BasicStroke(0));
       AffineTransform saveAT = g.getTransform();
       g.transform(at);
