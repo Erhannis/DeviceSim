@@ -34,7 +34,7 @@ public class InternalMetaUnit extends BlankDirectedUnit {
     terminals.addAll(this.outputs);
     setName("InternalMetaUnit");
     setViewWidth(-400);
-    setViewHeight(293);
+    setViewHeight(800 / 3.0);
     setViewTop(80);
     setViewLeft(450);
   }

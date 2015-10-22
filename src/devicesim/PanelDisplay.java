@@ -6,6 +6,7 @@
 
 package devicesim;
 
+import devicesim.units.defaults.DirectedCompositeUnit;
 import devicesim.units.defaults.InternalMetaUnit;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
@@ -30,7 +31,7 @@ import mathnstuff.MeUtils;
  * @author erhannis
  */
 public class PanelDisplay extends javax.swing.JPanel {
-    public HashSet<? extends Unit> units = new HashSet<Unit>();
+    public HashSet<? extends Unit> rootUnits = new HashSet<Unit>();
   
     public HashSet<Unit> selectedUnits = new HashSet<Unit>();
     public HashSet<Terminal> selectedTerminals = new HashSet<Terminal>();
@@ -38,7 +39,7 @@ public class PanelDisplay extends javax.swing.JPanel {
     public boolean skipRender = false;
     public AffineTransform at = new AffineTransform();
     public AffineTransform ati = new AffineTransform();
-    public final Font FONT = new Font("Monospaced", 0, 14);
+    public static final Font FONT = new Font("Monospaced", 0, 14);
     
     public static final int CLMODE_DIRECT = 0;
     public static final int CLMODE_SQUARE = 1;
@@ -46,6 +47,7 @@ public class PanelDisplay extends javax.swing.JPanel {
     public int connectionLineMode = CLMODE_DIRECT;
     public boolean hideSourceConnections = false;
     public boolean drawIMU = false;
+    public boolean recursiveRender = false;
     
     private static final Color COLOR_BACKGROUND = Color.LIGHT_GRAY;
     private static final Color COLOR_NORMAL = Color.BLACK;
@@ -78,24 +80,39 @@ public class PanelDisplay extends javax.swing.JPanel {
           return path;
       }
     }
+
+    private static AffineTransform getInternalsTransform(Unit u) {
+      AffineTransform t2 = new AffineTransform();
+      t2.translate(u.getViewLeft(), u.getViewTop());
+      double scale = u.getViewWidth() / 400;
+      t2.scale(scale, scale);
+      t2.translate(-50, -80);
+      return t2;
+    }
     
-    @Override
-    protected void paintComponent(Graphics g0) {
-      if (skipRender) {
-        return;
-      }
-      super.paintComponent(g0); //To change body of generated methods, choose Tools | Templates.
-      Graphics2D g = (Graphics2D)g0;
+    public void render(Graphics2D g, AffineTransform t, HashSet<? extends Unit> units, boolean checkSelected) {
+      AffineTransform saveAT = g.getTransform();
+      g.transform(t);
+      
       g.setFont(FONT);
       g.setColor(COLOR_NORMAL);
       g.setStroke(new BasicStroke(0));
-      AffineTransform saveAT = g.getTransform();
-      g.transform(at);
       
       //TODO Render better
       for (Unit u : units) {
+        // Uncomment for resizing for recursive redraw.
+//        if (u instanceof InternalMetaUnit) {
+//          InternalMetaUnit imu = (InternalMetaUnit)u;
+//          imu.setViewHeight((imu.getViewWidth() / -30) * 20);
+//          imu.recalcView();
+//        }
+        if (recursiveRender && u instanceof DirectedCompositeUnit) {
+          //TODO Yeah yeah cheating
+          AffineTransform t2 = getInternalsTransform(u);
+          render(g, t2, ((DirectedCompositeUnit)u).allUnits, false);
+        }
         //TODO Make more efficient; cache stuff, etc.
-        if (selectedUnits.contains(u)) {
+        if (checkSelected && selectedUnits.contains(u)) {
           g.setColor(COLOR_HIGHLIGHT);
         }
         if (u instanceof InternalMetaUnit) {
@@ -109,7 +126,7 @@ public class PanelDisplay extends javax.swing.JPanel {
           g.setFont(FONT.deriveFont(u.getViewFontSize()));
           g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
         }
-        if (selectedUnits.contains(u)) {
+        if (checkSelected && selectedUnits.contains(u)) {
           g.setColor(COLOR_NORMAL);
         }
         if (u instanceof DirectedUnit) {
@@ -123,7 +140,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             double oax = ot.getViewX();
             double oay = ot.getViewY();
             double oSocketRadius = ot.getViewSocketRadius();
-            if (selectedTerminals.contains(ot)) {
+            if (checkSelected && selectedTerminals.contains(ot)) {
               g.setColor(COLOR_HIGHLIGHT);
               g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
               g.setColor(COLOR_NORMAL);
@@ -155,7 +172,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             double iax = it.getViewX();
             double iay = it.getViewY();
             double iSocketRadius = it.getViewSocketRadius();
-            if (selectedTerminals.contains(it)) {
+            if (checkSelected && selectedTerminals.contains(it)) {
               g.setColor(COLOR_HIGHLIGHT);
               g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
               g.setColor(COLOR_NORMAL);
@@ -167,6 +184,16 @@ public class PanelDisplay extends javax.swing.JPanel {
       }
       
       g.setTransform(saveAT);
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g0) {
+      if (skipRender) {
+        return;
+      }
+      super.paintComponent(g0); //To change body of generated methods, choose Tools | Templates.
+      Graphics2D g = (Graphics2D)g0;
+      render(g, at, rootUnits, true);
     }
   
   /**

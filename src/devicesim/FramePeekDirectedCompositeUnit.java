@@ -38,7 +38,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
     radioPeek.setMnemonic(KeyEvent.VK_P);
     
     pd = new PanelDisplay();
-    pd.units = unit.allUnits;
+    pd.rootUnits = unit.allUnits;
     pd.hideSourceConnections = cbHideSourceCons.isSelected();
     jSplitPane1.setLeftComponent(pd);
     
@@ -49,7 +49,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
         if (radioPeek.isSelected()) {
           double closestDist2 = Double.POSITIVE_INFINITY;
           Unit closest = null;
-          for (Unit u : pd.units) {
+          for (Unit u : pd.rootUnits) {
             double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
             if (dist2 < closestDist2 && dist2 <= MeMath.sqr((u.getViewHeight() + u.getViewHeight()) / 2.0) && u != unit.internalMetaUnit) {
               // We want to be at least PRETTY close, and not delete the internalMetaUnit.
@@ -136,6 +136,10 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
     cbHideSourceCons = new javax.swing.JCheckBox();
     btnRedraw2 = new javax.swing.JButton();
     cbDrawIMU = new javax.swing.JCheckBox();
+    cbRecursiveRender = new javax.swing.JCheckBox();
+    spinBigDim = new javax.swing.JSpinner();
+    jLabel5 = new javax.swing.JLabel();
+    btnSaveImage = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -241,6 +245,24 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    cbRecursiveRender.setText("Recursive render");
+    cbRecursiveRender.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        cbRecursiveRenderStateChanged(evt);
+      }
+    });
+
+    spinBigDim.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1280), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+    jLabel5.setText("Big dim");
+
+    btnSaveImage.setText("Save Image");
+    btnSaveImage.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnSaveImageActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
     jPanel2Layout.setHorizontalGroup(
@@ -249,13 +271,27 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
         .addContainerGap()
         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(jPanel2Layout.createSequentialGroup()
-            .addComponent(jLabel4)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-          .addComponent(btnRedraw2)
-          .addComponent(cbHideSourceCons)
-          .addComponent(cbDrawIMU))
-        .addContainerGap(46, Short.MAX_VALUE))
+            .addComponent(btnRedraw2)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spinBigDim, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(btnSaveImage))))
+          .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addComponent(cbHideSourceCons)
+              .addComponent(cbDrawIMU)
+              .addComponent(cbRecursiveRender))
+            .addGap(0, 0, Short.MAX_VALUE)))
+        .addContainerGap())
     );
     jPanel2Layout.setVerticalGroup(
       jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -268,8 +304,17 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
         .addComponent(cbHideSourceCons)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(cbDrawIMU)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 300, Short.MAX_VALUE)
-        .addComponent(btnRedraw2)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbRecursiveRender)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 255, Short.MAX_VALUE)
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(btnRedraw2, javax.swing.GroupLayout.Alignment.TRAILING)
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+              .addComponent(spinBigDim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(jLabel5))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(btnSaveImage)))
         .addContainerGap())
     );
 
@@ -321,6 +366,15 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
     doRepaint();
   }//GEN-LAST:event_cbDrawIMUStateChanged
 
+  private void cbRecursiveRenderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbRecursiveRenderStateChanged
+    pd.recursiveRender = cbRecursiveRender.isSelected();
+    doRepaint();
+  }//GEN-LAST:event_cbRecursiveRenderStateChanged
+
+  private void btnSaveImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveImageActionPerformed
+
+  }//GEN-LAST:event_btnSaveImageActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -359,10 +413,13 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton btnRedraw;
   private javax.swing.JButton btnRedraw2;
+  private javax.swing.JButton btnSaveImage;
   private javax.swing.JCheckBox cbDrawIMU;
   private javax.swing.JCheckBox cbHideSourceCons;
+  private javax.swing.JCheckBox cbRecursiveRender;
   private javax.swing.ButtonGroup groupTools;
   private javax.swing.JLabel jLabel4;
+  private javax.swing.JLabel jLabel5;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JPanel jPanel2;
   private javax.swing.JPanel jPanel3;
@@ -370,6 +427,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JSplitPane jSplitPane1;
   private javax.swing.JTabbedPane jTabbedPane1;
   private javax.swing.JRadioButton radioPeek;
+  private javax.swing.JSpinner spinBigDim;
   private javax.swing.JSpinner spinConnectionTheme;
   // End of variables declaration//GEN-END:variables
 }
