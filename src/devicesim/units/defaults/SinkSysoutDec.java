@@ -60,9 +60,9 @@ public class SinkSysoutDec extends BlankDirectedUnit {
     double low = inputs.get(1).getValue();
     BigInteger bi = BigInteger.valueOf(0);
     for (int i = 2; i < inputs.size(); i++) {
-      bi.shiftLeft(1);
+      bi = bi.shiftLeft(1);
       if (MeMath.nearerFirst(high, low, in(i).getValue())) {
-        bi.add(BigInteger.ONE);
+        bi = bi.add(BigInteger.ONE);
       } else {
       }
     }
