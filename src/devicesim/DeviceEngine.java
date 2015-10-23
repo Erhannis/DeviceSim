@@ -18,6 +18,7 @@ import devicesim.units.defaults.RandomSMetaGate;
 import devicesim.units.defaults.SinkNop;
 import devicesim.units.defaults.SinkSysout;
 import devicesim.units.defaults.SinkSysoutBinary;
+import devicesim.units.defaults.SinkSysoutDec;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
 import devicesim.units.defaults.StateSource;
@@ -105,6 +106,7 @@ public class DeviceEngine {
     createDelay(),
     new SinkSysout(),
     new SinkSysoutBinary(8),
+    new SinkSysoutDec(8),
     new SwitchMetaGate(),
     new ClockMetaGate(1, 1),
     new ClockMetaGate(2, 2),
