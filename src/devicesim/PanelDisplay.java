@@ -46,6 +46,7 @@ public class PanelDisplay extends javax.swing.JPanel {
 
     public int connectionLineMode = CLMODE_DIRECT;
     public boolean hideSourceConnections = false;
+    public boolean hideText = false;
     public boolean drawIMU = false;
     public boolean recursiveRender = false;
     
@@ -118,13 +119,17 @@ public class PanelDisplay extends javax.swing.JPanel {
         if (u instanceof InternalMetaUnit) {
           if (drawIMU) {
             g.draw(MeUtils.fixRect2DIP(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight())));
-            g.setFont(FONT.deriveFont(u.getViewFontSize()));
-            g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+            if (!hideText) {
+              g.setFont(FONT.deriveFont(u.getViewFontSize()));
+              g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+            }
           }
         } else {
           g.draw(new Rectangle.Double(u.getViewLeft(), u.getViewTop(), u.getViewWidth(), u.getViewHeight()));
-          g.setFont(FONT.deriveFont(u.getViewFontSize()));
-          g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+          if (!hideText) {
+            g.setFont(FONT.deriveFont(u.getViewFontSize()));
+            g.drawString(u.getName(), (float)u.getViewLeft(), (float)u.getViewTop());
+          }
         }
         if (checkSelected && selectedUnits.contains(u)) {
           g.setColor(COLOR_NORMAL);

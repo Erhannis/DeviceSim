@@ -510,6 +510,19 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     if (unitToReplace != null) {
       int idx = unitTypes.indexOf(unitToReplace);
       DirectedCompositeUnit copy = (DirectedCompositeUnit)unit.copy();
+      if (idx < 0) {
+        switch (JOptionPane.showConfirmDialog(FrameEditDirectedCompositeUnit.this, "Problem saving!  Save into new slot?")) {
+          case JOptionPane.YES_OPTION:
+            unitTypes.addElement(copy);
+            unitToReplace = copy;
+            break;
+          case JOptionPane.NO_OPTION:
+            break;
+          case JOptionPane.CANCEL_OPTION:
+            break;
+        }
+        return;
+      }
       unitTypes.set(idx, copy);
       unitToReplace = copy;
     } else {
@@ -565,6 +578,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     spinBigDim = new javax.swing.JSpinner();
     btnSaveImage = new javax.swing.JButton();
     jLabel5 = new javax.swing.JLabel();
+    cbHideText = new javax.swing.JCheckBox();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -859,6 +873,18 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
     jLabel5.setText("Big dim");
 
+    cbHideText.setText("Hide text");
+    cbHideText.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        cbHideTextStateChanged(evt);
+      }
+    });
+    cbHideText.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        cbHideTextActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
     jPanel2Layout.setHorizontalGroup(
@@ -885,7 +911,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
               .addComponent(cbHideSourceCons)
               .addComponent(cbDrawIMU)
-              .addComponent(cbRecursiveRender))
+              .addComponent(cbRecursiveRender)
+              .addComponent(cbHideText))
             .addGap(0, 0, Short.MAX_VALUE)))
         .addContainerGap())
     );
@@ -904,7 +931,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             .addComponent(cbDrawIMU)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(cbRecursiveRender)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 285, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(cbHideText)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
             .addComponent(btnRedraw2))
           .addGroup(jPanel2Layout.createSequentialGroup()
             .addGap(0, 0, Short.MAX_VALUE)
@@ -1069,6 +1098,15 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
   }//GEN-LAST:event_btnSaveImageActionPerformed
 
+  private void cbHideTextStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbHideTextStateChanged
+    pd.hideText = cbHideText.isSelected();
+    doRepaint();
+  }//GEN-LAST:event_cbHideTextStateChanged
+
+  private void cbHideTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbHideTextActionPerformed
+    // TODO add your handling code here:
+  }//GEN-LAST:event_cbHideTextActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -1115,6 +1153,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JCheckBox cbAutosource;
   private javax.swing.JCheckBox cbDrawIMU;
   private javax.swing.JCheckBox cbHideSourceCons;
+  private javax.swing.JCheckBox cbHideText;
   private javax.swing.JCheckBox cbRecursiveRender;
   private javax.swing.ButtonGroup groupTools;
   private javax.swing.JLabel jLabel1;

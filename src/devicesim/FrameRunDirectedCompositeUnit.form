@@ -250,6 +250,7 @@
                                       <Component id="cbHideSourceCons" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="cbDrawIMU" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="cbRecursiveRender" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cbHideText" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -278,7 +279,9 @@
                           <Component id="cbDrawIMU" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="cbRecursiveRender" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="253" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cbHideText" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="222" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="spinBigDim" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -360,6 +363,15 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Big dim"/>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="cbHideText">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Hide text"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="cbHideTextStateChanged"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbHideTextActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>
