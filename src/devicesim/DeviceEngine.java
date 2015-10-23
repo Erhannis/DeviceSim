@@ -103,7 +103,6 @@ public class DeviceEngine {
     new NotGate(),
     new SinkNop(),
     createDelay(),
-    createAdd2(),
     new SinkSysout(),
     new SinkSysoutBinary(8),
     new SwitchMetaGate(),
