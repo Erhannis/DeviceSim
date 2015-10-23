@@ -1,2 +1,17 @@
-Checkbox "auto-handle +-"
-Still need to do "run"
+function to determine if a unit is a strict function
+better connection paths
+more meta units
+  key input - have actual window for it?
+  char out - have actual window for it?
+  graphics - have actual window for it?
+  sound? (maybe eventually)
+  signed int out
+  timeclock (how big enough?)
+  scripting - have actual window for it.
+    individual, or shared environment?  I guess individual
+prod terminal
+MOD unit?
+
+
+check:
+  signed mult/div same as unsigned?
