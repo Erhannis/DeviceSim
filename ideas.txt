@@ -11,6 +11,11 @@ more meta units
     individual, or shared environment?  I guess individual
 prod terminal
 MOD unit?
+function to reduce units to logic - kinda cheating, but would super help optimization
+recursive replace (by name)
+  recursive update, from main?
+scale place spinner
+function to collect basic stats; unit count, connection count
 
 
 check:
