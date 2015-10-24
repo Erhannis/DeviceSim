@@ -18,5 +18,7 @@ scale place spinner
 function to collect basic stats; unit count, connection count
 
 
-check:
-  signed mult/div same as unsigned?
+
+Note:
+signed div is wonky with negative nums, prolly bc of GTE
+the ALU's flag bit is wonky for most everything, 'cept on div => div by 0
