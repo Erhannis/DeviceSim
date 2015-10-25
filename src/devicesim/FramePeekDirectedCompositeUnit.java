@@ -14,6 +14,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import mathnstuff.MeMath;
 
@@ -415,7 +418,13 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
 
   private void btnSaveUnitStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUnitStateActionPerformed
     if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-      DeviceEngine.saveObjectToFile(unit, fileChooser.getSelectedFile());
+      try {
+        DeviceEngine.saveObjectToFile(unit.copy(), fileChooser.getSelectedFile());
+      } catch (IOException ex) {
+        Logger.getLogger(FramePeekDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (ClassNotFoundException ex) {
+        Logger.getLogger(FramePeekDirectedCompositeUnit.class.getName()).log(Level.SEVERE, null, ex);
+      }
     }
   }//GEN-LAST:event_btnSaveUnitStateActionPerformed
 
