@@ -21,6 +21,11 @@ public abstract class OutputTerminal implements Terminal {
   public abstract DirectedConnection getConnection();
   public abstract void setConnection(DirectedConnection connection);
   public abstract boolean pullHasChanged();
+  
+  /**
+   * This is so values in saved states actually happen when the chip is next used.
+   */
+  public abstract void resetChanged();
 
   public void breakConnection() {
     DirectedConnection c = getConnection();

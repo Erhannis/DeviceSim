@@ -6,8 +6,9 @@
 
 package devicesim;
 
-import com.sun.glass.events.KeyEvent;
 import devicesim.units.defaults.DirectedCompositeUnit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -446,7 +447,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
   }
   
   private void btnRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunActionPerformed
-    if ((evt.getModifiers() & KeyEvent.MODIFIER_CONTROL) != 0) {
+    if ((evt.getModifiers() & ActionEvent.CTRL_MASK) != 0) {
       long start = System.currentTimeMillis();
       for (int i = 0; i < 1000; i++) {
         doRun();

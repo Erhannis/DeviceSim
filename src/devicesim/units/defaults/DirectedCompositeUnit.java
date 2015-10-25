@@ -86,6 +86,9 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     DirectedCompositeUnit copy = null;
     try {
       copy = (DirectedCompositeUnit)super.copy();
+      for (OutputTerminal t : copy.outputs) {
+        t.resetChanged();
+      }
     } finally {
       for (int i = 0; i < inputs.size(); i++) {
         InputTerminal it = inputs.get(i);

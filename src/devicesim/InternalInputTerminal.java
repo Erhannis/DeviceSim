@@ -25,6 +25,12 @@ public class InternalInputTerminal extends OutputTerminal {
   }
 
   @Override
+  public void resetChanged() {
+    hasChanged = true;
+    prevValue = dual.getValue();
+  }
+  
+  @Override
   public void setValue(double value) {
     if (dual.getValue() != value) {
       hasChanged = true;

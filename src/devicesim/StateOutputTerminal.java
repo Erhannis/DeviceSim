@@ -11,6 +11,7 @@ package devicesim;
  * @author erhannis
  */
 public class StateOutputTerminal extends OutputTerminal {
+  private static final long serialVersionUID = 8777841688199009167L;
   private double value;
   private DirectedConnection connection = null;
   
@@ -27,6 +28,11 @@ public class StateOutputTerminal extends OutputTerminal {
       hasChanged = true;
       this.value = value;
     }
+  }
+
+  @Override
+  public void resetChanged() {
+    hasChanged = true;
   }
   
   @Override
