@@ -16,6 +16,9 @@ recursive replace (by name)
   recursive update, from main?
 scale place spinner
 function to collect basic stats; unit count, connection count
+save notes with unit?
+
+Eventually look into matrix electronics
 
 
 

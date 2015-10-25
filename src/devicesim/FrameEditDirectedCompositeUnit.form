@@ -264,7 +264,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" pref="266" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="radioMove" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -278,7 +278,12 @@
                                       </Group>
                                       <Component id="radioReplace" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="0" pref="52" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="radioLabelTerminal" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="textTerminalLabel" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -295,6 +300,11 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="radioDisconnect" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="radioLabelTerminal" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="textTerminalLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="radioRemove" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="radioReplace" min="-2" max="-2" attributes="0"/>
@@ -304,7 +314,7 @@
                               <Component id="cbAutosource" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="243" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="220" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -387,6 +397,17 @@
                     <Property name="text" type="java.lang.String" value="R(e)place"/>
                     <Property name="toolTipText" type="java.lang.String" value="Aim for the top left corner of a unit."/>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JRadioButton" name="radioLabelTerminal">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="groupTools"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="(L)abel terminal"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Drag to disconnect a bunch."/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="textTerminalLabel">
                 </Component>
               </SubComponents>
             </Container>

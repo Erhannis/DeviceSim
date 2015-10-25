@@ -432,7 +432,7 @@ public class FrameRunDirectedCompositeUnit extends javax.swing.JFrame {
   private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
   }//GEN-LAST:event_formWindowClosing
 
-  public JFileChooser fileChooser = new JFileChooser();
+  public JFileChooser fileChooser = new JFileChooser(FrameRunDirectedCompositeUnit.class.getProtectionDomain().getCodeSource().getLocation().getFile());
   
   private void btnSaveUnitStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUnitStateActionPerformed
     if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {

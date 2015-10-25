@@ -13,6 +13,8 @@ import java.util.ArrayList;
  * @author erhannis
  */
 public abstract class OutputTerminal implements Terminal {
+  private static final long serialVersionUID = 6588691410197192947L;
+  private String name;
   DirectedUnit unit;
   
   @Override
@@ -30,6 +32,17 @@ public abstract class OutputTerminal implements Terminal {
   @Override
   public DirectedUnit getUnit() {
     return unit;
+  }
+  
+  @Override
+  public String getName() {
+    return name;
+  }
+  
+  @Override
+  public OutputTerminal setName(String name) {
+    this.name = name;
+    return this; // For construction chains
   }
   
   //<editor-fold desc="Optional view stuff">

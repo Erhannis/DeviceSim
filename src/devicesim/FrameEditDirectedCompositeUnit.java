@@ -64,6 +64,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioMove.setMnemonic(KeyEvent.VK_M);
     radioConnect.setMnemonic(KeyEvent.VK_C);
     radioDisconnect.setMnemonic(KeyEvent.VK_D);
+    radioLabelTerminal.setMnemonic(KeyEvent.VK_L);
     radioRemove.setMnemonic(KeyEvent.VK_R);
     radioReplace.setMnemonic(KeyEvent.VK_E);
     radioPlace.setMnemonic(KeyEvent.VK_P);
@@ -123,6 +124,16 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                   //TODO Dunno.
                 }
               }
+            }
+          }
+          changed = true;
+          doRepaint();
+        } else if (radioLabelTerminal.isSelected()) {
+          for (Terminal t : unit.internalMetaUnit.getTerminals()) {
+            double dist = m.distance(t.getViewX(), t.getViewY());
+            if (dist < t.getViewSocketRadius()) {
+              t.setName(textTerminalLabel.getText());
+              break;
             }
           }
           changed = true;
@@ -568,6 +579,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioRemove = new javax.swing.JRadioButton();
     cbAutosource = new javax.swing.JCheckBox();
     radioReplace = new javax.swing.JRadioButton();
+    radioLabelTerminal = new javax.swing.JRadioButton();
+    textTerminalLabel = new javax.swing.JTextField();
     jPanel2 = new javax.swing.JPanel();
     spinConnectionTheme = new javax.swing.JSpinner();
     jLabel4 = new javax.swing.JLabel();
@@ -774,6 +787,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioReplace.setText("R(e)place");
     radioReplace.setToolTipText("Aim for the top left corner of a unit.");
 
+    groupTools.add(radioLabelTerminal);
+    radioLabelTerminal.setText("(L)abel terminal");
+    radioLabelTerminal.setToolTipText("Drag to disconnect a bunch.");
+
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
@@ -781,7 +798,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       .addGroup(jPanel4Layout.createSequentialGroup()
         .addContainerGap()
         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+          .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
           .addGroup(jPanel4Layout.createSequentialGroup()
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(radioMove)
@@ -793,7 +810,11 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbAutosource))
               .addComponent(radioReplace))
-            .addGap(0, 52, Short.MAX_VALUE)))
+            .addGap(0, 0, Short.MAX_VALUE))
+          .addGroup(jPanel4Layout.createSequentialGroup()
+            .addComponent(radioLabelTerminal)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(textTerminalLabel)))
         .addContainerGap())
     );
     jPanel4Layout.setVerticalGroup(
@@ -806,6 +827,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioDisconnect)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(radioLabelTerminal)
+          .addComponent(textTerminalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioRemove)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioReplace)
@@ -814,7 +839,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           .addComponent(radioPlace)
           .addComponent(cbAutosource))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -1171,6 +1196,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JList listUnitTypes;
   private javax.swing.JRadioButton radioConnect;
   private javax.swing.JRadioButton radioDisconnect;
+  private javax.swing.JRadioButton radioLabelTerminal;
   private javax.swing.JRadioButton radioMove;
   private javax.swing.JRadioButton radioPlace;
   private javax.swing.JRadioButton radioRemove;
@@ -1179,6 +1205,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JSpinner spinConnectionTheme;
   private javax.swing.JSpinner spinInputs;
   private javax.swing.JSpinner spinOutputs;
+  private javax.swing.JTextField textTerminalLabel;
   private javax.swing.JTextField textUnitName;
   // End of variables declaration//GEN-END:variables
 }

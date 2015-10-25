@@ -92,18 +92,23 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnRedraw" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="179" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="btnSaveUnitState" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnRedraw" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="172" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace pref="408" max="32767" attributes="0"/>
+                          <EmptySpace pref="395" max="32767" attributes="0"/>
                           <Component id="btnRedraw" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnSaveUnitState" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -116,6 +121,15 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRedrawActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnSaveUnitState">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Save State"/>
+                    <Property name="toolTipText" type="java.lang.String" value="Technically speaking, saves a unit.  It&apos;ll be in the displayed state, though.  Yeah, yeah, yeah."/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveUnitStateActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

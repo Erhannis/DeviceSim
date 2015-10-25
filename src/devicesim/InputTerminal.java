@@ -13,6 +13,8 @@ import java.util.ArrayList;
  * @author erhannis
  */
 public abstract class InputTerminal implements Terminal {
+  private static final long serialVersionUID = 3135384821311998240L;
+  private String name;
   DirectedUnit unit;
   
   @Override
@@ -31,6 +33,17 @@ public abstract class InputTerminal implements Terminal {
     return unit;
   }
 
+  @Override
+  public String getName() {
+    return name;
+  }
+  
+  @Override
+  public InputTerminal setName(String name) {
+    this.name = name;
+    return this; // For construction chains
+  }
+  
   //<editor-fold desc="Optional view stuff">
   // Calculating these repeatedly could get slow.
   //     Good thing I just figured out a nice caching mechanism!

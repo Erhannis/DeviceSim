@@ -11,6 +11,7 @@ package devicesim;
  * @author erhannis
  */
 public class InternalInputTerminal extends OutputTerminal {
+  private static final long serialVersionUID = -6643126103013897586L;
   private InputTerminal dual;
   private DirectedConnection connection = null;
   
@@ -44,6 +45,17 @@ public class InternalInputTerminal extends OutputTerminal {
       return true;
     }
     return false;
+  }
+
+  @Override
+  public String getName() {
+    return dual.getName();
+  }
+
+  @Override
+  public OutputTerminal setName(String name) {
+    dual.setName(name);
+    return this;
   }
   
   @Override

@@ -6,6 +6,7 @@
 
 package devicesim.units.defaults;
 
+import devicesim.DirectedConnection;
 import devicesim.DirectedUnit;
 import devicesim.GenericDirectedConnection.GDC;
 import devicesim.InputTerminal;
@@ -15,6 +16,7 @@ import devicesim.StateOutputTerminal;
 import devicesim.Terminal;
 import devicesim.Unit;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -61,10 +63,41 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
     return this;
   }
 
+  private transient ArrayList<DirectedConnection> inConnectionsHolding;
+  private transient ArrayList<DirectedConnection> outConnectionsHolding;
+  
   // End construction chains
   @Override
   public DirectedCompositeUnit copy() throws IOException, ClassNotFoundException {
-    return (DirectedCompositeUnit)super.copy(); //To change body of generated methods, choose Tools | Templates.
+    // Disconnect external stuff for a second
+    inConnectionsHolding = new ArrayList<DirectedConnection>();
+    outConnectionsHolding = new ArrayList<DirectedConnection>();
+    for (int i = 0; i < inputs.size(); i++) {
+      InputTerminal it = inputs.get(i);
+      inConnectionsHolding.add(it.getConnection());
+      it.setConnection(null);
+    }
+    for (int i = 0; i < outputs.size(); i++) {
+      OutputTerminal ot = outputs.get(i);
+      outConnectionsHolding.add(ot.getConnection());
+      ot.setConnection(null);
+    }
+    
+    DirectedCompositeUnit copy = null;
+    try {
+      copy = (DirectedCompositeUnit)super.copy();
+    } finally {
+      for (int i = 0; i < inputs.size(); i++) {
+        InputTerminal it = inputs.get(i);
+        it.setConnection(inConnectionsHolding.get(i));
+      }
+      for (int i = 0; i < outputs.size(); i++) {
+        OutputTerminal ot = outputs.get(i);
+        ot.setConnection(outConnectionsHolding.get(i));
+      }
+    }
+    
+    return copy;
   }
   
   public InputTerminal iout(int i) {

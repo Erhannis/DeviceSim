@@ -44,6 +44,8 @@ public class PanelDisplay extends javax.swing.JPanel {
     public static final int CLMODE_DIRECT = 0;
     public static final int CLMODE_SQUARE = 1;
 
+    public static final double SECONDARY_TEXT_SCALE = 1.0 / 10;
+    
     public int connectionLineMode = CLMODE_DIRECT;
     public boolean hideSourceConnections = false;
     public boolean hideText = false;
@@ -152,6 +154,11 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             }
+            if (!hideText && ot.getName() != null) {
+              double textScale = oSocketRadius * SECONDARY_TEXT_SCALE;
+              g.setFont(FONT.deriveFont(((float)(u.getViewFontSize() * textScale))));
+              g.drawString(ot.getName(), (float)oax, (float)oay);
+            }
             if (hideSourceConnections && (u instanceof InternalMetaUnit) && i < 2) {
               continue;
             }
@@ -184,7 +191,12 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
             }
-          }          
+            if (!hideText && it.getName() != null) {
+              double textScale = iSocketRadius * SECONDARY_TEXT_SCALE;
+              g.setFont(FONT.deriveFont(((float)(u.getViewFontSize() * textScale))));
+              g.drawString(it.getName(), (float)iax, (float)iay);
+            }
+          }
         }
       }
       

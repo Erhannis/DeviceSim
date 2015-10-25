@@ -18,6 +18,9 @@ public interface Terminal extends Serializable {
   public Unit getUnit();
   public Connection getConnection();
   
+  public String getName();
+  public Terminal setName(String name);
+  
   //<editor-fold desc="Optional view stuff">
   public default double getViewX() {
     return calcViewX();

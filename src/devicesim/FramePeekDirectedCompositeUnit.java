@@ -58,7 +58,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
             }
           }
           if (closest != null) {
-            if (closest instanceof DirectedUnit) {
+            if (closest instanceof DirectedCompositeUnit) {
               //TODO Again, cheating
               new FramePeekDirectedCompositeUnit((DirectedCompositeUnit)closest).setVisible(true);
             }
@@ -128,6 +128,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
     jTabbedPane1 = new javax.swing.JTabbedPane();
     jPanel3 = new javax.swing.JPanel();
     btnRedraw = new javax.swing.JButton();
+    btnSaveUnitState = new javax.swing.JButton();
     jPanel4 = new javax.swing.JPanel();
     radioPeek = new javax.swing.JRadioButton();
     jPanel2 = new javax.swing.JPanel();
@@ -172,20 +173,32 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    btnSaveUnitState.setText("Save State");
+    btnSaveUnitState.setToolTipText("Technically speaking, saves a unit.  It'll be in the displayed state, though.  Yeah, yeah, yeah.");
+    btnSaveUnitState.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnSaveUnitStateActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
     jPanel3.setLayout(jPanel3Layout);
     jPanel3Layout.setHorizontalGroup(
       jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel3Layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(btnRedraw)
-        .addContainerGap(179, Short.MAX_VALUE))
+        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(btnSaveUnitState)
+          .addComponent(btnRedraw))
+        .addContainerGap(172, Short.MAX_VALUE))
     );
     jPanel3Layout.setVerticalGroup(
       jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-        .addContainerGap(408, Short.MAX_VALUE)
+        .addContainerGap(395, Short.MAX_VALUE)
         .addComponent(btnRedraw)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(btnSaveUnitState)
         .addContainerGap())
     );
 
@@ -357,7 +370,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
   private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
   }//GEN-LAST:event_formWindowClosing
 
-  public JFileChooser fileChooser = new JFileChooser();
+  public JFileChooser fileChooser = new JFileChooser(FramePeekDirectedCompositeUnit.class.getProtectionDomain().getCodeSource().getLocation().getFile());
   
   private void btnRedrawActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedrawActionPerformed
     doRepaint();
@@ -400,6 +413,12 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
     // TODO add your handling code here:
   }//GEN-LAST:event_cbHideTextActionPerformed
 
+  private void btnSaveUnitStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUnitStateActionPerformed
+    if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+      DeviceEngine.saveObjectToFile(unit, fileChooser.getSelectedFile());
+    }
+  }//GEN-LAST:event_btnSaveUnitStateActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -439,6 +458,7 @@ public class FramePeekDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JButton btnRedraw;
   private javax.swing.JButton btnRedraw2;
   private javax.swing.JButton btnSaveImage;
+  private javax.swing.JButton btnSaveUnitState;
   private javax.swing.JCheckBox cbDrawIMU;
   private javax.swing.JCheckBox cbHideSourceCons;
   private javax.swing.JCheckBox cbHideText;
