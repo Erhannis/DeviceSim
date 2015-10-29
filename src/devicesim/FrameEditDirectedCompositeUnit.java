@@ -103,7 +103,6 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               }
             }
           }
-          changed = true;
           doRepaint();
         } else if (radioDisconnect.isSelected()) {
           outer:
@@ -126,7 +125,6 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               }
             }
           }
-          changed = true;
           doRepaint();
         } else if (radioLabelTerminal.isSelected()) {
           for (Terminal t : unit.internalMetaUnit.getTerminals()) {
@@ -136,7 +134,21 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               break;
             }
           }
-          changed = true;
+          doRepaint();
+        } else if (radioRenameUnit.isSelected()) {
+          double closestDist2 = Double.POSITIVE_INFINITY;
+          Unit closest = null;
+          for (Unit u : pd.rootUnits) {
+            double dist2 = m.distanceSq(u.getViewLeft(), u.getViewTop());
+            if (dist2 < closestDist2 && dist2 <= MeMath.sqr((u.getViewHeight() + u.getViewHeight()) / 2.0) && u != unit.internalMetaUnit) {
+              // We want to be at least PRETTY close, and not delete the internalMetaUnit.
+              closest = u;
+              closestDist2 = dist2;
+            }
+          }
+          if (closest != null) {
+            closest.setName(textNewUnitName.getText());
+          }
           doRepaint();
         } else if (radioRemove.isSelected()) {
           double closestDist2 = Double.POSITIVE_INFINITY;
@@ -265,6 +277,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           }
           newUnit.setViewLeft(m.getX());
           newUnit.setViewTop(m.getY());
+          double scale = (double)spinInitialScale.getValue();
+          newUnit.setViewWidth(newUnit.getViewWidth() * scale);
+          newUnit.setViewHeight(newUnit.getViewHeight() * scale);
+          newUnit.setViewFontSize((float)(newUnit.getViewFontSize() * scale));
           newUnit.recalcView();
           doRepaint();
         }
@@ -581,6 +597,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioReplace = new javax.swing.JRadioButton();
     radioLabelTerminal = new javax.swing.JRadioButton();
     textTerminalLabel = new javax.swing.JTextField();
+    radioRenameUnit = new javax.swing.JRadioButton();
+    textNewUnitName = new javax.swing.JTextField();
+    spinInitialScale = new javax.swing.JSpinner();
     jPanel2 = new javax.swing.JPanel();
     spinConnectionTheme = new javax.swing.JSpinner();
     jLabel4 = new javax.swing.JLabel();
@@ -791,6 +810,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioLabelTerminal.setText("(L)abel terminal");
     radioLabelTerminal.setToolTipText("Drag to disconnect a bunch.");
 
+    groupTools.add(radioRenameUnit);
+    radioRenameUnit.setText("Re(n)ame unit");
+    radioRenameUnit.setToolTipText("Drag to disconnect a bunch.");
+
+    spinInitialScale.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(0.1d)));
+    spinInitialScale.setToolTipText("Initial scale.  Don't use 0.");
+
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
@@ -800,21 +826,27 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
           .addGroup(jPanel4Layout.createSequentialGroup()
+            .addComponent(radioLabelTerminal)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(textTerminalLabel))
+          .addGroup(jPanel4Layout.createSequentialGroup()
+            .addComponent(radioRenameUnit)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(textNewUnitName))
+          .addGroup(jPanel4Layout.createSequentialGroup()
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addComponent(radioMove)
               .addComponent(radioConnect)
               .addComponent(radioDisconnect)
               .addComponent(radioRemove)
-              .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(radioPlace)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbAutosource))
               .addComponent(radioReplace))
             .addGap(0, 0, Short.MAX_VALUE))
           .addGroup(jPanel4Layout.createSequentialGroup()
-            .addComponent(radioLabelTerminal)
+            .addComponent(radioPlace)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(textTerminalLabel)))
+            .addComponent(cbAutosource)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(spinInitialScale)))
         .addContainerGap())
     );
     jPanel4Layout.setVerticalGroup(
@@ -831,15 +863,20 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           .addComponent(radioLabelTerminal)
           .addComponent(textTerminalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(radioRenameUnit)
+          .addComponent(textNewUnitName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioRemove)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioReplace)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(radioPlace)
-          .addComponent(cbAutosource))
+          .addComponent(cbAutosource)
+          .addComponent(spinInitialScale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -1200,11 +1237,14 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JRadioButton radioMove;
   private javax.swing.JRadioButton radioPlace;
   private javax.swing.JRadioButton radioRemove;
+  private javax.swing.JRadioButton radioRenameUnit;
   private javax.swing.JRadioButton radioReplace;
   private javax.swing.JSpinner spinBigDim;
   private javax.swing.JSpinner spinConnectionTheme;
+  private javax.swing.JSpinner spinInitialScale;
   private javax.swing.JSpinner spinInputs;
   private javax.swing.JSpinner spinOutputs;
+  private javax.swing.JTextField textNewUnitName;
   private javax.swing.JTextField textTerminalLabel;
   private javax.swing.JTextField textUnitName;
   // End of variables declaration//GEN-END:variables

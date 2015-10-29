@@ -23,5 +23,8 @@ Eventually look into matrix electronics
 
 
 Note:
+all units should be idempotent
+units whose output are not a function of the current inputs, you should be careful about when the signal gets to them
+  if they ARE a function, it doesn't matter.  I think.
 signed div is wonky with negative nums, prolly bc of GTE
 the ALU's flag bit is wonky for most everything, 'cept on div => div by 0
