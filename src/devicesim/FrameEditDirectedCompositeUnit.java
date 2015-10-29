@@ -64,7 +64,9 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioMove.setMnemonic(KeyEvent.VK_M);
     radioConnect.setMnemonic(KeyEvent.VK_C);
     radioDisconnect.setMnemonic(KeyEvent.VK_D);
+    radioTransfer.setMnemonic(KeyEvent.VK_T);
     radioLabelTerminal.setMnemonic(KeyEvent.VK_L);
+    radioRenameUnit.setMnemonic(KeyEvent.VK_N);
     radioRemove.setMnemonic(KeyEvent.VK_R);
     radioReplace.setMnemonic(KeyEvent.VK_E);
     radioPlace.setMnemonic(KeyEvent.VK_P);
@@ -122,6 +124,29 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 } else {
                   //TODO Dunno.
                 }
+              }
+            }
+          }
+          doRepaint();
+        } else if (radioTransfer.isSelected()) {
+          outer:
+          for (Unit u : pd.rootUnits) {
+            for (Terminal t : u.getTerminals()) {
+              double dist = m.distance(t.getViewX(), t.getViewY());
+              if (dist < t.getViewSocketRadius()) {
+                if (pd.selectedTerminals.isEmpty() || pd.selectedTerminals.size() > 1) {
+                  pd.selectedTerminals.clear();
+                  pd.selectedTerminals.add(t);
+                } else {
+                  Terminal st = pd.selectedTerminals.iterator().next();
+                  if (st instanceof InputTerminal && t instanceof InputTerminal) {
+                    ((InputTerminal)st).getConnection().replaceOutput((InputTerminal)st, (InputTerminal)t);
+                  } else if (st instanceof OutputTerminal && t instanceof OutputTerminal) {
+                    ((OutputTerminal)st).getConnection().replaceInput((OutputTerminal)t);
+                  } else {
+                  }
+                }
+                break outer;
               }
             }
           }
@@ -404,6 +429,73 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               }
             });
           });
+        } else if (radioTransfer.isSelected()) {
+          if (m.equals(startPoint)) {
+            break IfChain;
+          }
+          Rectangle2D r = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), m.getX() - startPoint.getX(), m.getY() - startPoint.getY());
+          MeUtils.fixRect2DIP(r);
+          if (pd.selectedTerminals.isEmpty()) {
+            // Whoaaaa, what is this crazy exoticism
+            unit.allUnits.stream().forEach((du) -> {
+              du.getTerminals().stream().filter((t) -> (r.contains(new Point2D.Double(t.getViewX(), t.getViewY())))).forEach((t) -> {
+                pd.selectedTerminals.add(t);
+              });
+            });
+          } else {
+            // It's weeeiiiirrrd
+            HashSet<Terminal> terms = new HashSet<Terminal>();
+            unit.allUnits.stream().forEach((du) -> {
+              du.getTerminals().stream().filter((t) -> (r.contains(new Point2D.Double(t.getViewX(), t.getViewY())))).forEach((t) -> {
+                terms.add(t);
+              });
+            });
+            ArrayList<Terminal> a = new ArrayList<Terminal>(pd.selectedTerminals);
+            ArrayList<Terminal> b = new ArrayList<Terminal>(terms);
+            a.sort(new Comparator<Terminal>() {
+              @Override
+              public int compare(Terminal o1, Terminal o2) {
+                return Double.compare(o1.getViewY(), o2.getViewY());
+              }
+            });
+            b.sort(new Comparator<Terminal>() {
+              @Override
+              public int compare(Terminal o1, Terminal o2) {
+                return Double.compare(o1.getViewY(), o2.getViewY());
+              }
+            });
+            if (b.size() == 1 && a.size() > 1) {
+              ArrayList<Terminal> bucket = a;
+              a = b;
+              b = bucket;
+            }
+            if (a.size() == 1 && b.size() > 1 && a.get(0) instanceof OutputTerminal) {
+              for (int i = 0; i < b.size(); i++) {
+                if (b.get(i) instanceof OutputTerminal && ((OutputTerminal)b.get(i)).getConnection() != null) {
+                  GDC.addConnection(((OutputTerminal)a.get(0)), new ArrayList<InputTerminal>(((OutputTerminal)b.get(i)).getConnection().getOutputs()).toArray(new InputTerminal[]{}));
+                }
+              }
+            } else {
+              for (int i = 0; i < a.size() && i < b.size(); i++) {
+                if (a.get(i) instanceof OutputTerminal) {
+                  if (b.get(i) instanceof OutputTerminal && a.get(i).getConnection() != null) {
+                    ((OutputTerminal)a.get(i)).getConnection().replaceInput(((OutputTerminal)b.get(i)));
+                  } else {
+                    // Dunno
+                  }
+                } else if (a.get(i) instanceof InputTerminal) {
+                  if (b.get(i) instanceof InputTerminal && a.get(i).getConnection() != null) {
+                    ((InputTerminal)a.get(i)).getConnection().replaceOutput(((InputTerminal)a.get(i)), ((InputTerminal)b.get(i)));
+                  } else {
+                    // Dunno
+                  }
+                } else {
+                  //TODO Dunno; could support plain terminals, eventually
+                }
+              }
+            }
+            pd.selectedTerminals.clear();
+          }
         } else if (radioRemove.isSelected()) {
         } else if (radioReplace.isSelected()) {
         } else if (radioPlace.isSelected()) {
@@ -600,6 +692,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     radioRenameUnit = new javax.swing.JRadioButton();
     textNewUnitName = new javax.swing.JTextField();
     spinInitialScale = new javax.swing.JSpinner();
+    radioTransfer = new javax.swing.JRadioButton();
     jPanel2 = new javax.swing.JPanel();
     spinConnectionTheme = new javax.swing.JSpinner();
     jLabel4 = new javax.swing.JLabel();
@@ -817,6 +910,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     spinInitialScale.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(0.1d)));
     spinInitialScale.setToolTipText("Initial scale.  Don't use 0.");
 
+    groupTools.add(radioTransfer);
+    radioTransfer.setText("(T)ransfer");
+    radioTransfer.setToolTipText("Drag to disconnect a bunch.");
+
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
     jPanel4Layout.setHorizontalGroup(
@@ -839,7 +936,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               .addComponent(radioConnect)
               .addComponent(radioDisconnect)
               .addComponent(radioRemove)
-              .addComponent(radioReplace))
+              .addComponent(radioReplace)
+              .addComponent(radioTransfer))
             .addGap(0, 0, Short.MAX_VALUE))
           .addGroup(jPanel4Layout.createSequentialGroup()
             .addComponent(radioPlace)
@@ -859,6 +957,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(radioDisconnect)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(radioTransfer)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
           .addComponent(radioLabelTerminal)
           .addComponent(textTerminalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -876,7 +976,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           .addComponent(cbAutosource)
           .addComponent(spinInitialScale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
         .addContainerGap())
     );
 
@@ -1239,6 +1339,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JRadioButton radioRemove;
   private javax.swing.JRadioButton radioRenameUnit;
   private javax.swing.JRadioButton radioReplace;
+  private javax.swing.JRadioButton radioTransfer;
   private javax.swing.JSpinner spinBigDim;
   private javax.swing.JSpinner spinConnectionTheme;
   private javax.swing.JSpinner spinInitialScale;

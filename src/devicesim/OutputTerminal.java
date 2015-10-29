@@ -32,6 +32,7 @@ public abstract class OutputTerminal implements Terminal {
     if (c != null) {
       c.severConnection();
     }
+    setConnection(null);
   }
   
   @Override

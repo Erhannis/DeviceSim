@@ -6,6 +6,7 @@
 
 package devicesim;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -18,6 +19,7 @@ public class DeviceSim {
    * @param args the command line arguments
    */
   public static void main(String[] args) throws ClassNotFoundException, IOException {
+    //DeviceEngine.readFile(new File("/Users/MEwer/NetBeansProjects/DeviceSim/saves/mem8_2.crc"));
     FrameMain main = new FrameMain();
     main.setVisible(true);
   }

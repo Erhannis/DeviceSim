@@ -26,6 +26,7 @@ public abstract class InputTerminal implements Terminal {
     if (c != null) {
       c.removeOutput(this);
     }
+    setConnection(null);
   }
   
   @Override

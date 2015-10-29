@@ -15,6 +15,8 @@ import java.util.HashSet;
  * @author erhannis
  */
 public class GenericDirectedConnection implements DirectedConnection {
+  private static final long serialVersionUID = 7446969570523572402L;
+  
   /**
    * Just a convenience class;
    */
@@ -97,5 +99,16 @@ public class GenericDirectedConnection implements DirectedConnection {
   @Override
   public HashSet<Terminal> getTerminals() {
     return terminals;
+  }
+  
+  @Override
+  public void replaceInput(OutputTerminal newIn) {
+    if (input != null) {
+      terminals.remove(input);
+      input.setConnection(null);
+    }
+    terminals.add(newIn);
+    input = newIn;
+    newIn.setConnection(this);
   }
 }

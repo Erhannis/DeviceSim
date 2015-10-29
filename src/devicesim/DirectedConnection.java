@@ -45,4 +45,24 @@ public interface DirectedConnection extends Connection {
     getTerminals().remove(output);
     output.setConnection(null);
   }
+  
+  /**
+   * This probably isn't GUARANTEED to work, if getOutputs or getTerminals returns a copy or something.
+   * @param output 
+   */
+  public default void replaceOutput(InputTerminal outA, InputTerminal outB) {
+    getOutputs().remove(outA);
+    getTerminals().remove(outA);
+    outA.breakConnection();
+    getOutputs().add(outB);
+    getTerminals().add(outB);
+    outB.breakConnection();
+    outB.setConnection(this);
+  }
+
+  /**
+   * This probably isn't GUARANTEED to work, if getOutputs or getTerminals returns a copy or something.
+   * @param output 
+   */
+  public void replaceInput(OutputTerminal newIn);
 }
