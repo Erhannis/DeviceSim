@@ -17,6 +17,7 @@ recursive replace (by name)
 scale place spinner
 function to collect basic stats; unit count, connection count
 save notes with unit?
+make transfer able to shift connections up and down
 
 Eventually look into matrix electronics
 
