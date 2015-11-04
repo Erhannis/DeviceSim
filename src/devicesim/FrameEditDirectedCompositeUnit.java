@@ -22,6 +22,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -145,6 +146,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                     ((OutputTerminal)st).getConnection().replaceInput((OutputTerminal)t);
                   } else {
                   }
+                  pd.selectedTerminals.clear();
                 }
                 break outer;
               }
@@ -476,6 +478,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 }
               }
             } else {
+              if (a.size() > 0 && b.size() > 0) {
+                if (a.get(0).getViewY() < b.get(0).getViewY()) {
+                  // This should make shift-down transfers work, but might make inconsistent the outcome of selecting more terminals on one side than another
+                  Collections.reverse(a);
+                  Collections.reverse(b);
+                }
+              }
               for (int i = 0; i < a.size() && i < b.size(); i++) {
                 if (a.get(i) instanceof OutputTerminal) {
                   if (b.get(i) instanceof OutputTerminal && a.get(i).getConnection() != null) {
