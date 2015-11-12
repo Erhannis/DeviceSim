@@ -21,6 +21,7 @@ auto-gen series of labels
 more tools
   drag across wires, drag elsewhere, transform one line of crossings to the other
 workaround stupid font bug
+fix internal->DCU's are all origins bug
 
 Eventually look into matrix electronics
 
