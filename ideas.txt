@@ -17,8 +17,10 @@ recursive replace (by name)
 scale place spinner
 function to collect basic stats; unit count, connection count
 save notes with unit?
-make transfer able to shift labels
 auto-gen series of labels
+more tools
+  drag across wires, drag elsewhere, transform one line of crossings to the other
+workaround stupid font bug
 
 Eventually look into matrix electronics
 

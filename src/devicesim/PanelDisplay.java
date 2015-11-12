@@ -44,7 +44,7 @@ public class PanelDisplay extends javax.swing.JPanel {
     public static final int CLMODE_DIRECT = 0;
     public static final int CLMODE_SQUARE = 1;
 
-    public static final double SECONDARY_TEXT_SCALE = 1.0 / 10;
+    public static final double SECONDARY_TEXT_SCALE = 2.0;
     
     public int connectionLineMode = CLMODE_DIRECT;
     public boolean hideSourceConnections = false;
@@ -156,7 +156,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             }
             if (!hideText && ot.getName() != null) {
               double textScale = oSocketRadius * SECONDARY_TEXT_SCALE;
-              g.setFont(FONT.deriveFont(((float)(u.getViewFontSize() * textScale))));
+              g.setFont(FONT.deriveFont(((float)(textScale))));
               g.drawString(ot.getName(), (float)oax, (float)oay);
             }
             if (hideSourceConnections && (u instanceof InternalMetaUnit) && i < 2) {
@@ -193,7 +193,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             }
             if (!hideText && it.getName() != null) {
               double textScale = iSocketRadius * SECONDARY_TEXT_SCALE;
-              g.setFont(FONT.deriveFont(((float)(u.getViewFontSize() * textScale))));
+              g.setFont(FONT.deriveFont(((float)(textScale))));
               g.drawString(it.getName(), (float)iax, (float)iay);
             }
           }

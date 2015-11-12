@@ -420,7 +420,7 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="(L)abel terminal"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Drag to disconnect a bunch."/>
+                    <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="textTerminalLabel">
@@ -431,7 +431,7 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Re(n)ame unit"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Drag to disconnect a bunch."/>
+                    <Property name="toolTipText" type="java.lang.String" value=""/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="textNewUnitName">
@@ -450,7 +450,7 @@
                       <ComponentRef name="groupTools"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="(T)ransfer"/>
-                    <Property name="toolTipText" type="java.lang.String" value="Drag to disconnect a bunch."/>
+                    <Property name="toolTipText" type="java.lang.String" value="Drag to transfer a bunch.  Shift to transfer labels."/>
                   </Properties>
                 </Component>
               </SubComponents>

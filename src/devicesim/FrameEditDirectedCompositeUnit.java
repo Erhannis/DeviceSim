@@ -140,11 +140,16 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                   pd.selectedTerminals.add(t);
                 } else {
                   Terminal st = pd.selectedTerminals.iterator().next();
-                  if (st instanceof InputTerminal && t instanceof InputTerminal) {
-                    ((InputTerminal)st).getConnection().replaceOutput((InputTerminal)st, (InputTerminal)t);
-                  } else if (st instanceof OutputTerminal && t instanceof OutputTerminal) {
-                    ((OutputTerminal)st).getConnection().replaceInput((OutputTerminal)t);
+                  if (e.isShiftDown()) {
+                    t.setName(st.getName());
+                    st.setName("");
                   } else {
+                    if (st instanceof InputTerminal && t instanceof InputTerminal) {
+                      ((InputTerminal)st).getConnection().replaceOutput((InputTerminal)st, (InputTerminal)t);
+                    } else if (st instanceof OutputTerminal && t instanceof OutputTerminal) {
+                      ((OutputTerminal)st).getConnection().replaceInput((OutputTerminal)t);
+                    } else {
+                    }
                   }
                   pd.selectedTerminals.clear();
                 }
@@ -473,8 +478,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
             }
             if (a.size() == 1 && b.size() > 1 && a.get(0) instanceof OutputTerminal) {
               for (int i = 0; i < b.size(); i++) {
-                if (b.get(i) instanceof OutputTerminal && ((OutputTerminal)b.get(i)).getConnection() != null) {
-                  GDC.addConnection(((OutputTerminal)a.get(0)), new ArrayList<InputTerminal>(((OutputTerminal)b.get(i)).getConnection().getOutputs()).toArray(new InputTerminal[]{}));
+                if (e.isShiftDown()) {
+                  b.get(i).setName(a.get(i).getName());
+                  a.get(i).setName("");
+                } else {
+                  if (b.get(i) instanceof OutputTerminal && ((OutputTerminal)b.get(i)).getConnection() != null) {
+                    GDC.addConnection(((OutputTerminal)a.get(0)), new ArrayList<InputTerminal>(((OutputTerminal)b.get(i)).getConnection().getOutputs()).toArray(new InputTerminal[]{}));
+                  }
                 }
               }
             } else {
@@ -486,20 +496,25 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
                 }
               }
               for (int i = 0; i < a.size() && i < b.size(); i++) {
-                if (a.get(i) instanceof OutputTerminal) {
-                  if (b.get(i) instanceof OutputTerminal && a.get(i).getConnection() != null) {
-                    ((OutputTerminal)a.get(i)).getConnection().replaceInput(((OutputTerminal)b.get(i)));
-                  } else {
-                    // Dunno
-                  }
-                } else if (a.get(i) instanceof InputTerminal) {
-                  if (b.get(i) instanceof InputTerminal && a.get(i).getConnection() != null) {
-                    ((InputTerminal)a.get(i)).getConnection().replaceOutput(((InputTerminal)a.get(i)), ((InputTerminal)b.get(i)));
-                  } else {
-                    // Dunno
-                  }
+                if (e.isShiftDown()) {
+                  b.get(i).setName(a.get(i).getName());
+                  a.get(i).setName("");
                 } else {
-                  //TODO Dunno; could support plain terminals, eventually
+                  if (a.get(i) instanceof OutputTerminal) {
+                    if (b.get(i) instanceof OutputTerminal && a.get(i).getConnection() != null) {
+                      ((OutputTerminal)a.get(i)).getConnection().replaceInput(((OutputTerminal)b.get(i)));
+                    } else {
+                      // Dunno
+                    }
+                  } else if (a.get(i) instanceof InputTerminal) {
+                    if (b.get(i) instanceof InputTerminal && a.get(i).getConnection() != null) {
+                      ((InputTerminal)a.get(i)).getConnection().replaceOutput(((InputTerminal)a.get(i)), ((InputTerminal)b.get(i)));
+                    } else {
+                      // Dunno
+                    }
+                  } else {
+                    //TODO Dunno; could support plain terminals, eventually
+                  }
                 }
               }
             }
@@ -910,18 +925,18 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
     groupTools.add(radioLabelTerminal);
     radioLabelTerminal.setText("(L)abel terminal");
-    radioLabelTerminal.setToolTipText("Drag to disconnect a bunch.");
+    radioLabelTerminal.setToolTipText("");
 
     groupTools.add(radioRenameUnit);
     radioRenameUnit.setText("Re(n)ame unit");
-    radioRenameUnit.setToolTipText("Drag to disconnect a bunch.");
+    radioRenameUnit.setToolTipText("");
 
     spinInitialScale.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(1.0d), Double.valueOf(0.0d), null, Double.valueOf(0.1d)));
     spinInitialScale.setToolTipText("Initial scale.  Don't use 0.");
 
     groupTools.add(radioTransfer);
     radioTransfer.setText("(T)ransfer");
-    radioTransfer.setToolTipText("Drag to disconnect a bunch.");
+    radioTransfer.setToolTipText("Drag to transfer a bunch.  Shift to transfer labels.");
 
     javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
     jPanel4.setLayout(jPanel4Layout);
