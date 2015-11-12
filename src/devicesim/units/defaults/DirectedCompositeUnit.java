@@ -244,6 +244,9 @@ public class DirectedCompositeUnit extends BlankDirectedUnit {
       }
       for (OutputTerminal ot : changed) {
         double value = ot.getValue();
+        if (ot.getConnection() == null) {
+          System.err.println("null");
+        }
         for (InputTerminal it : ot.getConnection().getOutputs()) {
           it.setValue(value);
           //TODO Optimization: have passive flag, which makes their sets not trigger updates down the line.
