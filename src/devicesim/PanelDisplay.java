@@ -88,9 +88,15 @@ public class PanelDisplay extends javax.swing.JPanel {
     private static AffineTransform getInternalsTransform(Unit u) {
       AffineTransform t2 = new AffineTransform();
       t2.translate(u.getViewLeft(), u.getViewTop());
-      double scale = u.getViewWidth() / 400;
-      t2.scale(scale, scale);
-      t2.translate(-50, -80);
+      if (u instanceof DirectedCompositeUnit) {
+        double scale = u.getViewWidth() / -((DirectedCompositeUnit)u).internalMetaUnit.getViewWidth();
+        t2.scale(scale, scale);
+        t2.translate(-((DirectedCompositeUnit)u).internalMetaUnit.getViewLeft()-((DirectedCompositeUnit)u).internalMetaUnit.getViewWidth(), -((DirectedCompositeUnit)u).internalMetaUnit.getViewTop());
+      } else {
+        double scale = u.getViewWidth() / 4000;
+        t2.scale(scale, scale);
+        t2.translate(-500, -800);
+      }
       return t2;
     }
     
