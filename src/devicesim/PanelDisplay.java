@@ -37,8 +37,9 @@ public class PanelDisplay extends javax.swing.JPanel {
     public HashSet<Terminal> selectedTerminals = new HashSet<Terminal>();
     
     public boolean skipRender = false;
-    public AffineTransform at = new AffineTransform();
-    public AffineTransform ati = new AffineTransform();
+    private static final double VIEW_PRESCALE = 0.1;
+    public AffineTransform at = new AffineTransform(VIEW_PRESCALE, 0, 0, VIEW_PRESCALE, 0, 0);
+    public AffineTransform ati;
     public static final Font FONT = new Font("Monospaced", 0, 14);
     
     public static final int CLMODE_DIRECT = 0;
@@ -154,7 +155,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             }
-            if (!hideText && ot.getName() != null) {
+            if (!hideText && (!recursiveRender || u instanceof InternalMetaUnit) && ot.getName() != null) {
               double textScale = oSocketRadius * SECONDARY_TEXT_SCALE;
               g.setFont(FONT.deriveFont(((float)(textScale))));
               g.drawString(ot.getName(), (float)oax, (float)oay);
@@ -191,7 +192,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
             }
-            if (!hideText && it.getName() != null) {
+            if (!hideText && (!recursiveRender || u instanceof InternalMetaUnit) && it.getName() != null) {
               double textScale = iSocketRadius * SECONDARY_TEXT_SCALE;
               g.setFont(FONT.deriveFont(((float)(textScale))));
               g.drawString(it.getName(), (float)iax, (float)iay);
@@ -217,6 +218,11 @@ public class PanelDisplay extends javax.swing.JPanel {
    * Creates new form PanelDisplay
    */
   public PanelDisplay() {
+    try {
+      ati = at.createInverse();
+    } catch (NoninvertibleTransformException ex) {
+      Logger.getLogger(PanelDisplay.class.getName()).log(Level.SEVERE, null, ex);
+    }
     initComponents();
     this.setBackground(COLOR_BACKGROUND);
   }
@@ -254,11 +260,11 @@ public class PanelDisplay extends javax.swing.JPanel {
       at.preConcatenate(AffineTransform.getTranslateInstance(-evt.getX(), -evt.getY()));
       at.preConcatenate(AffineTransform.getScaleInstance(scale, scale));
       at.preConcatenate(AffineTransform.getTranslateInstance(evt.getX(), evt.getY()));
-        try {
-          ati = at.createInverse();
-        } catch (NoninvertibleTransformException ex) {
-          Logger.getLogger(PanelDisplay.class.getName()).log(Level.SEVERE, null, ex);
-        }
+      try {
+        ati = at.createInverse();
+      } catch (NoninvertibleTransformException ex) {
+        Logger.getLogger(PanelDisplay.class.getName()).log(Level.SEVERE, null, ex);
+      }
       repaint();
     }
   }//GEN-LAST:event_formMouseWheelMoved

@@ -24,11 +24,11 @@ public abstract class BlankDirectedUnit implements DirectedUnit {
   protected ArrayList<OutputTerminal> outputs = new ArrayList<OutputTerminal>();
   
   //<editor-fold desc="View stuff">
-  public double viewTop = 50;
-  public double viewLeft = 60;
-  public double viewWidth = 30;
-  public double viewHeight = 20;
-  public float viewFontSize = 10;
+  public double viewTop = 500;
+  public double viewLeft = 600;
+  public double viewWidth = 300;
+  public double viewHeight = 200;
+  public float viewFontSize = 100;
   
   @Override
   public double getViewTop() {

@@ -341,6 +341,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           doRepaint();
         } else if (radioConnect.isSelected()) {
         } else if (radioDisconnect.isSelected()) {
+        } else if (radioLabelTerminal.isSelected()) {
         } else if (radioRemove.isSelected()) {
         } else if (radioReplace.isSelected()) {
         } else if (radioPlace.isSelected()) {
@@ -519,6 +520,35 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               }
             }
             pd.selectedTerminals.clear();
+          }
+        } else if (radioLabelTerminal.isSelected()) {
+          if (m.equals(startPoint)) {
+            break IfChain;
+          }
+          String baseLabel = textTerminalLabel.getText();
+          Rectangle2D r = new Rectangle2D.Double(startPoint.getX(), startPoint.getY(), m.getX() - startPoint.getX(), m.getY() - startPoint.getY());
+          MeUtils.fixRect2DIP(r);
+          HashSet<Terminal> terms = new HashSet<Terminal>();
+          unit.allUnits.stream().forEach((du) -> {
+            du.getTerminals().stream().filter((t) -> (r.contains(new Point2D.Double(t.getViewX(), t.getViewY())))).forEach((t) -> {
+              terms.add(t);
+            });
+          });
+          ArrayList<Terminal> a = new ArrayList<Terminal>(terms);
+          a.sort(new Comparator<Terminal>() {
+            @Override
+            public int compare(Terminal o1, Terminal o2) {
+              return -Double.compare(o1.getViewY(), o2.getViewY());
+            }
+          });
+          if (e.isShiftDown()) {
+            for (int i = 0; i < a.size(); i++) {
+              a.get(i).setName(baseLabel + i);
+            }
+          } else {
+            for (Terminal t : a) {
+              t.setName(baseLabel);
+            }
           }
         } else if (radioRemove.isSelected()) {
         } else if (radioReplace.isSelected()) {
@@ -728,6 +758,8 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     btnSaveImage = new javax.swing.JButton();
     jLabel5 = new javax.swing.JLabel();
     cbHideText = new javax.swing.JCheckBox();
+    spinScaleAll = new javax.swing.JSpinner();
+    btnScaleAll = new javax.swing.JButton();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -1071,6 +1103,16 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       }
     });
 
+    spinScaleAll.setModel(new javax.swing.SpinnerNumberModel(Double.valueOf(10.0d), Double.valueOf(0.0d), null, Double.valueOf(0.1d)));
+    spinScaleAll.setToolTipText("Initial scale.  Don't use 0.");
+
+    btnScaleAll.setText("Scale all");
+    btnScaleAll.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnScaleAllActionPerformed(evt);
+      }
+    });
+
     javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
     jPanel2.setLayout(jPanel2Layout);
     jPanel2Layout.setHorizontalGroup(
@@ -1080,7 +1122,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addGroup(jPanel2Layout.createSequentialGroup()
             .addComponent(btnRedraw2)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
               .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel5)
@@ -1099,7 +1141,11 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
               .addComponent(cbDrawIMU)
               .addComponent(cbRecursiveRender)
               .addComponent(cbHideText))
-            .addGap(0, 0, Short.MAX_VALUE)))
+            .addGap(0, 0, Short.MAX_VALUE))
+          .addGroup(jPanel2Layout.createSequentialGroup()
+            .addComponent(btnScaleAll)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(spinScaleAll)))
         .addContainerGap())
     );
     jPanel2Layout.setVerticalGroup(
@@ -1110,19 +1156,21 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           .addComponent(spinConnectionTheme, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
           .addComponent(jLabel4))
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbHideSourceCons)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbDrawIMU)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbRecursiveRender)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cbHideText)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(btnScaleAll)
+          .addComponent(spinScaleAll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 186, Short.MAX_VALUE)
         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(jPanel2Layout.createSequentialGroup()
-            .addComponent(cbHideSourceCons)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(cbDrawIMU)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(cbRecursiveRender)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(cbHideText)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
-            .addComponent(btnRedraw2))
-          .addGroup(jPanel2Layout.createSequentialGroup()
-            .addGap(0, 0, Short.MAX_VALUE)
+          .addComponent(btnRedraw2, javax.swing.GroupLayout.Alignment.TRAILING)
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
               .addComponent(spinBigDim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
               .addComponent(jLabel5))
@@ -1293,6 +1341,26 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
     // TODO add your handling code here:
   }//GEN-LAST:event_cbHideTextActionPerformed
 
+  private void btnScaleAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScaleAllActionPerformed
+    changed = true;
+    double scale = (Double)spinScaleAll.getValue();
+    unit.setViewFontSize((float)(unit.getViewFontSize() * scale));
+    unit.setViewHeight(unit.getViewHeight() * scale);
+    unit.setViewWidth(unit.getViewWidth() * scale);
+    unit.setViewTop(unit.getViewTop() * scale);
+    unit.setViewLeft(unit.getViewLeft() * scale);
+    unit.recalcView();
+    for (Unit u : unit.allUnits) {
+      u.setViewFontSize((float)(u.getViewFontSize() * scale));
+      u.setViewHeight(u.getViewHeight() * scale);
+      u.setViewWidth(u.getViewWidth() * scale);
+      u.setViewTop(u.getViewTop() * scale);
+      u.setViewLeft(u.getViewLeft() * scale);
+      u.recalcView();
+    }
+    doRepaint();
+  }//GEN-LAST:event_btnScaleAllActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -1335,6 +1403,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JButton btnRun;
   private javax.swing.JButton btnSaveImage;
   private javax.swing.JButton btnSaveUnit;
+  private javax.swing.JButton btnScaleAll;
   private javax.swing.JButton btnValidate;
   private javax.swing.JCheckBox cbAutosource;
   private javax.swing.JCheckBox cbDrawIMU;
@@ -1369,6 +1438,7 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
   private javax.swing.JSpinner spinInitialScale;
   private javax.swing.JSpinner spinInputs;
   private javax.swing.JSpinner spinOutputs;
+  private javax.swing.JSpinner spinScaleAll;
   private javax.swing.JTextField textNewUnitName;
   private javax.swing.JTextField textTerminalLabel;
   private javax.swing.JTextField textUnitName;

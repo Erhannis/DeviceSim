@@ -39,15 +39,15 @@ public interface Unit extends Serializable {
   }
 
   public default double getViewWidth() {
-    return 30;
+    return 300;
   }
 
   public default double getViewHeight() {
-    return 20;
+    return 200;
   }
   
   public default float getViewFontSize() {
-    return 10;
+    return 100;
   }
 
   public default void setViewTop(double top) {
