@@ -161,7 +161,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(oax - oSocketRadius, oay - oSocketRadius, 2 * oSocketRadius, 2 * oSocketRadius));
             }
-            if (!hideText && (!recursiveRender || u instanceof InternalMetaUnit) && ot.getName() != null) {
+            if (!hideText && (!recursiveRender || u instanceof InternalMetaUnit || !(u instanceof DirectedCompositeUnit)) && ot.getName() != null) {
               double textScale = oSocketRadius * SECONDARY_TEXT_SCALE;
               g.setFont(FONT.deriveFont(((float)(textScale))));
               g.drawString(ot.getName(), (float)oax, (float)oay);
@@ -198,7 +198,7 @@ public class PanelDisplay extends javax.swing.JPanel {
             } else {
               g.draw(new Ellipse2D.Double(iax - iSocketRadius, iay - iSocketRadius, 2 * iSocketRadius, 2 * iSocketRadius));
             }
-            if (!hideText && (!recursiveRender || u instanceof InternalMetaUnit) && it.getName() != null) {
+            if (!hideText && (!recursiveRender || u instanceof InternalMetaUnit || !(u instanceof DirectedCompositeUnit)) && it.getName() != null) {
               double textScale = iSocketRadius * SECONDARY_TEXT_SCALE;
               g.setFont(FONT.deriveFont(((float)(textScale))));
               g.drawString(it.getName(), (float)iax, (float)iay);

@@ -159,11 +159,13 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
           }
           doRepaint();
         } else if (radioLabelTerminal.isSelected()) {
-          for (Terminal t : unit.internalMetaUnit.getTerminals()) {
-            double dist = m.distance(t.getViewX(), t.getViewY());
-            if (dist < t.getViewSocketRadius()) {
-              t.setName(textTerminalLabel.getText());
-              break;
+          for (Unit u : unit.allUnits) {
+            for (Terminal t : u.getTerminals()) {
+              double dist = m.distance(t.getViewX(), t.getViewY());
+              if (dist < t.getViewSocketRadius()) {
+                t.setName(textTerminalLabel.getText());
+                break;
+              }
             }
           }
           doRepaint();
