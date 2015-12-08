@@ -106,6 +106,8 @@ public class DeviceEngine {
     new SinkNop(),
     createDelay(),
     new SinkSysout(),
+    new SinkSysoutRadix(2, false, 3),
+    new SinkSysoutRadix(2, false, 4),
     new SinkSysoutRadix(2, false, 8),
     new SinkSysoutRadix(10, false, 8),
     new SinkSysoutRadix(10, true, 8),
