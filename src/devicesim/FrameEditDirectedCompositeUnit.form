@@ -115,12 +115,15 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="btnRedraw" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="104" max="32767" attributes="0"/>
+                                  <EmptySpace pref="110" max="32767" attributes="0"/>
                                   <Component id="btnValidate" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  <Component id="btnCheckColocation" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="btnCheckColocation" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnClearTrivialConnections" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -145,7 +148,9 @@
                               <Component id="spinOutputs" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="205" max="32767" attributes="0"/>
+                          <EmptySpace pref="199" max="32767" attributes="0"/>
+                          <Component id="btnClearTrivialConnections" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnCheckColocation" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -245,6 +250,14 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCheckColocationActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnClearTrivialConnections">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Clear trivial connections"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearTrivialConnectionsActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
