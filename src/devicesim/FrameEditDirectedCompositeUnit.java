@@ -1284,6 +1284,10 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
       DeviceEngine.validateUnit(unit);
     } catch (Exception ex) {
       switch (ex.getMessage()) {
+        case "trivial connection":
+          HashSet<DirectedConnection> trivial = DeviceEngine.findTrivialConnections(unit);
+          JOptionPane.showMessageDialog(this, trivial.size() + " trivial connections present.");
+          return false;
         case "disconnected terminal":
           HashSet<Terminal> disconnected = DeviceEngine.findDisconnectedTerminals(unit);
           pd.selectedTerminals.clear();
@@ -1377,30 +1381,12 @@ public class FrameEditDirectedCompositeUnit extends javax.swing.JFrame {
 
   private void btnClearTrivialConnectionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearTrivialConnectionsActionPerformed
     changed = true;
-    int severed = 0;
-    HashSet<Terminal> disconnected = new HashSet<Terminal>();
-    for (DirectedUnit du : unit.allUnits) {
-      for (InputTerminal it : du.getInputs()) {
-        if (it.getConnection() != null) {
-          DirectedConnection dc = it.getConnection();
-          if (dc.getInput() == null || dc.getOutputs().isEmpty()) {
-            dc.severConnection();
-            severed++;
-          }
-        }
-      }
-      for (OutputTerminal ot : du.getOutputs()) {
-        if (ot.getConnection() != null) {
-          DirectedConnection dc = ot.getConnection();
-          if (dc.getInput() == null || dc.getOutputs().isEmpty()) {
-            dc.severConnection();
-            severed++;
-          }
-        }
-      }
-    }    
+    HashSet<DirectedConnection> trivial = DeviceEngine.findTrivialConnections(unit);
+    for (DirectedConnection dc : trivial) {
+      dc.severConnection();
+    }
     doRepaint();
-    JOptionPane.showMessageDialog(this, "Severed " + severed + " trivial connections.");
+    JOptionPane.showMessageDialog(this, "Severed " + trivial.size() + " trivial connections.");
   }//GEN-LAST:event_btnClearTrivialConnectionsActionPerformed
 
   /**

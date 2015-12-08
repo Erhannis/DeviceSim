@@ -207,6 +207,9 @@ public class DeviceEngine {
   }
   
   public static void validateUnit(DirectedCompositeUnit dcu) throws Exception {
+    if (findTrivialConnections(dcu).size() > 0) {
+      throw new Exception("trivial connection");
+    }
     for (DirectedUnit du : dcu.allUnits) {
       for (Terminal t : du.getTerminals()) {
         if (t.getConnection() == null) {
@@ -266,6 +269,29 @@ public class DeviceEngine {
       }
     }
     return disconnected;
+  }
+
+  public static HashSet<DirectedConnection> findTrivialConnections(DirectedCompositeUnit dcu) {
+    HashSet<DirectedConnection> trivial = new HashSet<DirectedConnection>();
+    for (DirectedUnit du : dcu.allUnits) {
+      for (InputTerminal it : du.getInputs()) {
+        if (it.getConnection() != null) {
+          DirectedConnection dc = it.getConnection();
+          if (dc.getInput() == null || dc.getOutputs().isEmpty()) {
+            trivial.add(dc);
+          }
+        }
+      }
+      for (OutputTerminal ot : du.getOutputs()) {
+        if (ot.getConnection() != null) {
+          DirectedConnection dc = ot.getConnection();
+          if (dc.getInput() == null || dc.getOutputs().isEmpty()) {
+            trivial.add(dc);
+          }
+        }
+      }
+    }    
+    return trivial;
   }
   
   public static HashSet<Unit> findColocatingUnits(DirectedCompositeUnit dcu) {
