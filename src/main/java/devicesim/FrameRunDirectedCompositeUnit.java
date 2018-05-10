@@ -7,6 +7,7 @@
 package devicesim;
 
 import devicesim.units.defaults.DirectedCompositeUnit;
+import com.erhannis.mathnstuff.MeMath;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -17,7 +18,6 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
-import mathnstuff.MeMath;
 
 /**
  *

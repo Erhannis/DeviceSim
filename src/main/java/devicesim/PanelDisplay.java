@@ -10,6 +10,7 @@ import devicesim.units.defaults.DirectedCompositeUnit;
 import devicesim.units.defaults.InternalMetaUnit;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
+import com.erhannis.mathnstuff.MeUtils;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mathnstuff.MeUtils;
 
 /**
  *

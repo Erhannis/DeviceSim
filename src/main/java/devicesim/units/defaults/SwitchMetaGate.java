@@ -11,28 +11,27 @@ import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
 import java.util.HashSet;
-import mathnstuff.MeMath;
 
 /**
  *
  * @author erhannis
  */
-public class NotGate extends BlankDirectedUnit {
-  public NotGate() {
+public class SwitchMetaGate extends BlankDirectedUnit implements Runnable {
+  private boolean on = false;
+  
+  public SwitchMetaGate() {
     inputs.add(new StateInputTerminal(0, this)); // High source
     inputs.add(new StateInputTerminal(0, this)); // Low source
-    inputs.add(new StateInputTerminal(0, this));
     outputs.add(new StateOutputTerminal(0, this));
     terminals.addAll(inputs);
     terminals.addAll(outputs);
-    setName("NOT");
+    setName("Switch");
   }
 
-  public NotGate(OutputTerminal high, OutputTerminal low, OutputTerminal a) {
+  public SwitchMetaGate(OutputTerminal high, OutputTerminal low) {
     this();
     GDC.addConnection(high, in(0));
     GDC.addConnection(low, in(1));
-    GDC.addConnection(a, in(2));
   }
   
   @Override
@@ -41,10 +40,10 @@ public class NotGate extends BlankDirectedUnit {
   }
 
   private void doUpdate() {
-    if (!MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(2).getValue())) {
-      outputs.get(0).setValue(inputs.get(0).getValue());
+    if (on) {
+      out(0).setValue(in(0).getValue());
     } else {
-      outputs.get(0).setValue(inputs.get(1).getValue());
+      out(0).setValue(in(1).getValue());
     }
   }
   
@@ -52,5 +51,10 @@ public class NotGate extends BlankDirectedUnit {
   public HashSet<OutputTerminal> tick() {
     doUpdate();
     return collectChanged();
+  }
+
+  @Override
+  public void run() {
+    on = !on;
   }
 }

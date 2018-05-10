@@ -18,7 +18,6 @@ import devicesim.units.defaults.RandomSMetaGate;
 import devicesim.units.defaults.SinkNop;
 import devicesim.units.defaults.SinkSysout;
 import devicesim.units.defaults.SinkSysoutBinary;
-import devicesim.units.defaults.SinkSysoutDec;
 import devicesim.units.defaults.SinkSysoutRadix;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;

@@ -10,29 +10,31 @@ import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
+import com.erhannis.mathnstuff.MeMath;
 import java.util.HashSet;
-import mathnstuff.MeMath;
 
 /**
  *
  * @author erhannis
  */
-public class SwitchMetaGate extends BlankDirectedUnit implements Runnable {
-  private boolean on = false;
-  
-  public SwitchMetaGate() {
+public class OrGate extends BlankDirectedUnit {
+  public OrGate() {
     inputs.add(new StateInputTerminal(0, this)); // High source
     inputs.add(new StateInputTerminal(0, this)); // Low source
+    inputs.add(new StateInputTerminal(0, this));
+    inputs.add(new StateInputTerminal(0, this));
     outputs.add(new StateOutputTerminal(0, this));
     terminals.addAll(inputs);
     terminals.addAll(outputs);
-    setName("Switch");
+    setName("OR");
   }
 
-  public SwitchMetaGate(OutputTerminal high, OutputTerminal low) {
+  public OrGate(OutputTerminal high, OutputTerminal low, OutputTerminal a, OutputTerminal b) {
     this();
     GDC.addConnection(high, in(0));
     GDC.addConnection(low, in(1));
+    GDC.addConnection(a, in(2));
+    GDC.addConnection(b, in(3));
   }
   
   @Override
@@ -41,10 +43,11 @@ public class SwitchMetaGate extends BlankDirectedUnit implements Runnable {
   }
 
   private void doUpdate() {
-    if (on) {
-      out(0).setValue(in(0).getValue());
+    if (MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(2).getValue())
+     || MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(3).getValue())) {
+      outputs.get(0).setValue(inputs.get(0).getValue());
     } else {
-      out(0).setValue(in(1).getValue());
+      outputs.get(0).setValue(inputs.get(1).getValue());
     }
   }
   
@@ -52,10 +55,5 @@ public class SwitchMetaGate extends BlankDirectedUnit implements Runnable {
   public HashSet<OutputTerminal> tick() {
     doUpdate();
     return collectChanged();
-  }
-
-  @Override
-  public void run() {
-    on = !on;
   }
 }

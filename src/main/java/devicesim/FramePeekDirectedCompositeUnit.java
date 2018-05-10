@@ -6,8 +6,9 @@
 
 package devicesim;
 
-import com.sun.glass.events.KeyEvent;
 import devicesim.units.defaults.DirectedCompositeUnit;
+import com.erhannis.mathnstuff.MeMath;
+import com.sun.glass.events.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import mathnstuff.MeMath;
 
 /**
  *

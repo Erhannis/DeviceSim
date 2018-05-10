@@ -10,31 +10,29 @@ import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
+import com.erhannis.mathnstuff.MeMath;
 import java.util.HashSet;
-import mathnstuff.MeMath;
 
 /**
  *
  * @author erhannis
  */
-public class OrGate extends BlankDirectedUnit {
-  public OrGate() {
+public class NotGate extends BlankDirectedUnit {
+  public NotGate() {
     inputs.add(new StateInputTerminal(0, this)); // High source
     inputs.add(new StateInputTerminal(0, this)); // Low source
-    inputs.add(new StateInputTerminal(0, this));
     inputs.add(new StateInputTerminal(0, this));
     outputs.add(new StateOutputTerminal(0, this));
     terminals.addAll(inputs);
     terminals.addAll(outputs);
-    setName("OR");
+    setName("NOT");
   }
 
-  public OrGate(OutputTerminal high, OutputTerminal low, OutputTerminal a, OutputTerminal b) {
+  public NotGate(OutputTerminal high, OutputTerminal low, OutputTerminal a) {
     this();
     GDC.addConnection(high, in(0));
     GDC.addConnection(low, in(1));
     GDC.addConnection(a, in(2));
-    GDC.addConnection(b, in(3));
   }
   
   @Override
@@ -43,8 +41,7 @@ public class OrGate extends BlankDirectedUnit {
   }
 
   private void doUpdate() {
-    if (MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(2).getValue())
-     || MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(3).getValue())) {
+    if (!MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(2).getValue())) {
       outputs.get(0).setValue(inputs.get(0).getValue());
     } else {
       outputs.get(0).setValue(inputs.get(1).getValue());

@@ -11,6 +11,8 @@ import devicesim.GenericDirectedConnection.GDC;
 import devicesim.units.defaults.DirectedCompositeUnit;
 import devicesim.units.defaults.SourceHigh;
 import devicesim.units.defaults.SourceLow;
+import com.erhannis.mathnstuff.MeMath;
+import com.erhannis.mathnstuff.MeUtils;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -31,8 +33,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mathnstuff.MeMath;
-import mathnstuff.MeUtils;
 
 /**
  *

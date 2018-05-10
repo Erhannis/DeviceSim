@@ -10,15 +10,15 @@ import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
+import com.erhannis.mathnstuff.MeMath;
 import java.util.HashSet;
-import mathnstuff.MeMath;
 
 /**
  *
  * @author erhannis
  */
-public class AndGate extends BlankDirectedUnit {
-  public AndGate() {
+public class NandGate extends BlankDirectedUnit {
+  public NandGate() {
     inputs.add(new StateInputTerminal(0, this)); // High source
     inputs.add(new StateInputTerminal(0, this)); // Low source
     inputs.add(new StateInputTerminal(0, this));
@@ -26,10 +26,10 @@ public class AndGate extends BlankDirectedUnit {
     outputs.add(new StateOutputTerminal(0, this));
     terminals.addAll(inputs);
     terminals.addAll(outputs);
-    setName("AND");
+    setName("NAND");
   }
 
-  public AndGate(OutputTerminal high, OutputTerminal low, OutputTerminal a, OutputTerminal b) {
+  public NandGate(OutputTerminal high, OutputTerminal low, OutputTerminal a, OutputTerminal b) {
     this();
     GDC.addConnection(high, in(0));
     GDC.addConnection(low, in(1));
@@ -43,8 +43,9 @@ public class AndGate extends BlankDirectedUnit {
   }
 
   private void doUpdate() {
-    if (MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(2).getValue())
-     && MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(3).getValue())) {
+    boolean a = MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(2).getValue());
+    boolean b = MeMath.nearerFirst(inputs.get(0).getValue(), inputs.get(1).getValue(), inputs.get(3).getValue());
+    if (!(a && b)) {
       outputs.get(0).setValue(inputs.get(0).getValue());
     } else {
       outputs.get(0).setValue(inputs.get(1).getValue());

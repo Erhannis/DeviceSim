@@ -6,7 +6,8 @@
 
 package devicesim;
 
-import java.awt.geom.Point2D;
+import com.erhannis.mathnstuff.utils.QueueStream.QueueInputStream;
+import com.erhannis.mathnstuff.utils.QueueStream.QueueOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mathnstuff.utils.QueueStream.QueueInputStream;
-import mathnstuff.utils.QueueStream.QueueOutputStream;
 
 /**
  *

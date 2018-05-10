@@ -10,8 +10,8 @@ import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import devicesim.StateOutputTerminal;
+import com.erhannis.mathnstuff.MeMath;
 import java.util.HashSet;
-import mathnstuff.MeMath;
 
 /**
  *

@@ -9,10 +9,10 @@ package devicesim.units.defaults;
 import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
+import com.erhannis.mathnstuff.MeMath;
+import com.erhannis.mathnstuff.MeUtils;
 import java.math.BigInteger;
 import java.util.HashSet;
-import mathnstuff.MeMath;
-import mathnstuff.MeUtils;
 
 /**
  *

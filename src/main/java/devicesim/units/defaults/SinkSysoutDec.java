@@ -9,16 +9,16 @@ package devicesim.units.defaults;
 import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
-import devicesim.StateOutputTerminal;
+import com.erhannis.mathnstuff.MeMath;
+import java.math.BigInteger;
 import java.util.HashSet;
-import mathnstuff.MeMath;
 
 /**
  *
  * @author erhannis
  */
-public class SinkSysoutBinary extends BlankDirectedUnit {
-  public SinkSysoutBinary(int inputCount) {
+public class SinkSysoutDec extends BlankDirectedUnit {
+  public SinkSysoutDec(int inputCount) {
     inputs.add(new StateInputTerminal(0, this)); // High source
     inputs.add(new StateInputTerminal(0, this)); // Low source
     // Haha, this seems sketchy
@@ -27,10 +27,10 @@ public class SinkSysoutBinary extends BlankDirectedUnit {
     }
     terminals.addAll(inputs);
     terminals.addAll(outputs);
-    setName("SysoutBin" + inputCount);
+    setName("SysoutDec" + inputCount);
   }
 
-  public SinkSysoutBinary(OutputTerminal high, OutputTerminal low, OutputTerminal... inputs) {
+  public SinkSysoutDec(OutputTerminal high, OutputTerminal low, OutputTerminal... inputs) {
     this(inputs.length);
     GDC.addConnection(high, in(0));
     GDC.addConnection(low, in(1));
@@ -57,13 +57,15 @@ public class SinkSysoutBinary extends BlankDirectedUnit {
     }
     double high = inputs.get(0).getValue();
     double low = inputs.get(1).getValue();
+    BigInteger bi = BigInteger.valueOf(0);
     for (int i = 2; i < inputs.size(); i++) {
+      bi = bi.shiftLeft(1);
       if (MeMath.nearerFirst(high, low, in(i).getValue())) {
-        sb.append("1");
+        bi = bi.add(BigInteger.ONE);
       } else {
-        sb.append("0");
       }
     }
+    sb.append(bi.toString(10));
     System.out.println(sb.toString());
   }
 

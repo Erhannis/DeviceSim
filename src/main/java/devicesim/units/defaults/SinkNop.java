@@ -10,7 +10,6 @@ import devicesim.GenericDirectedConnection.GDC;
 import devicesim.OutputTerminal;
 import devicesim.StateInputTerminal;
 import java.util.HashSet;
-import mathnstuff.MeMath;
 
 /**
  *
